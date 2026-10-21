@@ -195,7 +195,7 @@
      "Name": "Name#31:0"
     },
     "variants": "Side=Right|Top|Bottom x Selected=No|Yes",
-    "note": "avatar is an exposed nested instance; set Initials + avatar/{hue} fills per pin"
+    "note": "avatar is an exposed nested instance resized to 28px (source dot size); label gap space/20 (chip edge 34px from pin centre). Anchor = avatar centre: Right x=px-14,y=py-h/2; Top y=py-(h-14); Bottom y=py-14"
    }
   },
   "screens": {
@@ -223,7 +223,7 @@
    "reactions": "12 direct reactions (ON_CLICK smart-animate; 3 -> 4 AFTER_TIMEOUT 1.2s); no hotspots needed",
    "annotations": "step label above each frame + arrow vectors 1→2→3→4→5, 1→6, 6→7"
   },
-  "tokensCss": "design/tokens.css (260 properties)"
+  "tokensCss": "design/tokens.css (284 properties: 260 variables + --font-family, 16 --text-* styles with -tracking/-case companions, 2 --shadow-*)"
  },
  "completedSteps": [
   "discovery",
@@ -241,7 +241,10 @@
   "cover",
   "getting-started",
   "tokens.css",
-  "final-visual-pass"
+  "final-visual-pass",
+  "fixes/mappin-28px+reanchor",
+  "fixes/mobile-expanded-full-width-actions",
+  "fixes/tokens-css-type+shadow"
  ],
  "lessons": [
   "TEXT props on component sets share ONE default across variants; state-specific copy must be plain text or instance overrides",
@@ -253,7 +256,13 @@
   "Map art: createNodeFromSvg with sentinel colours, then rebind paints by colour to variables",
   "setFileThumbnailNodeAsync is not available to scripts; Figma falls back to the first frame on the first page (the Cover)",
   "Reactions can be set directly on nested instance sublayers (e.g. I<instance>;<child>) - no hotspot fallback was needed",
-  "A frame with an explicit Dark mode inside a light table needs its own surface fill, or 'ink' text renders light-on-light"
+  "A frame with an explicit Dark mode inside a light table needs its own surface fill, or 'ink' text renders light-on-light",
+  "minWidth cannot be overridden on instance sublayers; set it on the component (PersonCard Expanded side column min 260) and override FILL on the instance",
+  "A FILL child in a WRAP row has min width 0 and stays on the first line; give it a minWidth so it wraps to its own line before filling"
  ],
- "remaining": []
+ "remaining": [],
+ "knownLimitations": [
+  "Prototype: clicking the zip field stands in for typing 02108 (no text input in Figma prototypes)",
+  "File thumbnail cannot be set via the plugin API; Figma uses the Cover frame by default"
+ ]
 }
