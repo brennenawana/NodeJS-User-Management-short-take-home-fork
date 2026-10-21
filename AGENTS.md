@@ -16,4 +16,5 @@ Examples: `import starter express app from codesandbox`, `add main screen source
 
 - `AGENTS.md`: this file, read natively by most agents.
 - `CLAUDE.md`: imports this file for Claude Code.
+- `.agents/skills/<name>/SKILL.md`: reusable workflows in the open Agent Skills format. Each skill says when to use it. `.claude/skills` is a symlink to this folder so Claude Code finds the same skills.
 - Integrations (for example a connection to the design tool) and per-tool permission settings are set up by each person in their own agent. They stay out of git.
