@@ -5,7 +5,7 @@
  "decisions": {
   "font": "Nunito (styles: Regular, SemiBold, Bold, ExtraBold)",
   "libraries": "Community kits (M3, SDS, iOS...) were available, but their assets used ALL_SCOPES vars and a different API -> build local library matching React names",
-  "cssScheme": "Figma name group/leaf -> CSS var(--{collection}-{group}-{leaf}); collections: color, space, radius, palette (primitives)",
+  "cssScheme": "WEB code syntax = var(--{prefix}-{path with / -> -}); prefixes: Color -> --color-*, Spacing 'space/N' -> --space-N, Radius 'radius/x' -> --radius-x, Primitives -> --palette-*. design/tokens.css: primitives/spacing/radius + Light colours in :root, Dark colours in [data-theme=\"dark\"], semantic colours as var(--palette-*) aliases",
   "avatarHues": "12 hue buckets (0..330 step 30), names map: Maya 210, Daniel 90, Priya 120, Tomas 240, Grace 300, Jonah 30, Lena 120, Sam 30, Noor 240, Amara 150, NewPerson 90",
   "referenceTime": "light screens UTC 16:50 -> UTC-4 12:50 PM Afternoon, UTC-5 11:50 AM Morning, UTC-6 10:50 AM Morning, UTC-7 9:50 AM Morning; dark screen UTC 01:05 -> -4 9:05 PM Night, -5 8:05 PM Evening, -6 7:05 PM Evening, -7 6:05 PM Evening"
  },
@@ -17,7 +17,9 @@
    "sep": "2:4",
    "Components": "2:5",
    "Screens": "2:6",
-   "Prototype": "2:7"
+   "Prototype": "2:7",
+   "Getting started content": "44:51",
+   "Cover frame": "43:2"
   },
   "collections": {
    "Primitives": "VariableCollectionId:2:8",
@@ -203,7 +205,25 @@
    "Desktop / Empty": "17:457",
    "Desktop / Grid — Dark": "17:556",
    "Mobile / Grid": "36:1211"
-  }
+  },
+  "prototype": {
+   "frames": {
+    "1 · Grid": "40:2",
+    "2 · Add person — empty": "40:355",
+    "3 · Add person — looking up": "40:579",
+    "4 · Add person — resolved": "40:775",
+    "5 · Grid — Noor added": "40:904",
+    "6 · Card expanded": "40:1251",
+    "7 · Card editing": "40:1274"
+   },
+   "flows": {
+    "Add a person, then open and edit a card": "40:2",
+    "Edit a card": "40:1251"
+   },
+   "reactions": "12 direct reactions (ON_CLICK smart-animate; 3 -> 4 AFTER_TIMEOUT 1.2s); no hotspots needed",
+   "annotations": "step label above each frame + arrow vectors 1→2→3→4→5, 1→6, 6→7"
+  },
+  "tokensCss": "design/tokens.css (260 properties)"
  },
  "completedSteps": [
   "discovery",
@@ -216,7 +236,12 @@
   "components/restack-sections",
   "components/personcard-expanded-wrap",
   "screens/map-view",
-  "screens/mobile"
+  "screens/mobile",
+  "prototype/7-frames+reactions+flows",
+  "cover",
+  "getting-started",
+  "tokens.css",
+  "final-visual-pass"
  ],
  "lessons": [
   "TEXT props on component sets share ONE default across variants; state-specific copy must be plain text or instance overrides",
@@ -225,6 +250,10 @@
   "Empty auto-layout frames used as spacers default to 100px tall: always set layoutSizingVertical=FIXED and resize height to 1",
   "Wrapper frames created by createAutoLayout clip content by default; set clipsContent=false on transparent wrappers or card shadows get cut",
   "On a fresh clone, sync inst.mainComponent and getMainComponentAsync-based search did not find nested instances; address nested instances by path ID `I<instanceId>;<componentChildId>` (e.g. ViewToggle = I<AppHeader>;10:186)",
-  "Map art: createNodeFromSvg with sentinel colours, then rebind paints by colour to variables"
- ]
+  "Map art: createNodeFromSvg with sentinel colours, then rebind paints by colour to variables",
+  "setFileThumbnailNodeAsync is not available to scripts; Figma falls back to the first frame on the first page (the Cover)",
+  "Reactions can be set directly on nested instance sublayers (e.g. I<instance>;<child>) - no hotspot fallback was needed",
+  "A frame with an explicit Dark mode inside a light table needs its own surface fill, or 'ink' text renders light-on-light"
+ ],
+ "remaining": []
 }
