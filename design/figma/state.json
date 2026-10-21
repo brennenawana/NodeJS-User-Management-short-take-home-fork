@@ -1,0 +1,202 @@
+{
+ "runId": "figma-2026-10-21",
+ "fileKey": "Tu8Kz1qqdVWAczefkHzlpE",
+ "scope": "full-library + screens + prototype",
+ "decisions": {
+  "font": "Nunito (styles: Regular, SemiBold, Bold, ExtraBold)",
+  "libraries": "Community kits (M3, SDS, iOS...) were available, but their assets used ALL_SCOPES vars and a different API -> build local library matching React names",
+  "cssScheme": "Figma name group/leaf -> CSS var(--{collection}-{group}-{leaf}); collections: color, space, radius, palette (primitives)",
+  "avatarHues": "12 hue buckets (0..330 step 30), names map: Maya 210, Daniel 90, Priya 120, Tomas 240, Grace 300, Jonah 30, Lena 120, Sam 30, Noor 240, Amara 150, NewPerson 90",
+  "referenceTime": "light screens UTC 16:50 -> UTC-4 12:50 PM Afternoon, UTC-5 11:50 AM Morning, UTC-6 10:50 AM Morning, UTC-7 9:50 AM Morning; dark screen UTC 01:05 -> -4 9:05 PM Night, -5 8:05 PM Evening, -6 7:05 PM Evening, -7 6:05 PM Evening"
+ },
+ "entities": {
+  "pages": {
+   "Cover": "0:1",
+   "Getting started": "2:2",
+   "Foundations": "2:3",
+   "sep": "2:4",
+   "Components": "2:5",
+   "Screens": "2:6",
+   "Prototype": "2:7"
+  },
+  "collections": {
+   "Primitives": "VariableCollectionId:2:8",
+   "Color": "VariableCollectionId:2:9",
+   "Spacing": "VariableCollectionId:2:10",
+   "Radius": "VariableCollectionId:2:11",
+   "modes": {
+    "light": "2:1",
+    "dark": "2:2"
+   }
+  },
+  "variables": {},
+  "textStyles": {
+   "count": 16,
+   "names": [
+    "text/xs",
+    "text/xs bold",
+    "text/xs label",
+    "text/sm",
+    "text/sm bold",
+    "text/md",
+    "text/md semibold",
+    "text/md bold",
+    "text/base",
+    "text/base semibold",
+    "text/base bold",
+    "text/lg bold",
+    "text/xl bold",
+    "text/h1",
+    "text/clock",
+    "text/clock sm"
+   ]
+  },
+  "effectStyles": {
+   "Shadow / Card": "S:12e7fbc5d51cdd351a8b19af508b94bc55143472,",
+   "Shadow / Segment": "S:dac6a920805b06fc40c1762fb78d3e792ad76638,"
+  },
+  "components": {
+   "icons": {
+    "search": "3:8",
+    "plus": "3:12",
+    "more": "3:18",
+    "edit": "3:23",
+    "trash": "3:27",
+    "refresh": "3:32",
+    "sun": "3:37",
+    "moon": "3:41",
+    "grid": "3:48",
+    "map": "3:53",
+    "check": "3:57",
+    "alert": "3:62",
+    "close": "3:66",
+    "clock": "3:71",
+    "chevron-up": "3:75",
+    "undo": "3:80",
+    "info": "3:85",
+    "warning": "3:90",
+    "people": "3:98"
+   },
+   "Avatar": {
+    "set": "3:106",
+    "props": {
+     "Initials": "Initials#3:0"
+    }
+   },
+   "SkyChip": {
+    "set": "3:131"
+   },
+   "Button": {
+    "set": "4:34",
+    "props": {
+     "Label": "Label#4:0",
+     "Show icon": "Show icon#4:9",
+     "Icon": "Icon#4:18"
+    }
+   },
+   "TextField": {
+    "set": "4:71",
+    "props": {
+     "Label": "Label#4:27",
+     "Value": "Value#4:32",
+     "Hint": "Hint#4:37",
+     "Show hint": "Show hint#4:42"
+    }
+   },
+   "ZoneCell": {
+    "set": "5:18",
+    "props": {
+     "Offset": "Offset#5:0",
+     "Hint": "Hint#5:3",
+     "Time": "Time#5:6",
+     "People": "People#5:9"
+    }
+   },
+   "ViewToggle": {
+    "set": "5:46"
+   },
+   "Toast": {
+    "component": "5:48",
+    "props": {
+     "Message": "Message#5:12"
+    }
+   },
+   "PersonCard": {
+    "set": "7:203",
+    "props": {
+     "Name": "Name#7:0",
+     "Place": "Place#7:6",
+     "Time": "Time#7:12",
+     "Period": "Period#7:18",
+     "Location": "Location#7:24",
+     "Coordinates": "Coordinates#7:30",
+     "Zip": "Zip#7:36",
+     "Record": "Record#7:42",
+     "Updated": "Updated#7:48",
+     "Sky": "Sky#7:54"
+    },
+    "note": "PendingLocation place text is unlinked (edit text directly)"
+   },
+   "AddSheet": {
+    "set": "8:334",
+    "props": {
+     "Preview name": "Preview name#8:6",
+     "Time": "Time#8:18",
+     "Period": "Period#8:24"
+    },
+    "note": "hint/preview-place/waiting are per-variant plain text; name-field/zip-field/avatar/sky exposed nested instances"
+   },
+   "TimezoneStrip": {
+    "component": "10:145"
+   },
+   "AppHeader": {
+    "set": "10:240",
+    "variants": [
+     "Device=Desktop",
+     "Device=Mobile"
+    ]
+   },
+   "EmptyState": {
+    "component": "10:242",
+    "props": {
+     "Title": "Title#10:0",
+     "Body": "Body#10:1",
+     "Show illustration": "Show illustration#10:2",
+     "Show action": "Show action#10:3"
+    }
+   },
+   "sections": {
+    "Icons": "3:3",
+    "Avatar": "3:99",
+    "SkyChip": "3:107",
+    "Button": "4:35",
+    "TextField": "4:72",
+    "ZoneCell": "5:19",
+    "ViewToggle": "5:47",
+    "Toast": "5:58",
+    "PersonCard": "7:204",
+    "AddSheet": "8:335",
+    "TimezoneStrip": "10:170",
+    "AppHeader": "10:241",
+    "EmptyState": "10:255"
+   },
+   "examples": {
+    "tf": "13:269",
+    "pc": "13:311",
+    "as": "13:503"
+   }
+  },
+  "screens": {}
+ },
+ "completedSteps": [
+  "discovery",
+  "foundations/variables+styles",
+  "components/all-13-families",
+  "components/examples-fix"
+ ],
+ "lessons": [
+  "TEXT props on component sets share ONE default across variants; state-specific copy must be plain text or instance overrides",
+  "isExposedInstance must be set after appendChild into the component",
+  "paint() fallback color should be the resolved value (override equal to main binding rendered black otherwise)"
+ ]
+}
