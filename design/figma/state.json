@@ -178,25 +178,53 @@
     "AddSheet": "8:335",
     "TimezoneStrip": "10:170",
     "AppHeader": "10:241",
-    "EmptyState": "10:255"
+    "EmptyState": "10:255",
+    "MapPin": "31:513"
    },
    "examples": {
     "tf": "13:269",
     "pc": "13:311",
     "as": "13:503"
+   },
+   "MapPin": {
+    "set": "31:512",
+    "section": "31:513",
+    "props": {
+     "Name": "Name#31:0"
+    },
+    "variants": "Side=Right|Top|Bottom x Selected=No|Yes",
+    "note": "avatar is an exposed nested instance; set Initials + avatar/{hue} fills per pin"
    }
   },
-  "screens": {}
+  "screens": {
+   "Desktop / Grid": "15:2",
+   "Desktop / Add person": "17:313",
+   "Desktop / Map view": "34:1192",
+   "Desktop / Empty": "17:457",
+   "Desktop / Grid — Dark": "17:556",
+   "Mobile / Grid": "36:1211"
+  }
  },
  "completedSteps": [
   "discovery",
   "foundations/variables+styles",
   "components/all-13-families",
-  "components/examples-fix"
+  "components/examples-fix",
+  "screens/grid-fixes(spacers,unclip,row widths)",
+  "screens/grid-dark(strip times)",
+  "components/mappin",
+  "components/restack-sections",
+  "components/personcard-expanded-wrap",
+  "screens/map-view",
+  "screens/mobile"
  ],
  "lessons": [
   "TEXT props on component sets share ONE default across variants; state-specific copy must be plain text or instance overrides",
   "isExposedInstance must be set after appendChild into the component",
-  "paint() fallback color should be the resolved value (override equal to main binding rendered black otherwise)"
+  "paint() fallback color should be the resolved value (override equal to main binding rendered black otherwise)",
+  "Empty auto-layout frames used as spacers default to 100px tall: always set layoutSizingVertical=FIXED and resize height to 1",
+  "Wrapper frames created by createAutoLayout clip content by default; set clipsContent=false on transparent wrappers or card shadows get cut",
+  "On a fresh clone, sync inst.mainComponent and getMainComponentAsync-based search did not find nested instances; address nested instances by path ID `I<instanceId>;<componentChildId>` (e.g. ViewToggle = I<AppHeader>;10:186)",
+  "Map art: createNodeFromSvg with sentinel colours, then rebind paints by colour to variables"
  ]
 }
