@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>R2 · main</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#9A4208}a:hover{color:#6E2E04}
+button,input{font-family:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+input::placeholder{color:inherit;opacity:.7}
+:focus-visible{outline:3px solid #F27D26;outline-offset:2px}
+</style>
+</helmet>
+<div style="width:100%;box-sizing:border-box;min-height:100vh;background:{{t.bg}};color:{{t.ink}};font-family:{{t.fontBody}};font-size:15px;line-height:1.45;position:relative;">
+
+  <!-- Header -->
+  <header style="box-sizing:border-box;width:100%;border-bottom:1px solid {{t.line}};background:{{t.bg}};">
+    <div style="box-sizing:border-box;max-width:1240px;margin:0 auto;padding:16px 32px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;">
+      <a href="#" aria-label="Users home" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:{{t.ink}};min-height:44px;">
+        <span style="width:32px;height:32px;border-radius:{{t.rSm}};background:{{t.accent}};display:inline-flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="{{t.onAccent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="5.5" r="2.5"></circle><circle cx="11" cy="6.5" r="2"></circle><path d="M1.5 13.5c.6-2.3 2.2-3.5 4-3.5s3.4 1.2 4 3.5"></path><path d="M10 13.5c.4-1.6 1.6-2.6 3-2.6 .7 0 1.2.2 1.6.5"></path></svg>
+        </span>
+        <span style="font-family:{{t.fontDisplay}};font-weight:700;font-size:16px;letter-spacing:{{t.track.name}};">Users</span>
+      </a>
+
+      <label for="search" style="position:relative;flex:1 1 220px;max-width:400px;min-width:0;display:block;">
+        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:{{t.muted}};display:inline-flex;" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        </span>
+        <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Search people</span>
+        <input id="search" type="search" placeholder="Search by name or city" value="{{q}}" onInput="{{onSearch}}" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.surface}};color:{{t.ink}};padding:0 12px 0 40px;font-size:15px;">
+      </label>
+
+      <!-- ViewToggle -->
+      <div role="group" aria-label="View" style="display:inline-flex;background:{{t.surface2}};border:1px solid {{t.line}};border-radius:{{t.rMd}};padding:2px;gap:2px;">
+        <button type="button" aria-pressed="{{gridView}}" onClick="{{showGrid}}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:{{t.rSm}};border:0;font-weight:600;font-size:14px;background:{{vGridBg}};color:{{vGridFg}};box-shadow:{{vGridShadow}};">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"></rect><rect x="13" y="4" width="7" height="7" rx="1.5"></rect><rect x="4" y="13" width="7" height="7" rx="1.5"></rect><rect x="13" y="13" width="7" height="7" rx="1.5"></rect></svg>
+          Grid
+        </button>
+        <button type="button" aria-pressed="{{mapView}}" onClick="{{showMap}}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:{{t.rSm}};border:0;font-weight:600;font-size:14px;background:{{vMapBg}};color:{{vMapFg}};box-shadow:{{vMapShadow}};">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"></path><circle cx="12" cy="11" r="2"></circle></svg>
+          Map
+        </button>
+      </div>
+
+      <button type="button" aria-label="{{themeLabel}}" aria-pressed="{{isDark}}" onClick="{{toggleTheme}}" style="width:44px;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.surface}};color:{{t.ink}};display:inline-flex;align-items:center;justify-content:center;">
+        <sc-if value="{{isLight}}" hint-placeholder-val="{{ true }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
+        </sc-if>
+        <sc-if value="{{isDark}}" hint-placeholder-val="{{ false }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+        </sc-if>
+      </button>
+
+      <button type="button" onClick="{{openSheet}}" style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px 0 12px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:15px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        Add a person
+      </button>
+    </div>
+  </header>
+
+  <main style="box-sizing:border-box;max-width:1240px;margin:0 auto;padding:24px 32px 48px;">
+
+    <!-- Title row -->
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-bottom:16px;">
+      <h1 style="margin:0;font-family:{{t.fontDisplay}};font-size:26px;font-weight:800;letter-spacing:{{t.track.head}};line-height:1.2;">People</h1>
+      <p style="margin:0;color:{{t.muted}};font-size:15px;">{{countLine}}</p>
+      <sc-if value="{{zoneActive}}" hint-placeholder-val="{{ false }}">
+        <button type="button" onClick="{{clearZone}}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px 0 14px;border-radius:{{t.rFull}};border:1px solid {{t.line}};background:{{t.surface}};color:{{t.ink}};font-weight:600;font-size:14px;">
+          Showing {{zoneName}} only
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+        </button>
+      </sc-if>
+      <p style="margin:0 0 0 auto;color:{{t.muted}};font-size:14px;">Times update every minute</p>
+    </div>
+
+    <!-- Timezone strip: ZoneCell grouped by UTC offset -->
+    <section aria-label="Time zones" style="margin-bottom:24px;">
+      <div role="group" aria-label="Filter people by UTC offset" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;">
+        <sc-for list="{{zones}}" as="z" hint-placeholder-count="4">
+          <button type="button" aria-pressed="{{z.active}}" onClick="{{z.pick}}" style="flex:1 0 200px;box-sizing:border-box;text-align:left;min-height:92px;padding:12px 16px 16px;border-radius:{{t.rLg}};border:1px solid {{z.border}};background:{{z.bg}};color:{{z.fg}};box-shadow:{{t.shadow}};display:flex;flex-direction:column;gap:4px;min-width:0;">
+            <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
+              <span style="font-weight:700;font-size:15px;">{{z.label}}</span>
+              <span style="font-size:13px;color:{{z.sub}};">{{z.hint}}</span>
+            </span>
+            <span style="font-family:{{t.fontDisplay}};font-size:26px;font-weight:700;letter-spacing:{{t.track.clock}};line-height:1.1;font-variant-numeric:tabular-nums;">{{z.time}}</span>
+            <span style="font-size:13px;color:{{z.sub}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{z.count}} · {{z.names}}</span>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- Add-person sheet -->
+    <sc-if value="{{sheetOpen}}" hint-placeholder-val="{{ true }}">
+      <section aria-labelledby="add-title" style="box-sizing:border-box;background:{{t.surface}};border:1px solid {{t.line}};border-radius:{{t.rLg}};box-shadow:{{t.shadow}};padding:24px;margin-bottom:24px;display:flex;flex-wrap:wrap;gap:24px 40px;">
+        <div style="flex:1 1 320px;min-width:0;">
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <div style="flex:1 1 auto;min-width:0;">
+              <h2 id="add-title" style="margin:0 0 4px;font-family:{{t.fontDisplay}};font-size:20px;font-weight:700;letter-spacing:{{t.track.name}};line-height:1.3;">Add a person</h2>
+              <p style="margin:0 0 16px;color:{{t.muted}};font-size:14px;">Just a name and a zip. We look up their city, coordinates and UTC offset.</p>
+            </div>
+            <button type="button" aria-label="Close add form" onClick="{{closeSheet}}" style="flex:0 0 auto;width:44px;height:44px;border-radius:{{t.rMd}};border:0;background:transparent;color:{{t.muted}};display:inline-flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+            </button>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;gap:16px;">
+            <div style="flex:1 1 220px;min-width:0;">
+              <label for="new-name" style="display:block;font-weight:600;font-size:14px;margin-bottom:6px;">Name</label>
+              <input id="new-name" type="text" autocomplete="off" placeholder="e.g. Maya Okafor" value="{{newName}}" onInput="{{onName}}" style="box-sizing:border-box;width:100%;height:48px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:16px;">
+            </div>
+            <div style="flex:0 1 180px;min-width:140px;">
+              <label for="new-zip" style="display:block;font-weight:600;font-size:14px;margin-bottom:6px;">Zip code</label>
+              <input id="new-zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="5 digits" value="{{newZip}}" onInput="{{onZip}}" aria-invalid="{{zipErr}}" aria-describedby="zip-hint" style="box-sizing:border-box;width:100%;height:48px;border-radius:{{t.rMd}};border:1px solid {{zipBorder}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:16px;letter-spacing:.06em;font-variant-numeric:tabular-nums;">
+            </div>
+          </div>
+
+          <p id="zip-hint" aria-live="polite" style="margin:8px 0 0;min-height:24px;font-size:14px;color:{{zipHintColor}};display:flex;align-items:flex-start;gap:8px;">
+            <sc-if value="{{zipFound}}" hint-placeholder-val="{{ true }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:3px;"><path d="m5 12 4.5 4.5L19 7"></path></svg>
+            </sc-if>
+            <sc-if value="{{zipPending}}" hint-placeholder-val="{{ false }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex:0 0 auto;margin-top:3px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+            </sc-if>
+            <sc-if value="{{zipErr}}" hint-placeholder-val="{{ false }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:3px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+            </sc-if>
+            <sc-if value="{{zipFailed}}" hint-placeholder-val="{{ false }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:3px;"><path d="M12 3 2.5 20h19L12 3Z"></path><path d="M12 10v4M12 17h.01"></path></svg>
+            </sc-if>
+            <span>{{zipHint}}</span>
+          </p>
+
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center;">
+            <button type="button" onClick="{{saveNew}}" disabled="{{saveDisabled}}" style="min-height:48px;padding:0 20px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:15px;opacity:{{saveOpacity}};">{{saveLabel}}</button>
+            <button type="button" onClick="{{closeSheet}}" style="min-height:48px;padding:0 16px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:15px;">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Live preview of the card being made -->
+        <div style="flex:0 1 340px;min-width:260px;display:flex;flex-direction:column;gap:8px;">
+          <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};text-transform:uppercase;letter-spacing:.08em;">Card preview</p>
+          <div style="box-sizing:border-box;border-radius:{{t.rLg}};border:1px dashed {{t.lineStrong}};background:{{t.bg}};padding:16px;min-height:145px;display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span aria-hidden="true" style="flex:0 0 auto;width:48px;height:48px;border-radius:{{t.rFull}};background:{{pvAvBg}};color:{{pvAvFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;letter-spacing:.02em;">{{pvInitials}}</span>
+              <div style="min-width:0;">
+                <p style="margin:0;font-family:{{t.fontDisplay}};font-weight:700;font-size:16px;letter-spacing:{{t.track.name}};color:{{pvNameColor}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{pvName}}</p>
+                <p style="margin:0;font-size:13px;color:{{t.muted}};">{{pvPlace}}</p>
+              </div>
+            </div>
+            <sc-if value="{{zipFound}}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <div>
+                  <p style="margin:0;font-family:{{t.fontDisplay}};font-size:28px;font-weight:700;letter-spacing:{{t.track.clock}};line-height:1.1;font-variant-numeric:tabular-nums;">{{pvTime}}</p>
+                  <p style="margin:4px 0 0;font-size:13px;color:{{t.muted}};">{{pvPeriodLine}}</p>
+                </div>
+                <!-- SkyChip -->
+                <svg width="72" height="36" viewBox="0 0 72 36" role="img" aria-label="{{pvSky.aria}}" style="flex:0 0 auto;">
+                  <rect x="0" y="0" width="72" height="36" rx="12" fill="{{pvSky.skyBg}}"></rect>
+                  <sc-if value="{{pvSky.isSun}}" hint-placeholder-val="{{ true }}">
+                    <path d="{{pvSky.rays}}" fill="none" stroke="{{pvSky.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                    <circle cx="36" cy="{{pvSky.sunY}}" r="{{pvSky.sunR}}" fill="{{pvSky.disc}}"></circle>
+                  </sc-if>
+                  <sc-if value="{{pvSky.isNight}}" hint-placeholder-val="{{ false }}">
+                    <circle cx="14" cy="9" r="1.3" fill="{{pvSky.star}}"></circle>
+                    <circle cx="52" cy="8" r="1.5" fill="{{pvSky.star}}"></circle>
+                    <circle cx="60" cy="17" r="1.1" fill="{{pvSky.star}}"></circle>
+                    <circle cx="23" cy="21" r=".9" fill="{{pvSky.star}}"></circle>
+                    <circle cx="35" cy="14" r="6.5" fill="{{pvSky.disc}}"></circle>
+                    <circle cx="38.2" cy="11.6" r="5.6" fill="{{pvSky.skyBg}}"></circle>
+                  </sc-if>
+                  <sc-if value="{{pvSky.hasGround}}" hint-placeholder-val="{{ true }}">
+                    <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{pvSky.horizon}}"></path>
+                  </sc-if>
+                </svg>
+              </div>
+            </sc-if>
+            <sc-if value="{{pvWaiting}}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0;font-size:14px;color:{{t.muted}};">{{pvWaitText}}</p>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Map view (behind the toggle) -->
+    <sc-if value="{{mapView}}" hint-placeholder-val="{{ false }}">
+      <section aria-label="Map of people" style="box-sizing:border-box;background:{{t.surface}};border:1px solid {{t.line}};border-radius:{{t.rLg}};box-shadow:{{t.shadow}};padding:16px 20px 20px;margin-bottom:24px;">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-bottom:12px;">
+          <h2 style="margin:0;font-family:{{t.fontDisplay}};font-size:16px;font-weight:700;letter-spacing:{{t.track.name}};">Where everyone is</h2>
+          <p style="margin:0;font-size:13px;color:{{t.muted}};">Contiguous US · bands are UTC offsets</p>
+          <p style="margin:0 0 0 auto;font-size:13px;color:{{t.muted}};">{{mapHint}}</p>
+        </div>
+        <div style="position:relative;aspect-ratio:590/266;max-width:1000px;margin:0 auto;">
+          <svg viewBox="0 0 590 266" width="100%" height="100%" role="img" aria-label="Stylised map of the contiguous United States with UTC offset bands" style="display:block;position:absolute;inset:0;">
+            <rect x="0" y="0" width="590" height="266" rx="12" fill="{{t.surface2}}"></rect>
+            <g stroke="{{t.grid}}" stroke-width="0.6" stroke-dasharray="2 4">
+              <path d="M0 100H590M0 200H590"></path>
+            </g>
+            <path fill="{{t.land}}" stroke="{{t.coast}}" stroke-width="1" stroke-linejoin="round" d="M3,16 L17,10 L298,10 L304,7 L330,15 L355,19 L380,18 L400,24 L405,34 L415,40 L426,47 L429,65 L426,70 L420,80 L433,85 L449,79 L461,71 L474,68 L485,65 L488,58 L500,50 L535,50 L550,35 L570,27 L572,43 L580,52 L565,58 L548,64 L550,83 L535,86 L525,90 L510,94 L508,105 L495,112 L490,130 L495,147 L471,161 L451,173 L439,180 L436,196 L444,216 L449,242 L441,249 L432,240 L423,222 L420,210 L410,199 L400,203 L375,197 L370,196 L356,210 L345,207 L330,204 L312,203 L302,207 L278,223 L278,241 L255,225 L241,206 L218,210 L205,204 L185,182 L168,182 L168,187 L140,187 L102,175 L79,175 L65,160 L45,155 L31,134 L25,122 L13,110 L6,96 L8,80 L10,55 L11,38 L4,25 Z"></path>
+            <g fill="{{t.surface2}}" stroke="{{t.coast}}" stroke-width="0.8" stroke-linejoin="round">
+              <path d="M329,33 L338,25 L352,20 L378,19 L398,25 L404,34 L395,37 L380,36 L365,32 L348,35 Z"></path>
+              <path d="M375,84 L387,75 L388,60 L395,47 L394,41 L382,43 L375,48 L370,55 L373,65 L374,75 Z"></path>
+              <path d="M404,41 L415,39 L426,46 L430,60 L428,70 L420,68 L412,60 L406,50 Z"></path>
+              <path d="M422,84 L433,86 L449,80 L461,72 L458,77 L445,84 L430,89 Z"></path>
+              <path d="M462,70 L474,68 L485,65 L488,60 L480,62 L470,66 Z"></path>
+            </g>
+            <g fill="{{t.bandFill}}">
+              <rect x="0" y="0" width="110" height="266" rx="12"></rect>
+              <rect x="230" y="0" width="160" height="266"></rect>
+            </g>
+            <g stroke="{{t.accentInk}}" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.6">
+              <path d="M110 0V266M230 0V266M390 0V266"></path>
+            </g>
+            <g style="font-family:{{t.fontBody}};font-size:9px;font-weight:700;letter-spacing:.1em;fill:{{t.muted}};" text-anchor="middle">
+              <text x="55" y="258">UTC−7</text>
+              <text x="170" y="258">UTC−6</text>
+              <text x="310" y="258">UTC−5</text>
+              <text x="490" y="258">UTC−4</text>
+            </g>
+          </svg>
+
+          <sc-for list="{{pins}}" as="p" hint-placeholder-count="8">
+            <button type="button" aria-label="{{p.aria}}" aria-pressed="{{p.isSel}}" onClick="{{p.pick}}" style="{{p.pinStyle}}">
+              <span aria-hidden="true" style="{{p.dotStyle}}">{{p.initials}}</span>
+              <span aria-hidden="true" style="{{p.chipStyle}}">{{p.first}}</span>
+            </button>
+          </sc-for>
+
+          <sc-if value="{{pvPinOn}}" hint-placeholder-val="{{ false }}">
+            <div aria-hidden="true" style="{{pvPinStyle}}">
+              <span style="position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:{{t.rFull}};border:2px dashed {{t.accentInk}};background:{{t.accentSoft}};"></span>
+              <span style="position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:{{t.rFull}};background:{{t.accent}};"></span>
+              <span style="position:absolute;left:50%;top:32px;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:600;padding:2px 8px;border-radius:{{t.rSm}};background:{{t.surface}};color:{{t.ink}};border:1px dashed {{t.accentInk}};">{{pvPinLabel}}</span>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Cards grid -->
+    <sc-if value="{{hasResults}}" hint-placeholder-val="{{ true }}">
+      <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill, minmax(272px, 1fr));grid-auto-flow:dense;gap:16px;">
+        <sc-for list="{{users}}" as="u" hint-placeholder-count="8">
+          <li style="position:relative;box-sizing:border-box;grid-column:{{u.span}};background:{{t.surface}};border:1px solid {{u.border}};border-radius:{{t.rLg}};box-shadow:{{t.shadow}};padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <button type="button" onClick="{{u.toggle}}" aria-expanded="{{u.expanded}}" style="flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:12px;background:transparent;border:0;padding:0;text-align:left;color:{{t.ink}};min-height:48px;border-radius:{{t.rMd}};">
+                <span aria-hidden="true" style="flex:0 0 auto;width:48px;height:48px;border-radius:{{t.rFull}};background:{{u.avBg}};color:{{u.avFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;letter-spacing:.02em;">{{u.initials}}</span>
+                <span style="min-width:0;display:block;">
+                  <span style="display:block;font-family:{{t.fontDisplay}};font-weight:700;font-size:16px;letter-spacing:{{t.track.name}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{u.name}}</span>
+                  <span style="display:block;font-size:13px;color:{{t.muted}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{u.place}}</span>
+                </span>
+              </button>
+              <button type="button" aria-label="More actions for {{u.name}}" aria-expanded="{{u.menuOpen}}" onClick="{{u.menu}}" style="flex:0 0 auto;width:44px;height:44px;border-radius:{{t.rMd}};border:0;background:{{u.menuBg}};color:{{t.muted}};display:inline-flex;align-items:center;justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="5.5" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="18.5" r="1"></circle></svg>
+              </button>
+            </div>
+
+            <sc-if value="{{u.menuOpen}}" hint-placeholder-val="{{ false }}">
+              <div role="menu" aria-label="Actions for {{u.name}}" style="position:absolute;top:64px;right:12px;z-index:5;background:{{t.surface}};border:1px solid {{t.line}};border-radius:{{t.rMd}};box-shadow:{{t.shadow}};padding:4px;display:flex;flex-direction:column;min-width:168px;">
+                <button type="button" role="menuitem" onClick="{{u.edit}}" style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:0;border-radius:{{t.rSm}};background:transparent;color:{{t.ink}};font-size:14px;font-weight:600;text-align:left;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3Z"></path><path d="m13.5 7.5 3 3"></path></svg>
+                  Edit details
+                </button>
+                <button type="button" role="menuitem" onClick="{{u.remove}}" style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:0;border-radius:{{t.rSm}};background:transparent;color:{{t.error}};font-size:14px;font-weight:600;text-align:left;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                  Remove
+                </button>
+              </div>
+            </sc-if>
+
+            <!-- Clock row (located) -->
+            <sc-if value="{{u.located}}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <div style="min-width:0;">
+                  <p style="margin:0;font-family:{{t.fontDisplay}};font-size:28px;font-weight:700;letter-spacing:{{t.track.clock}};line-height:1.1;font-variant-numeric:tabular-nums;">{{u.time}}</p>
+                  <p style="margin:4px 0 0;font-size:13px;color:{{t.muted}};">{{u.periodLine}}</p>
+                </div>
+                <!-- SkyChip: sun on horizon (morning), full sun with rays (afternoon), half sun setting (evening), crescent + stars (night) -->
+                <svg width="72" height="36" viewBox="0 0 72 36" role="img" aria-label="{{u.skyAria}}" style="flex:0 0 auto;">
+                  <rect x="0" y="0" width="72" height="36" rx="12" fill="{{u.skyBg}}"></rect>
+                  <sc-if value="{{u.isSun}}" hint-placeholder-val="{{ true }}">
+                    <path d="{{u.rays}}" fill="none" stroke="{{u.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                    <circle cx="36" cy="{{u.sunY}}" r="{{u.sunR}}" fill="{{u.disc}}"></circle>
+                  </sc-if>
+                  <sc-if value="{{u.isNight}}" hint-placeholder-val="{{ false }}">
+                    <circle cx="14" cy="9" r="1.3" fill="{{u.star}}"></circle>
+                    <circle cx="52" cy="8" r="1.5" fill="{{u.star}}"></circle>
+                    <circle cx="60" cy="17" r="1.1" fill="{{u.star}}"></circle>
+                    <circle cx="23" cy="21" r=".9" fill="{{u.star}}"></circle>
+                    <circle cx="35" cy="14" r="6.5" fill="{{u.disc}}"></circle>
+                    <circle cx="38.2" cy="11.6" r="5.6" fill="{{u.skyBg}}"></circle>
+                  </sc-if>
+                  <sc-if value="{{u.hasGround}}" hint-placeholder-val="{{ true }}">
+                    <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{u.horizon}}"></path>
+                  </sc-if>
+                </svg>
+              </div>
+            </sc-if>
+
+            <!-- Pending location -->
+            <sc-if value="{{u.pending}}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:8px;background:{{t.noticeSoft}};color:{{t.notice}};border-radius:{{t.rMd}};padding:4px 4px 4px 12px;font-size:13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                <span style="flex:1 1 auto;min-width:0;">Location pending. We will retry the lookup.</span>
+                <button type="button" onClick="{{u.refresh}}" style="flex:0 0 auto;min-height:44px;padding:0 10px;border-radius:{{t.rSm}};border:0;background:transparent;color:{{t.notice}};font-weight:700;font-size:13px;">Try now</button>
+              </div>
+            </sc-if>
+
+            <!-- Expanded detail -->
+            <sc-if value="{{u.expanded}}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px solid {{t.line}};padding-top:16px;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-start;">
+                <dl style="margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, max-content));gap:12px 32px;flex:1 1 420px;min-width:0;">
+                  <div><dt style="font-size:12px;font-weight:600;color:{{t.muted}};text-transform:uppercase;letter-spacing:.08em;">Location</dt><dd style="margin:2px 0 0;font-size:15px;font-weight:600;">{{u.place}} <span style="font-weight:500;color:{{t.muted}};">{{u.hintParen}}</span></dd></div>
+                  <div><dt style="font-size:12px;font-weight:600;color:{{t.muted}};text-transform:uppercase;letter-spacing:.08em;">Coordinates</dt><dd style="margin:2px 0 0;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;">{{u.coords}}</dd></div>
+                  <div><dt style="font-size:12px;font-weight:600;color:{{t.muted}};text-transform:uppercase;letter-spacing:.08em;">Zip</dt><dd style="margin:2px 0 0;font-size:15px;font-weight:600;">{{u.zip}}</dd></div>
+                  <div><dt style="font-size:12px;font-weight:600;color:{{t.muted}};text-transform:uppercase;letter-spacing:.08em;">Record</dt><dd style="margin:2px 0 0;font-size:15px;font-weight:600;">#{{u.id}}</dd></div>
+                </dl>
+                <div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+                  <sc-if value="{{u.notEditing}}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;">
+                      <button type="button" onClick="{{u.edit}}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:14px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3Z"></path><path d="m13.5 7.5 3 3"></path></svg>
+                        Edit
+                      </button>
+                      <button type="button" onClick="{{u.remove}}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.error}};font-weight:600;font-size:14px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                        Remove
+                      </button>
+                      <button type="button" onClick="{{u.toggle}}" aria-label="Collapse {{u.name}}" style="width:44px;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.muted}};display:inline-flex;align-items:center;justify-content:center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"></path></svg>
+                      </button>
+                    </div>
+                  </sc-if>
+                  <p style="margin:0;display:flex;align-items:center;gap:4px;font-size:13px;color:{{t.muted}};">
+                    <span>Location updated {{u.updated}}</span>
+                    <span aria-hidden="true">·</span>
+                    <button type="button" onClick="{{u.refresh}}" style="min-height:44px;padding:0 8px;border-radius:{{t.rSm}};border:0;background:transparent;color:{{t.accentInk}};font-weight:600;font-size:13px;">Refresh location</button>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Inline edit form -->
+              <sc-if value="{{u.editing}}" hint-placeholder-val="{{ false }}">
+                <form onSubmit="{{u.saveEdit}}" style="box-sizing:border-box;background:{{t.surface2}};border-radius:{{t.rMd}};padding:16px;display:flex;flex-direction:column;gap:12px;">
+                  <div style="display:flex;flex-wrap:wrap;gap:12px;">
+                    <div style="flex:1 1 220px;min-width:0;">
+                      <label for="edit-name-{{u.id}}" style="display:block;font-weight:600;font-size:14px;margin-bottom:6px;">Name</label>
+                      <input id="edit-name-{{u.id}}" type="text" value="{{u.editName}}" onInput="{{u.onEditName}}" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.surface}};color:{{t.ink}};padding:0 12px;font-size:15px;">
+                    </div>
+                    <div style="flex:0 1 160px;min-width:130px;">
+                      <label for="edit-zip-{{u.id}}" style="display:block;font-weight:600;font-size:14px;margin-bottom:6px;">Zip code</label>
+                      <input id="edit-zip-{{u.id}}" type="text" inputmode="numeric" maxlength="5" value="{{u.editZip}}" onInput="{{u.onEditZip}}" aria-describedby="edit-zip-note-{{u.id}}" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{u.editZipBorder}};background:{{t.surface}};color:{{t.ink}};padding:0 12px;font-size:15px;letter-spacing:.06em;font-variant-numeric:tabular-nums;">
+                    </div>
+                  </div>
+                  <sc-if value="{{u.zipChanged}}" hint-placeholder-val="{{ true }}">
+                    <p id="edit-zip-note-{{u.id}}" style="margin:0;display:flex;align-items:flex-start;gap:8px;font-size:14px;color:{{t.notice}};background:{{t.noticeSoft}};border-radius:{{t.rMd}};padding:12px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+                      <span>{{u.zipNote}}</span>
+                    </p>
+                  </sc-if>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                    <button type="submit" style="min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;">Save changes</button>
+                    <button type="button" onClick="{{u.cancelEdit}}" style="min-height:44px;padding:0 12px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:14px;">Cancel</button>
+                  </div>
+                </form>
+              </sc-if>
+            </sc-if>
+          </li>
+        </sc-for>
+      </ul>
+    </sc-if>
+
+    <!-- Map view, nothing picked yet -->
+    <sc-if value="{{mapIdle}}" hint-placeholder-val="{{ false }}">
+      <div style="box-sizing:border-box;border:1px dashed {{t.lineStrong}};border-radius:{{t.rLg}};padding:24px;text-align:center;color:{{t.muted}};font-size:14px;">Press a pin to open someone's card here.</div>
+    </sc-if>
+
+    <!-- No search results -->
+    <sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+      <div style="box-sizing:border-box;border:1px dashed {{t.lineStrong}};border-radius:{{t.rLg}};padding:40px 24px;text-align:center;">
+        <p style="margin:0 0 4px;font-family:{{t.fontDisplay}};font-weight:700;font-size:16px;letter-spacing:{{t.track.name}};">{{noResultsTitle}}</p>
+        <p style="margin:0 0 16px;color:{{t.muted}};">Try a shorter name, a city like Boston, or clear the filters.</p>
+        <button type="button" onClick="{{clearFilters}}" style="min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;">Clear search and filters</button>
+      </div>
+    </sc-if>
+
+    <!-- Empty list -->
+    <sc-if value="{{listEmpty}}" hint-placeholder-val="{{ false }}">
+      <div style="box-sizing:border-box;border:1px dashed {{t.lineStrong}};border-radius:{{t.rLg}};padding:40px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;">
+        <svg width="132" height="60" viewBox="0 0 132 60" aria-hidden="true">
+          <circle cx="30" cy="30" r="24" fill="{{t.surface2}}"></circle>
+          <circle cx="66" cy="30" r="24" fill="{{t.lineStrong}}"></circle>
+          <circle cx="102" cy="30" r="24" fill="{{t.accent}}"></circle>
+          <path d="M96 30h12M102 24v12" stroke="{{t.onAccent}}" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+        </svg>
+        <h2 style="margin:8px 0 0;font-family:{{t.fontDisplay}};font-size:20px;font-weight:700;letter-spacing:{{t.track.name}};">No one here yet</h2>
+        <p style="margin:0;max-width:300px;color:{{t.muted}};font-size:14px;">Add your first person with a name and a zip. We will fill in the city, map point and local time.</p>
+        <button type="button" onClick="{{openSheet}}" style="margin-top:8px;display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px 0 16px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:15px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Add your first person
+        </button>
+      </div>
+    </sc-if>
+  </main>
+
+  <!-- Undo toast -->
+  <sc-if value="{{toastOpen}}" hint-placeholder-val="{{ false }}">
+    <div role="status" aria-live="polite" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:12px;background:{{t.inverse}};color:{{t.onInverse}};border-radius:{{t.rMd}};padding:8px 8px 8px 16px;box-shadow:{{t.shadow}};max-width:calc(100% - 32px);box-sizing:border-box;">
+      <span style="font-size:14px;font-weight:600;">{{toastText}}</span>
+      <button type="button" onClick="{{undoRemove}}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:{{t.rSm}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg>
+        Undo
+      </button>
+      <button type="button" aria-label="Dismiss" onClick="{{dismissToast}}" style="width:44px;height:44px;border-radius:{{t.rSm}};border:0;background:transparent;color:{{t.onInverse}};display:inline-flex;align-items:center;justify-content:center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"accent":{"editor":"color","default":"#F27D26"},"font":{"editor":"enum","default":"Plus Jakarta Sans","options":["Plus Jakarta Sans","Figtree","DM Sans","Nunito","Bricolage Grotesque + Figtree"]},"$preview":{"width":1440,"height":1240}}'>
+// ---- Data as the OpenWeatherMap current-weather API gives it: city name (no state), coords, UTC offset in seconds.
+const ZIPS = {
+  '10001': { city: 'New York', lat: 40.7484, lon: -73.9967, offset: -14400 },
+  '94103': { city: 'San Francisco', lat: 37.7725, lon: -122.4091, offset: -25200 },
+  '60601': { city: 'Chicago', lat: 41.8858, lon: -87.6181, offset: -18000 },
+  '98101': { city: 'Seattle', lat: 47.6101, lon: -122.3344, offset: -25200 },
+  '80202': { city: 'Denver', lat: 39.7527, lon: -104.9992, offset: -21600 },
+  '33131': { city: 'Miami', lat: 25.7663, lon: -80.1916, offset: -14400 },
+  '02108': { city: 'Boston', lat: 42.3576, lon: -71.0636, offset: -14400 },
+  '78701': { city: 'Austin', lat: 30.2711, lon: -97.7437, offset: -18000 },
+  '97205': { city: 'Portland', lat: 45.5209, lon: -122.6832, offset: -25200 },
+  '30303': { city: 'Atlanta', lat: 33.7528, lon: -84.3915, offset: -14400 },
+  '85004': { city: 'Phoenix', lat: 33.4512, lon: -112.0703, offset: -25200 },
+  '55401': { city: 'Minneapolis', lat: 44.9841, lon: -93.2708, offset: -18000 },
+  '19103': { city: 'Philadelphia', lat: 39.9525, lon: -75.1741, offset: -14400 },
+  '96813': { city: 'Honolulu', lat: 21.3118, lon: -157.8615, offset: -36000 },
+  '99501': { city: 'Anchorage', lat: 61.2176, lon: -149.8997, offset: -28800 }
+};
+// Soft hint words derived from the offset. The offset is the source of truth.
+const HINTS = { '-14400': 'Eastern', '-18000': 'Central', '-21600': 'Mountain', '-25200': 'Pacific', '-28800': 'Alaska', '-36000': 'Hawaii' };
+const SEED = [
+  { id: 1, name: 'Maya Okafor', zip: '10001', updated: 'Aug 4' },
+  { id: 2, name: 'Daniel Reyes', zip: '94103', updated: 'Aug 4' },
+  { id: 3, name: 'Priya Raman', zip: '60601', updated: 'Sep 12' },
+  { id: 4, name: 'Tomás Lindqvist', zip: '98101', updated: 'Sep 12' },
+  { id: 5, name: 'Grace Whitfield', zip: '80202', updated: 'Oct 1' },
+  { id: 6, name: 'Jonah Abernathy', zip: '33131', updated: 'Oct 1' },
+  { id: 7, name: 'Lena Hoffmann', zip: '02108', updated: 'Oct 19' },
+  { id: 8, name: 'Sam Castillo', zip: '78701', updated: 'Oct 19' }
+].map(u => Object.assign({}, u, ZIPS[u.zip]));
+
+// ---- helpers
+function hueOf(name) { let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 360; return h; }
+function avatarColors(name, dark) {
+  const h = hueOf(name || 'Users');
+  return dark ? { bg: 'hsl(' + h + ' 28% 26%)', fg: 'hsl(' + h + ' 65% 84%)' } : { bg: 'hsl(' + h + ' 58% 90%)', fg: 'hsl(' + h + ' 55% 29%)' };
+}
+function initialsOf(name) {
+  const parts = (name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+}
+function hexToRgb(hex) {
+  let h = (hex || '').replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h || 'F27D26', 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function luminance(hex) {
+  const [r, g, b] = hexToRgb(hex).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function hueSatOf(hex) {
+  const [r, g, b] = hexToRgb(hex).map(v => v / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  let h = 0; if (d) { if (max === r) h = ((g - b) / d) % 6; else if (max === g) h = (b - r) / d + 2; else h = (r - g) / d + 4; h = Math.round(h * 60); if (h < 0) h += 360; }
+  const l = (max + min) / 2; const s = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+  return { h, s: Math.round(s * 100) };
+}
+function rgba(hex, a) { const c = hexToRgb(hex); return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
+function offsetLabel(off) {
+  if (off == null) return 'UTC ?';
+  const a = Math.abs(off), h = Math.floor(a / 3600), m = Math.round((a % 3600) / 60);
+  return 'UTC' + (off < 0 ? '−' : '+') + h + (m ? ':' + String(m).padStart(2, '0') : '');
+}
+function zoneHint(off) { return HINTS[String(off)] || ''; }
+function localClock(off, now) {
+  const d = new Date(now.getTime() + off * 1000);
+  const h = d.getUTCHours(), m = d.getUTCMinutes();
+  return { h, m, mins: h * 60 + m, text: (h % 12 || 12) + ':' + String(m).padStart(2, '0') + ' ' + (h < 12 ? 'AM' : 'PM') };
+}
+// ---- SkyChip geometry (72×36 viewBox). Rays are round-capped strokes from radius r1 to r2 around the sun centre.
+function raysPath(cx, cy, r1, r2, angles) {
+  return angles.map(a => {
+    const c = Math.cos(a * Math.PI / 180), s = Math.sin(a * Math.PI / 180);
+    return 'M' + (cx + r1 * c).toFixed(1) + ' ' + (cy + r1 * s).toFixed(1) + 'L' + (cx + r2 * c).toFixed(1) + ' ' + (cy + r2 * s).toFixed(1);
+  }).join('');
+}
+const SKY_GEOM = {
+  morning: { sunY: 20, sunR: 7, rays: raysPath(36, 20, 10, 14, [-150, -120, -90, -60, -30]), ground: true },        // full disc sitting on the horizon, 5 rays above
+  afternoon: { sunY: 18, sunR: 7, rays: raysPath(36, 18, 10, 14, [0, 45, 90, 135, 180, 225, 270, 315]), ground: false }, // full sun high, 8 rays all round
+  evening: { sunY: 27, sunR: 8, rays: raysPath(36, 27, 11, 14, [-125, -90, -55]), ground: true },                     // half disc sunk into the horizon, 3 short rays
+  night: { sunY: 0, sunR: 0, rays: '', ground: true }                                                                   // crescent + stars (markup)
+};
+function skyChip(period, T, city) {
+  const key = period.toLowerCase(), pal = T.sky[key], g = SKY_GEOM[key];
+  return { period, isNight: key === 'night', isSun: key !== 'night', hasGround: g.ground,
+    skyBg: pal.bg, disc: pal.disc, horizon: pal.hz, star: T.sky.star, sunY: g.sunY, sunR: g.sunR, rays: g.rays,
+    skyAria: city ? period + ' in ' + city : period, aria: city ? period + ' in ' + city : period };
+}
+function skyNone(T) {
+  return { period: '', isNight: false, isSun: false, hasGround: false, skyBg: T.surface2, disc: T.line, horizon: T.line, star: T.line, sunY: 0, sunR: 0, rays: '', skyAria: 'Local time unknown', aria: 'Local time unknown' };
+}
+function sky(h, m, T, city) {
+  const t = h + m / 60;
+  const isNight = t >= 21 || t < 5;
+  const period = isNight ? 'Night' : t < 12 ? 'Morning' : t < 17 ? 'Afternoon' : 'Evening';
+  return skyChip(period, T, city);
+}
+
+// ---- Typeface options (font tweak). Display face carries wordmark, headings, names and clocks; body carries the rest.
+const FONTS = {
+  'Plus Jakarta Sans': { body: "'Plus Jakarta Sans', system-ui, sans-serif", display: "'Plus Jakarta Sans', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'Figtree': { body: "'Figtree', system-ui, sans-serif", display: "'Figtree', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'DM Sans': { body: "'DM Sans', system-ui, sans-serif", display: "'DM Sans', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'Nunito': { body: "'Nunito', system-ui, sans-serif", display: "'Nunito', system-ui, sans-serif", track: { head: '-.01em', name: '0', clock: '-.01em' } },
+  'Bricolage Grotesque + Figtree': { body: "'Figtree', system-ui, sans-serif", display: "'Bricolage Grotesque', 'Figtree', system-ui, sans-serif", track: { head: '-.03em', name: '-.02em', clock: '-.03em' } }
+};
+
+// ---- ONE token object (maps to Figma variables)
+function tokens(dark, accent, font) {
+  const hs = hueSatOf(accent);
+  const f = FONTS[font] || FONTS['Plus Jakarta Sans'];
+  const color = dark ? {
+    bg: '#16181B', surface: '#1F2226', surface2: '#272B30', ink: '#F2F1EC', muted: '#B3B0A8', line: '#30353B', lineStrong: '#4A5058',
+    ok: '#9FD9A8', okSoft: '#1F3326', error: '#FF8F86', errorSoft: '#3F2320', notice: '#F7E1CC', noticeSoft: '#3B3220',
+    inverse: '#F2F1EC', onInverse: '#1F1D1A', land: '#30353B', coast: '#4A5058', grid: '#30353B', skel: '#2A2E34', skelHi: '#353A41',
+    shadow: '0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6)'
+  } : {
+    bg: '#F4F5F1', surface: '#FFFFFF', surface2: '#ECEDE8', ink: '#1F1D1A', muted: '#5C5853', line: '#E4E3DC', lineStrong: '#C9C7BE',
+    ok: '#1F6B3A', okSoft: '#E4F3E8', error: '#B42318', errorSoft: '#FDE8E6', notice: '#6E3A0A', noticeSoft: '#FFF1DC',
+    inverse: '#1F1D1A', onInverse: '#F2F1EC', land: '#E4E3DC', coast: '#C9C7BE', grid: '#D9DBD3', skel: '#ECECE6', skelHi: '#F7F7F3',
+    shadow: '0 1px 2px rgba(30,28,24,.05), 0 10px 28px -14px rgba(30,28,24,.16)'
+  };
+  return Object.assign(color, {
+    accent, onAccent: luminance(accent) > 0.3 ? '#1F1D1A' : '#FFFFFF',
+    accentInk: dark ? 'hsl(' + hs.h + ' ' + Math.min(95, hs.s + 10) + '% 72%)' : 'hsl(' + hs.h + ' ' + hs.s + '% 30%)',
+    accentSoft: dark ? 'hsl(' + hs.h + ' 30% 20%)' : 'hsl(' + hs.h + ' 80% 94%)',
+    bandFill: rgba(accent, dark ? 0.09 : 0.08),
+    // radii
+    rSm: '8px', rMd: '12px', rLg: '20px', rFull: '999px',
+    // spacing scale (px) used literally in markup: 4 8 12 16 20 24 32 40 48
+    space: [4, 8, 12, 16, 20, 24, 32, 40, 48],
+    // type scale (px) used literally in markup
+    type: { xs: 12, sm: 13, md: 14, base: 15, lg: 16, xl: 20, h1: 26, clock: 28 },
+    // typefaces (font tweak): body for UI text, display for wordmark / headings / names / clocks
+    fontBody: f.body, fontDisplay: f.display, track: f.track,
+    // SkyChip palette (morning / afternoon / evening / night). disc = sun or moon, ≥3:1 against bg; hz = ground band
+    sky: dark ? {
+      morning: { bg: '#262B3F', disc: '#F2A43A', hz: '#4A3C22' }, afternoon: { bg: '#20364E', disc: '#F6B21B', hz: '#2C4560' },
+      evening: { bg: '#42271E', disc: '#F28352', hz: '#5E382A' }, night: { bg: '#1A2038', disc: '#EEF1F8', hz: '#262E4C' }, star: '#9FB0E0'
+    } : {
+      morning: { bg: '#ECEEF8', disc: '#C9640A', hz: '#E8D3A8' }, afternoon: { bg: '#D6EAFC', disc: '#BE5F06', hz: '#BFDCF6' },
+      evening: { bg: '#F8D5C6', disc: '#B5401A', hz: '#E3A58C' }, night: { bg: '#2B3350', disc: '#EEF1F8', hz: '#3A4466' }, star: '#C9D1EC'
+    },
+    skelFill: 'linear-gradient(90deg, ' + color.skel + ' 0%, ' + color.skelHi + ' 50%, ' + color.skel + ' 100%)'
+  });
+}
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = {
+      users: SEED.slice(), q: '', view: 'grid', zone: null, flip: false,
+      sheetOpen: true, newName: 'Noor Haddad', newZip: '97205', lz: '97205', lstatus: 'found',
+      expandedId: 3, menuId: null, editingId: null, editName: '', editZip: '',
+      removed: null, toastOpen: false, nextId: 9
+    };
+  }
+  componentDidMount() { this.t = setInterval(() => this.forceUpdate(), 15000); }
+  componentWillUnmount() { clearInterval(this.t); clearTimeout(this.toastT); clearTimeout(this.lookupT); }
+
+  // Simulated debounced backend lookup for the zip preview.
+  resolveLookup(z) {
+    const s = this.state || {};
+    if (s.lz !== z) return;
+    if (z === '00000') { this.setState({ lstatus: 'failed' }); return; }
+    this.setState({ lstatus: ZIPS[z] ? 'found' : 'unknown' });
+  }
+  zipStatus(s) {
+    const z = (s.newZip || '').trim();
+    if (!z) return { kind: 'idle', text: 'Enter a 5-digit US zip code.' };
+    if (/[^0-9]/.test(z)) return { kind: 'bad', text: 'Just the 5 digits, please — no letters or dashes.' };
+    if (z.length < 5) { const n = 5 - z.length; return { kind: 'short', text: 'Zip codes are 5 digits — ' + z + ' is ' + ['', 'one', 'two', 'three', 'four'][n] + ' short.' }; }
+    if (s.lz !== z || !s.lstatus || s.lstatus === 'pending') return { kind: 'pending', text: 'Looking up ' + z + '…' };
+    if (s.lstatus === 'failed') return { kind: 'failed', text: 'We could not look up ' + z + ' right now. You can still save and we will retry.' };
+    const hit = ZIPS[z];
+    if (s.lstatus === 'unknown' || !hit) return { kind: 'unknown', text: 'We could not find ' + z + '. Double-check it, or save anyway and we will retry.' };
+    return { kind: 'found', text: hit.city + ' · ' + offsetLabel(hit.offset), hit };
+  }
+
+  renderVals() {
+    const s = this.state || {};
+    const dark = (!!this.props.dark) !== (!!s.flip);
+    const accent = this.props.accent || '#F27D26';
+    const T = tokens(dark, accent, this.props.font);
+    const now = new Date();
+    const mapView = s.view === 'map';
+    const clamp = v => Math.max(2, Math.min(98, v)).toFixed(2);
+
+    // ---- list
+    const q = (s.q || '').trim().toLowerCase();
+    const matches = u => (!q || u.name.toLowerCase().includes(q) || (u.city || '').toLowerCase().includes(q)) && (s.zone == null || u.offset === s.zone);
+    const list = (s.users || []).filter(matches).slice().sort((a, b) => a.name.localeCompare(b.name));
+
+    const users = list.map(u => {
+      const av = avatarColors(u.name, dark);
+      const located = u.offset != null;
+      const lc = located ? localClock(u.offset, now) : null;
+      const sk = located ? sky(lc.h, lc.m, T, u.city) : skyNone(T);
+      const expanded = s.expandedId === u.id;
+      const editing = s.editingId === u.id;
+      const menuOpen = s.menuId === u.id;
+      const hint = located ? zoneHint(u.offset) : '';
+      const zipChanged = editing && s.editZip !== u.zip;
+      const ahead = zipChanged ? ZIPS[s.editZip] : null;
+      return Object.assign({}, u, sk, {
+        initials: initialsOf(u.name), avBg: av.bg, avFg: av.fg,
+        located, pending: !located,
+        time: located ? lc.text : '', periodLine: located ? sk.period + (hint ? ' · ' + hint : '') : '',
+        place: located ? u.city + ' · ' + offsetLabel(u.offset) : u.zip + ' · location pending',
+        hintParen: hint ? '(' + hint + ')' : '',
+        coords: located ? u.lat.toFixed(4) + ', ' + u.lon.toFixed(4) : 'Not located yet',
+        expanded, notEditing: !editing, editing, menuOpen,
+        span: expanded ? '1 / -1' : 'auto',
+        border: expanded ? T.accent : T.line,
+        menuBg: menuOpen ? T.surface2 : 'transparent',
+        editName: editing ? s.editName : u.name, editZip: editing ? s.editZip : u.zip,
+        editZipBorder: zipChanged ? T.accentInk : T.line,
+        zipChanged,
+        zipNote: 'Location and UTC offset will update when you save.' + (ahead ? ' Looks like ' + ahead.city + ' · ' + offsetLabel(ahead.offset) + '.' : ''),
+        toggle: () => this.setState({ expandedId: expanded ? null : u.id, menuId: null, editingId: expanded ? null : s.editingId }),
+        menu: () => this.setState({ menuId: menuOpen ? null : u.id }),
+        edit: () => this.setState({ expandedId: u.id, editingId: u.id, editName: u.name, editZip: u.zip, menuId: null }),
+        cancelEdit: () => this.setState({ editingId: null }),
+        onEditName: e => this.setState({ editName: e.target.value }),
+        onEditZip: e => this.setState({ editZip: e.target.value.replace(/\s/g, '').slice(0, 5) }),
+        saveEdit: e => {
+          if (e && e.preventDefault) e.preventDefault();
+          const changed = s.editZip && s.editZip !== u.zip;
+          const hit = changed ? (ZIPS[s.editZip] || { city: null, lat: null, lon: null, offset: null }) : {};
+          this.setState({ users: s.users.map(x => x.id === u.id ? Object.assign({}, x, { name: (s.editName || '').trim() || x.name, zip: s.editZip || x.zip, updated: changed ? 'Oct 19' : x.updated }, hit) : x), editingId: null });
+        },
+        refresh: () => this.setState({ users: s.users.map(x => x.id === u.id ? Object.assign({}, x, ZIPS[x.zip] || {}, { updated: 'just now' }) : x) }),
+        remove: () => {
+          clearTimeout(this.toastT);
+          this.setState({ users: s.users.filter(x => x.id !== u.id), removed: u, toastOpen: true, menuId: null, expandedId: expanded ? null : s.expandedId });
+          this.toastT = setTimeout(() => this.setState({ toastOpen: false }), 7000);
+        }
+      });
+    });
+    const gridUsers = mapView ? users.filter(u => u.expanded) : users;
+    const total = (s.users || []).length;
+
+    // ---- timezone strip grouped by offset
+    const groups = {};
+    (s.users || []).forEach(u => { if (u.offset == null) return; (groups[u.offset] = groups[u.offset] || []).push(u); });
+    const zones = Object.keys(groups).map(Number).sort((a, b) => a - b).map(off => {
+      const members = groups[off]; const active = s.zone === off;
+      return {
+        label: offsetLabel(off), hint: zoneHint(off), time: localClock(off, now).text,
+        count: members.length === 1 ? '1 person' : members.length + ' people',
+        names: members.map(m => m.name.split(' ')[0]).join(', '),
+        active, bg: active ? T.accent : T.surface, fg: active ? T.onAccent : T.ink, sub: active ? T.onAccent : T.muted, border: active ? T.accent : T.line,
+        pick: () => this.setState({ zone: active ? null : off })
+      };
+    });
+
+    // ---- map pins
+    const located = (s.users || []).filter(u => u.lat != null);
+    const pins = located.map(u => {
+      const px = clamp((u.lon + 125) / 59 * 100), py = clamp((50 - u.lat) / 26.6 * 100);
+      const vis = matches(u), isSel = s.expandedId === u.id, av = avatarColors(u.name, dark);
+      let side = 'right';
+      const nb = located.find(o => o.id !== u.id && Math.abs(o.lon - u.lon) < 4.8 && Math.abs(o.lat - u.lat) < 3);
+      if (nb) side = u.lat > nb.lat ? 'top' : 'bottom';
+      const sideCss = side === 'right' ? 'left:34px;top:50%;transform:translateY(-50%);' : side === 'top' ? 'left:50%;bottom:34px;transform:translateX(-50%);' : 'left:50%;top:34px;transform:translateX(-50%);';
+      const lc = localClock(u.offset, now);
+      return {
+        initials: initialsOf(u.name), first: u.name.split(' ')[0], isSel,
+        aria: u.name + ', ' + u.city + ' ' + offsetLabel(u.offset) + ', local time ' + lc.text,
+        pick: () => this.setState({ expandedId: isSel ? null : u.id, menuId: null, editingId: null }),
+        pinStyle: 'position:absolute;left:' + px + '%;top:' + py + '%;width:44px;height:44px;margin:-22px 0 0 -22px;padding:0;border:0;background:transparent;border-radius:' + T.rFull + ';cursor:pointer;opacity:' + (vis ? 1 : 0.3) + ';z-index:' + (isSel ? 3 : 2) + ';',
+        dotStyle: 'position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:' + T.rFull + ';display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:' + av.bg + ';color:' + av.fg + ';box-shadow:' + (isSel ? '0 0 0 3px ' + T.accent : '0 0 0 2px ' + T.surface) + ';',
+        chipStyle: 'position:absolute;' + sideCss + 'white-space:nowrap;font-size:12px;font-weight:600;line-height:1.2;padding:2px 8px;border-radius:' + T.rSm + ';background:' + (isSel ? T.accent : T.surface) + ';color:' + (isSel ? T.onAccent : T.ink) + ';border:1px solid ' + (isSel ? T.accent : T.line) + ';pointer-events:none;'
+      };
+    });
+    const selUser = users.find(u => u.expanded);
+    const mapHint = selUser ? 'Showing ' + selUser.name + ' below' : 'Press a pin to open their card';
+
+    // ---- add sheet
+    const zs = this.zipStatus(s);
+    const zipFound = zs.kind === 'found';
+    const zipPending = zs.kind === 'pending';
+    const zipErr = zs.kind === 'bad' || zs.kind === 'short' || zs.kind === 'unknown';
+    const zipFailed = zs.kind === 'failed';
+    const pvAv = avatarColors(s.newName || 'New person', dark);
+    let pv = { pvTime: '', pvPeriodLine: '', pvSky: skyNone(T), pvPinOn: false, pvPinStyle: '', pvPinLabel: '' };
+    if (zipFound) {
+      const lc = localClock(zs.hit.offset, now); const sk = sky(lc.h, lc.m, T, zs.hit.city); const hint = zoneHint(zs.hit.offset);
+      pv = { pvTime: lc.text, pvPeriodLine: sk.period + (hint ? ' · ' + hint : ''), pvSky: sk,
+        pvPinOn: mapView && !!s.sheetOpen, pvPinLabel: zs.hit.city + ' · ' + offsetLabel(zs.hit.offset),
+        pvPinStyle: 'position:absolute;left:' + clamp((zs.hit.lon + 125) / 59 * 100) + '%;top:' + clamp((50 - zs.hit.lat) / 26.6 * 100) + '%;width:44px;height:44px;margin:-22px 0 0 -22px;z-index:4;pointer-events:none;' };
+    }
+    const canSave = !!(s.newName || '').trim() && (zipFound || zs.kind === 'unknown' || zipFailed);
+    const pvPlace = zipFound ? zs.hit.city + ' · ' + offsetLabel(zs.hit.offset) : zipPending ? 'Looking up ' + s.newZip + '…' : (zs.kind === 'unknown' || zipFailed) ? s.newZip + ' · location pending' : 'City appears here';
+
+    const seg = (on) => ({ bg: on ? T.surface : 'transparent', fg: on ? T.ink : T.muted, shadow: on ? '0 1px 2px rgba(30,28,24,.12)' : 'none' });
+    const vg = seg(!mapView), vm = seg(mapView);
+
+    return Object.assign({
+      t: T, q: s.q || '',
+      isDark: dark, isLight: !dark, themeLabel: dark ? 'Switch to light theme' : 'Switch to dark theme',
+      toggleTheme: () => this.setState({ flip: !s.flip }),
+      gridView: !mapView, mapView, showGrid: () => this.setState({ view: 'grid' }), showMap: () => this.setState({ view: 'map', menuId: null }),
+      vGridBg: vg.bg, vGridFg: vg.fg, vGridShadow: vg.shadow, vMapBg: vm.bg, vMapFg: vm.fg, vMapShadow: vm.shadow,
+      countLine: total === 1 ? '1 person' : total + ' people' + ((q || s.zone != null) && users.length !== total ? ' · ' + users.length + ' shown' : ''),
+      zones, zoneActive: s.zone != null, zoneName: s.zone != null ? offsetLabel(s.zone) : '', clearZone: () => this.setState({ zone: null }),
+      users: gridUsers, hasResults: gridUsers.length > 0,
+      mapIdle: mapView && gridUsers.length === 0 && total > 0,
+      noResults: !mapView && users.length === 0 && total > 0,
+      noResultsTitle: q ? 'No one matches “' + s.q.trim() + '”' : 'No one in ' + (s.zone != null ? offsetLabel(s.zone) : 'this zone'),
+      listEmpty: total === 0,
+      pins, mapHint,
+      onSearch: e => this.setState({ q: e.target.value }), clearFilters: () => this.setState({ q: '', zone: null }),
+      sheetOpen: !!s.sheetOpen, openSheet: () => this.setState({ sheetOpen: true, menuId: null }), closeSheet: () => this.setState({ sheetOpen: false }),
+      newName: s.newName || '', newZip: s.newZip || '',
+      onName: e => this.setState({ newName: e.target.value }),
+      onZip: e => {
+        const z = e.target.value.replace(/\s/g, '').slice(0, 5);
+        clearTimeout(this.lookupT);
+        if (/^[0-9]{5}$/.test(z)) {
+          this.setState({ newZip: z, lz: z, lstatus: 'pending' });
+          this.lookupT = setTimeout(() => this.resolveLookup(z), 700);
+        } else {
+          this.setState({ newZip: z, lz: null, lstatus: null });
+        }
+      },
+      zipHint: zs.text, zipFound, zipPending, zipErr, zipFailed,
+      zipHintColor: zipFound ? T.ok : zipErr ? T.error : zipFailed ? T.notice : T.muted,
+      zipBorder: zipErr ? T.error : zipFound ? T.ok : T.line,
+      pvInitials: initialsOf(s.newName), pvAvBg: pvAv.bg, pvAvFg: pvAv.fg,
+      pvName: (s.newName || '').trim() || 'Their name', pvNameColor: (s.newName || '').trim() ? T.ink : T.muted,
+      pvPlace, pvWaiting: !zipFound,
+      pvWaitText: zipPending ? 'Local time and sky appear in a moment.' : (zs.kind === 'unknown' || zipFailed) ? 'We will keep retrying the lookup after you save.' : 'Local time and sky appear once we know the zip.',
+      saveDisabled: !canSave, saveOpacity: canSave ? 1 : 0.55, saveLabel: (zs.kind === 'unknown' || zipFailed) ? 'Save anyway' : 'Add person',
+      saveNew: () => {
+        if (!canSave) return;
+        const hit = zipFound ? zs.hit : { city: null, lat: null, lon: null, offset: null };
+        const nu = Object.assign({ id: s.nextId, name: s.newName.trim(), zip: s.newZip, updated: 'Oct 19' }, hit);
+        this.setState({ users: s.users.concat([nu]), nextId: s.nextId + 1, newName: '', newZip: '', lz: null, lstatus: null, sheetOpen: false, expandedId: nu.id, zone: null, q: '' });
+      },
+      toastOpen: !!s.toastOpen, toastText: s.removed ? s.removed.name + ' was removed.' : '',
+      undoRemove: () => { clearTimeout(this.toastT); if (s.removed) this.setState({ users: s.users.concat([s.removed]), removed: null, toastOpen: false }); },
+      dismissToast: () => { clearTimeout(this.toastT); this.setState({ toastOpen: false }); }
+    }, pv);
+  }
+}
+</script>
+</body>
+</html>
