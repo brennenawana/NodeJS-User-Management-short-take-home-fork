@@ -11,7 +11,7 @@ const radius = (node, n) => { for (const k of ['topLeftRadius','topRightRadius',
 const sp = (node, prop, v) => { if (_vm['space/' + v]) node.setBoundVariable(prop, V('space/' + v)); else node[prop] = v; };
 const pad = (node, t, r, b, l) => { if (r === undefined) r = t; if (b === undefined) b = t; if (l === undefined) l = r; sp(node,'paddingTop',t); sp(node,'paddingRight',r); sp(node,'paddingBottom',b); sp(node,'paddingLeft',l); return node; };
 const gap = (node, v) => { sp(node, 'itemSpacing', v); return node; };
-const box = (dir, name, o = {}) => { const f = figma.createAutoLayout(dir); f.name = name; f.fills = []; if (o.w) { f.resize(o.w, o.h || 10); if (!o.h) { if (dir === 'VERTICAL') f.primaryAxisSizingMode = 'AUTO'; else f.counterAxisSizingMode = 'AUTO'; } } if (o.main) f.primaryAxisAlignItems = o.main; if (o.cross) f.counterAxisAlignItems = o.cross; if (o.wrap) f.layoutWrap = 'WRAP'; return f; };
+const box = (dir, name, o = {}) => { const f = figma.createAutoLayout(dir); f.name = name; f.fills = []; f.clipsContent = false; if (o.w) { f.resize(o.w, o.h || 10); if (!o.h) { if (dir === 'VERTICAL') f.primaryAxisSizingMode = 'AUTO'; else f.counterAxisSizingMode = 'AUTO'; } } if (o.main) f.primaryAxisAlignItems = o.main; if (o.cross) f.counterAxisAlignItems = o.cross; if (o.wrap) f.layoutWrap = 'WRAP'; return f; };
 const add = (parent, child, sz) => { parent.appendChild(child); if (sz) { if (sz.w) child.layoutSizingHorizontal = sz.w; if (sz.h) child.layoutSizingVertical = sz.h; } return child; };
 const text = async (chars, style, colorName, name) => { const t = figma.createText(); t.name = name || chars.slice(0, 24); await t.setTextStyleIdAsync(_tm[style].id); t.characters = chars; fill(t, colorName); return t; };
 const effect = (node, n) => { node.effectStyleId = _em[n].id; return node; };
@@ -19,3 +19,7 @@ const makeSet = (comps, name, desc, cols, g = 24, p = 24) => { const cs = figma.
 const icon = (name, size, colorName) => { const comp = figma.currentPage.findOne(n => n.type === 'COMPONENT' && n.name === 'Icon / ' + name); if (!comp) throw new Error('icon ' + name); const i = comp.createInstance(); i.resize(size, size); if (colorName) { for (const v of i.findAllWithCriteria({ types: ['VECTOR','ELLIPSE','RECTANGLE'] })) { if (v.strokes.length) v.strokes = [paint(colorName)]; } } return i; };
 const propKey = (inst, prefix) => Object.keys(inst.componentProperties).find(k => k.split('#')[0] === prefix);
 const setP = (inst, obj) => { const o = {}; for (const [k, v] of Object.entries(obj)) { const key = propKey(inst, k); if (key) o[key] = v; } inst.setProperties(o); return inst; };
+// Flexible spacer for an auto-layout row: append first, then FILL width and a 1px FIXED height (empty frames otherwise default to 100px tall).
+const spacer = (parent) => { const f = figma.createFrame(); f.name = 'spacer'; f.fills = []; parent.appendChild(f); f.layoutSizingHorizontal = 'FILL'; f.layoutSizingVertical = 'FIXED'; f.resize(f.width, 1); return f; };
+// Nested instance by path ID, e.g. nested(appHeaderInstance, '10:186') -> its ViewToggle. Works on fresh clones where mainComponent lookups fail.
+const nested = (inst, childId) => figma.getNodeByIdAsync(`I${inst.id};${childId}`);
