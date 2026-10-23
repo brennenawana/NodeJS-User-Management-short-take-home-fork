@@ -4,6 +4,7 @@ import { defineConfig, devices } from "@playwright/test";
 // No API key needed, and every run starts with an empty list.
 const API_PORT = 8091;
 const WEB_PORT = 5191;
+export const STORYBOOK_URL = "http://localhost:6106";
 
 export default defineConfig({
   testDir: "tests",
@@ -30,6 +31,13 @@ export default defineConfig({
       url: `http://localhost:${WEB_PORT}`,
       env: { API_PORT: String(API_PORT) },
       reuseExistingServer: false,
+    },
+    {
+      // Static Storybook build for the layout checks in tests/stories.spec.ts.
+      command: "yarn workspace user-management-client build-storybook --quiet && yarn workspace user-management-client preview-storybook --port 6106 --strictPort",
+      url: "http://localhost:6106/index.json",
+      reuseExistingServer: false,
+      timeout: 180_000,
     },
   ],
 });

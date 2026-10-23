@@ -86,7 +86,9 @@ describe("App", () => {
     await user.click(identity("Lena Hoffmann"));
     const lena = card("Lena Hoffmann");
     expect(lena).toHaveAttribute("data-state", "expanded");
-    expect(within(lena).getByText("42.3576, -71.0684")).toBeInTheDocument();
+    expect(within(lena).getByText("02108")).toBeInTheDocument();
+    // People can't read lat/lon, so the card doesn't show them (the map uses them).
+    expect(within(lena).queryByText(/42\.3576/)).not.toBeInTheDocument();
     expect(within(lena).getByText("Location updated Oct 19")).toBeInTheDocument();
 
     await user.click(within(lena).getByRole("button", { name: "Edit" }));

@@ -84,6 +84,8 @@ yarn e2e            # Playwright: add, edit and remove against the real API and 
 yarn workspace user-management-server test:live   # hits the real providers whose keys are in .env
 ```
 
+`e2e/tests/stories.spec.ts` also opens every Storybook story at 320, 768 and 1280px and fails if anything spills out of its box; jsdom has no layout, so that can't live in Vitest.
+
 The e2e run starts its own API with the `fixture` provider and in-memory storage, so it needs no key and leaves `data/` alone. Run `yarn workspace user-management-e2e playwright install chromium` once first.
 
 CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both unit suites, the client and Storybook builds, and the e2e tests on every push and pull request.

@@ -97,7 +97,7 @@ export function AddSheet({ now, onSave, onClose, onPreview, defaultName = "", de
         <div className={styles.top}>
           <div>
             <h2 id={`${id}-title`} className={styles.title}>Add a person</h2>
-            <p className={styles.lede}>Just a name and a zip. We look up their city, coordinates and UTC offset.</p>
+            <p className={styles.lede}>Just a name and a zip. We look up their city and local time.</p>
           </div>
           <Button variant="ghost" icon="close" aria-label="Close add form" onClick={onClose} />
         </div>

@@ -21,7 +21,7 @@ test("add, edit and remove a person", async ({ page }) => {
 
   const card = page.getByRole("listitem").filter({ hasText: "Lena Hoffmann" });
   await expect(card).toHaveAttribute("data-state", "expanded");
-  await expect(card.getByText("42.3576, -71.0684")).toBeVisible();
+  await expect(card.getByText("02108", { exact: true })).toBeVisible();
   await expect(zone(page, /UTC−4/)).toContainText("1 person · Lena");
 
   // Edit: a new zip moves her and the strip follows.

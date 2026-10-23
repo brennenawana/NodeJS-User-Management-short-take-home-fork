@@ -111,9 +111,7 @@ function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onS
         <div className={styles.detail}>
           <dl className={styles.facts}>
             <div><dt>Location</dt><dd>{place} {hint && <span className={styles.soft}>({hint})</span>}</dd></div>
-            <div><dt>Coordinates</dt><dd>{located ? `${user.lat.toFixed(4)}, ${user.lon.toFixed(4)}` : "Not located yet"}</dd></div>
             <div><dt>Zip</dt><dd>{user.zip}</dd></div>
-            <div><dt>Record</dt><dd title={user.id}>#{user.id.slice(0, 8)}</dd></div>
           </dl>
           <div className={styles.side}>
             {state !== "editing" && (
