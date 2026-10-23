@@ -1,0 +1,69 @@
+// Fails when design/tokens.css drifts from the Figma export in design/tokens.json.
+// Run: node --test scripts/check-tokens.test.mjs
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const figma = JSON.parse(read("design/tokens.json"));
+const css = read("design/tokens.css").replace(/\/\*[\s\S]*?\*\//g, "");
+const product = JSON.parse(read("product.json"));
+
+function block(selector) {
+  const start = css.indexOf(`${selector} {`);
+  assert.notEqual(start, -1, `tokens.css has a ${selector} block`);
+  const body = css.slice(start, css.indexOf("}", start));
+  return Object.fromEntries([...body.matchAll(/--([a-z0-9-]+):\s*([^;]+);/g)].map(([, k, v]) => [k, v.trim()]));
+}
+
+const light = block(":root");
+const dark = block('[data-theme="dark"]');
+const prop = (codeSyntax) => codeSyntax.match(/^var\(--([a-z0-9-]+)\)$/)?.[1];
+const cssValue = (value, type) =>
+  typeof value === "object" ? value.codeSyntax : type === "FLOAT" ? `${value}px` : value;
+const same = (a, b) => a?.toLowerCase() === b?.toLowerCase();
+
+const cssCollections = ["Primitives", "Color", "Spacing", "Radius"];
+
+for (const name of cssCollections) {
+  test(`${name} variables match tokens.css`, () => {
+    const { modes, variables } = figma.collections[name];
+    for (const v of variables) {
+      const p = prop(v.codeSyntax);
+      assert.ok(p, `${name}/${v.name} has a var(--…) code syntax`);
+      for (const mode of modes) {
+        const sheet = mode === "Dark" ? dark : light;
+        assert.ok(same(sheet[p], cssValue(v.values[mode], v.type)),
+          `--${p} (${mode}) is ${sheet[p]} in tokens.css but ${cssValue(v.values[mode], v.type)} in Figma`);
+      }
+    }
+  });
+}
+
+test("tokens.css has no variable-backed properties that Figma doesn't", () => {
+  const known = new Set(cssCollections.flatMap((n) => figma.collections[n].variables.map((v) => prop(v.codeSyntax))));
+  const orphans = [...Object.keys(light), ...Object.keys(dark)]
+    .filter((k) => /^(palette|color|space|radius)-/.test(k) && !known.has(k));
+  assert.deepEqual(orphans, []);
+});
+
+test("the Product collection matches product.json", () => {
+  for (const v of figma.collections.Product.variables) {
+    const key = v.codeSyntax.replace(/^product\./, "");
+    assert.equal(v.values.Value, product[key], `${v.name} vs product.json ${key}`);
+  }
+});
+
+const WEIGHTS = { Regular: 400, SemiBold: 600, Bold: 700, ExtraBold: 800 };
+
+test("text styles match the --text-* shorthands", () => {
+  assert.match(light["font-family"], new RegExp(`^'${figma.textStyles[0].fontFamily}'`));
+  for (const s of figma.textStyles) {
+    const p = s.name.replace("/", "-").replaceAll(" ", "-");
+    const expected = `${WEIGHTS[s.fontStyle]} ${s.fontSize}px/${s.lineHeight.value}px var(--font-family)`;
+    assert.equal(light[p], expected, `--${p}`);
+    const tracking = s.letterSpacing.value / 100;
+    if (tracking) assert.equal(light[`${p}-tracking`], `${tracking}em`, `--${p}-tracking`);
+    if (s.textCase === "UPPER") assert.equal(light[`${p}-case`], "uppercase", `--${p}-case`);
+  }
+});

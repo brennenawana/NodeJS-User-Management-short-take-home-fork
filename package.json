@@ -12,8 +12,10 @@
     "start": "yarn workspace user-management-server start",
     "seed": "yarn workspace user-management-server seed",
     "build": "yarn workspace user-management-client build",
-    "test": "yarn workspace user-management-server test && yarn workspace user-management-client test",
-    "typecheck": "yarn workspace user-management-server typecheck && yarn workspace user-management-client typecheck"
+    "test": "yarn check:tokens && yarn workspace user-management-server test && yarn workspace user-management-client test",
+    "typecheck": "yarn workspace user-management-server typecheck && yarn workspace user-management-client typecheck",
+    "check:tokens": "node --test scripts/check-tokens.test.mjs",
+    "e2e": "yarn workspace user-management-e2e test"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
