@@ -15,7 +15,9 @@
     "test": "yarn check:tokens && yarn workspace user-management-server test && yarn workspace user-management-client test",
     "typecheck": "yarn workspace user-management-server typecheck && yarn workspace user-management-client typecheck",
     "check:tokens": "node --test scripts/check-tokens.test.mjs",
-    "e2e": "yarn workspace user-management-e2e test"
+    "e2e": "yarn workspace user-management-e2e test",
+    "storybook": "yarn workspace user-management-client storybook",
+    "build-storybook": "yarn workspace user-management-client build-storybook"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"

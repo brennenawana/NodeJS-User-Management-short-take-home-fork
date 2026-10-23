@@ -32,16 +32,19 @@ interface Props {
   onClose: () => void;
   /** Called with the resolved zip, or null, so the map can preview it. */
   onPreview?: (hit: ZipPreview | null) => void;
+  /** Starting values, like an input's defaultValue. */
+  defaultName?: string;
+  defaultZip?: string;
 }
 
-export function AddSheet({ now, onSave, onClose, onPreview }: Props) {
+export function AddSheet({ now, onSave, onClose, onPreview, defaultName = "", defaultZip = "" }: Props) {
   const id = useId();
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     ref.current?.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
   }, []);
-  const [name, setName] = useState("");
-  const [zip, setZip] = useState("");
+  const [name, setName] = useState(defaultName);
+  const [zip, setZip] = useState(defaultZip);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const input = checkZipInput(zip);
@@ -89,7 +92,7 @@ export function AddSheet({ now, onSave, onClose, onPreview }: Props) {
     : "Local time and sky appear once we know the zip.";
 
   return (
-    <section ref={ref} aria-labelledby={`${id}-title`} className={`${styles.sheet} ${styles[state]}`} data-state={state}>
+    <section ref={ref} aria-labelledby={`${id}-title`} className={[styles.sheet, styles[state]].filter(Boolean).join(" ")} data-state={state}>
       <form className={styles.form} onSubmit={submit} noValidate>
         <div className={styles.top}>
           <div>
