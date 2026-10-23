@@ -1,0 +1,36 @@
+.pin {
+  position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; padding: 0;
+  border: 0; border-radius: var(--radius-full); background: transparent; cursor: pointer; z-index: 2;
+  transition: left var(--motion-slow) var(--motion-ease), top var(--motion-slow) var(--motion-ease), opacity var(--motion-base) var(--motion-ease);
+  animation: drop var(--motion-slow) var(--motion-ease-out) backwards;
+}
+.pin:focus-visible { outline: 2px solid var(--color-accent-ink); outline-offset: 2px; }
+.selected { z-index: 3; }
+.dimmed { opacity: 0.3; }
+.dot {
+  position: absolute; left: 50%; top: 50%; width: 28px; height: 28px; margin: -14px 0 0 -14px;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-full);
+  background: var(--avatar-bg); color: var(--avatar-fg); font: var(--text-xs-bold);
+  box-shadow: 0 0 0 2px var(--color-surface);
+  transition: transform var(--motion-fast) var(--motion-ease-out), box-shadow var(--motion-fast) var(--motion-ease);
+}
+.pin:hover .dot { transform: scale(1.15); }
+.selected .dot { box-shadow: 0 0 0 3px var(--color-accent); }
+.chip {
+  position: absolute; white-space: nowrap; pointer-events: none;
+  padding: 2px var(--space-8); border-radius: var(--radius-sm);
+  font: var(--text-xs-label); background: var(--color-surface); color: var(--color-ink); border: 1px solid var(--color-line);
+  transition: background-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
+}
+.right .chip { left: 34px; top: 50%; transform: translateY(-50%); }
+.top .chip { left: 50%; bottom: 34px; transform: translateX(-50%); }
+.bottom .chip { left: 50%; top: 34px; transform: translateX(-50%); }
+.selected .chip { background: var(--color-accent); color: var(--color-on-accent); border-color: var(--color-accent); }
+@keyframes drop { from { opacity: 0; transform: translateY(-8px); } }
+
+/* The pin for the person being added: dashed, not clickable. */
+.preview { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; z-index: 4; pointer-events: none; animation: drop var(--motion-slow) var(--motion-ease-out) backwards; }
+.previewRing { position: absolute; left: 50%; top: 50%; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: var(--radius-full); border: 2px dashed var(--color-accent-ink); background: var(--color-accent-soft); animation: pulse calc(var(--motion-slow) * 5) var(--motion-ease) infinite; }
+.previewDot { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: var(--radius-full); background: var(--color-accent); }
+.previewLabel { position: absolute; left: 50%; top: 32px; transform: translateX(-50%); white-space: nowrap; padding: 2px var(--space-8); border-radius: var(--radius-sm); font: var(--text-xs-label); background: var(--color-surface); color: var(--color-ink); border: 1px dashed var(--color-accent-ink); }
+@keyframes pulse { 50% { transform: scale(1.15); } }

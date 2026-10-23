@@ -69,7 +69,7 @@ function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onS
   }, [menuOpen]);
 
   return (
-    <li className={`${styles.card} ${expanded ? styles.expanded : ""}`} data-state={state}
+    <li id={`person-${user.id}`} className={`${styles.card} ${expanded ? styles.expanded : ""}`} data-state={state}
       style={{ "--enter-index": Math.min(index, 8) } as CSSProperties}>
       <div className={styles.head}>
         <button type="button" className={styles.identity} aria-expanded={expanded} onClick={onToggle}>

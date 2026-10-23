@@ -13,7 +13,7 @@ const team = () => [
   located("Daniel Reyes", "94103", "daniel"),
 ];
 
-const identity = (name: string) => screen.getByRole("button", { name: new RegExp(`^${name}`) });
+const identity = (name: string) => within(screen.getByRole("list", { name: "People" })).getByRole("button", { name: new RegExp(`^${name}`) });
 const card = (name: string) => identity(name).closest("li")!;
 
 afterEach(() => vi.useRealTimers());
@@ -169,10 +169,37 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Switch to light theme" })).toHaveAttribute("aria-pressed", "true");
   });
 
-  test("the map toggle explains the map isn't here yet", async () => {
+  test("the map shows a pin per located person, and a pin opens their card", async () => {
+    const user = await renderApp([...team(), pending("Noor Haddad", "99999", "noor")]);
+    await user.click(screen.getByRole("button", { name: "Map" }));
+    const map = screen.getByRole("region", { name: "Map of people" });
+    const pins = within(map).getAllByRole("button");
+    expect(pins).toHaveLength(4);
+    expect(within(map).getByText("Press a pin to open their card")).toBeInTheDocument();
+
+    await user.click(within(map).getByRole("button", { name: /^Priya Raman, Chicago UTC−5, local time/ }));
+    expect(card("Priya Raman")).toHaveAttribute("data-state", "expanded");
+    expect(within(map).getByRole("button", { name: /^Priya Raman/ })).toHaveAttribute("aria-pressed", "true");
+    expect(within(map).getByText("Showing Priya Raman below")).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: "People" })).toBeInTheDocument();
+  });
+
+  test("filtering dims the pins that don't match", async () => {
     const user = await renderApp(team());
     await user.click(screen.getByRole("button", { name: "Map" }));
-    expect(screen.getByRole("note")).toHaveTextContent("The map view is on its way.");
-    expect(screen.getByRole("list", { name: "People" })).toBeInTheDocument();
+    await user.click(within(screen.getByRole("group", { name: "Filter people by UTC offset" })).getByRole("button", { name: /UTC−4/ }));
+    const map = screen.getByRole("region", { name: "Map of people" });
+    expect(within(map).getByRole("button", { name: /^Lena Hoffmann/ })).not.toHaveAttribute("data-dimmed");
+    expect(within(map).getByRole("button", { name: /^Priya Raman/ })).toHaveAttribute("data-dimmed", "true");
+  });
+
+  test("while adding, the map previews where the new person lands", async () => {
+    const user = await renderApp(team());
+    await user.click(screen.getByRole("button", { name: "Map" }));
+    await user.click(within(screen.getByRole("banner")).getByRole("button", { name: "Add a person" }));
+    await user.type(screen.getByLabelText("Zip code"), "80202");
+    expect(await screen.findByTestId("preview-pin")).toHaveTextContent("Denver · UTC−6");
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByTestId("preview-pin")).not.toBeInTheDocument();
   });
 });

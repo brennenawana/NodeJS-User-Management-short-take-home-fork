@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { isLocated, type User } from "./api";
+import { useCallback, useState } from "react";
+import { isLocated, type User, type ZipPreview } from "./api";
 import { AddSheet } from "./components/AddSheet";
 import { AppHeader } from "./components/AppHeader";
 import { Button } from "./components/Button";
 import { EmptyState } from "./components/EmptyState";
+import { MapView } from "./components/MapView";
 import { PersonCard, type PersonCardState } from "./components/PersonCard";
 import { TimezoneStrip } from "./components/TimezoneStrip";
 import { Toast } from "./components/Toast";
@@ -26,6 +27,8 @@ export function App() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [preview, setPreview] = useState<ZipPreview | null>(null);
+  const onPreview = useCallback((hit: ZipPreview | null) => setPreview(hit), []);
 
   const all = people.users ?? [];
   const q = query.trim().toLowerCase();
@@ -58,7 +61,7 @@ export function App() {
         <TimezoneStrip users={all} now={now} active={zone} onPick={setZone} />
 
         {sheetOpen && (
-          <AddSheet now={now} onClose={() => setSheetOpen(false)}
+          <AddSheet now={now} onClose={() => setSheetOpen(false)} onPreview={onPreview}
             onSave={async (input) => {
               const user = await people.add(input);
               setSheetOpen(false);
@@ -68,8 +71,14 @@ export function App() {
             }} />
         )}
 
-        {view === "map" && (
-          <div className={styles.notice} role="note">The map view is on its way. Everyone is in the grid below for now.</div>
+        {view === "map" && people.users && (
+          <MapView users={all} visible={new Set(shown.map((u) => u.id))} selectedId={expandedId} now={now} preview={preview}
+            onSelect={(id) => {
+              const opening = expandedId !== id;
+              setExpandedId(opening ? id : null);
+              setEditingId(null);
+              if (opening) requestAnimationFrame(() => document.getElementById(`person-${id}`)?.scrollIntoView?.({ behavior: "smooth", block: "nearest" }));
+            }} />
         )}
 
         {people.loadError ? (
