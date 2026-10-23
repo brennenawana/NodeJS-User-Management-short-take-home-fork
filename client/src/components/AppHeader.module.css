@@ -26,5 +26,5 @@
   .inner { padding: var(--space-12) var(--space-16); gap: var(--space-12) var(--space-8); }
   .search { order: 5; flex-basis: 100%; max-width: none; }
   .toggle { margin-left: auto; }
-  .add { display: none; }
+  .inner .add { display: none; } /* outranks Button's own display, whatever order the CSS loads in */
 }
