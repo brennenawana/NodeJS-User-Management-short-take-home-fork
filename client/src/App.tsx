@@ -88,8 +88,8 @@ export function App() {
             body="Try a shorter name, a city like Boston, or clear the filters." actionLabel="Clear search and filters" actionIcon="close" onAction={clearFilters} />
         ) : (
           <ul className={styles.grid} aria-label="People">
-            {shown.map((u) => (
-              <PersonCard key={u.id} user={u} now={now} state={cardState(u)}
+            {shown.map((u, i) => (
+              <PersonCard key={u.id} user={u} now={now} index={i} state={cardState(u)}
                 onToggle={() => { setExpandedId(expandedId === u.id ? null : u.id); setEditingId(null); }}
                 onEdit={() => { setExpandedId(u.id); setEditingId(u.id); }}
                 onCancelEdit={() => setEditingId(null)}

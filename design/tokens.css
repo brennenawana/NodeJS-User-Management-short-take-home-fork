@@ -8,6 +8,7 @@
  *   Color       `map/land`        -> --color-map-land     (Light in :root, Dark in [data-theme="dark"])
  *   Spacing     `space/16`        -> --space-16
  *   Radius      `radius/md`       -> --radius-md
+ *   Motion      `motion/fast`     -> --motion-fast        (durations in ms)
  *   Text style  `text/md bold`    -> --text-md-bold        (font shorthand; styles have no Figma code syntax)
  *   Effect      `Shadow / Card`   -> --shadow-card
  *
@@ -150,6 +151,13 @@
   --radius-md: 12px;
   --radius-lg: 20px;
   --radius-full: 999px;
+
+  /* Motion: durations in ms and easing curves */
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-slow: 320ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Type: one property per Figma text style (`text/md semibold` -> --text-md-semibold).
      Use as `font: var(--text-md-semibold)`; add the -tracking / -case companions where listed. */
@@ -315,4 +323,12 @@
   --color-avatar-300-fg: var(--palette-hue-300-fg-dark); /* #F1BCF1 */
   --color-avatar-330-bg: var(--palette-hue-330-bg-dark); /* #553042 */
   --color-avatar-330-fg: var(--palette-hue-330-fg-dark); /* #F1BCD6 */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-slow: 0ms;
+  }
 }

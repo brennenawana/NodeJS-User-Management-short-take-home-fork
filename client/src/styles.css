@@ -10,5 +10,9 @@ body {
   color: var(--color-ink);
   font: var(--text-base);
   -webkit-font-smoothing: antialiased;
+  transition: background-color var(--motion-base) var(--motion-ease), color var(--motion-base) var(--motion-ease);
 }
 button, input { font: inherit; }
+
+/* Theme switches crossfade where the View Transitions API exists (see useTheme). */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: var(--motion-slow); animation-timing-function: var(--motion-ease); }

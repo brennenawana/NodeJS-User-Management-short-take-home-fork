@@ -14,7 +14,11 @@
   box-shadow: var(--shadow-card);
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease), opacity var(--motion-fast) var(--motion-ease);
 }
+.cell:hover { transform: translateY(-2px); border-color: var(--color-line-strong); }
+.cell:active { transform: translateY(0) scale(0.98); }
+.active:hover { border-color: var(--color-accent); }
 .cell:focus-visible { outline: 2px solid var(--color-accent-ink); outline-offset: 2px; }
 .active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
 .top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-8); }

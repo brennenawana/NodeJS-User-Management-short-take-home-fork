@@ -10,6 +10,7 @@
   font: var(--text-md-bold);
   cursor: pointer;
   white-space: nowrap;
+  transition: background-color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease), opacity var(--motion-fast) var(--motion-ease);
 }
 .lg { min-height: 48px; padding: 0 var(--space-20); font: var(--text-base-bold); }
 .iconOnly { width: 44px; padding: 0; }
@@ -18,6 +19,7 @@
 .ghost { background: transparent; color: var(--color-muted); font: var(--text-md-semibold); }
 .danger { background: transparent; border-color: var(--color-line); color: var(--color-error); font: var(--text-md-semibold); }
 .secondary:hover:not(:disabled), .ghost:hover:not(:disabled), .danger:hover:not(:disabled) { background: var(--color-surface-2); }
-.primary:hover:not(:disabled) { filter: brightness(1.05); }
+.primary:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); box-shadow: var(--shadow-card); }
+.button:active:not(:disabled) { transform: translateY(0) scale(0.97); }
 .button:disabled { opacity: 0.55; cursor: not-allowed; }
 .button:focus-visible { outline: 2px solid var(--color-accent-ink); outline-offset: 2px; }

@@ -11,10 +11,12 @@
   padding: 0 var(--space-12);
   font: var(--text-base);
   font-size: 16px;
+  transition: background-color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease), opacity var(--motion-fast) var(--motion-ease);
 }
+.input:hover:not(:focus) { border-color: var(--color-line-strong); }
 .input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
 .error .input { border-color: var(--color-error); }
 .success .input { border-color: var(--color-ok); }
-.hint { margin: 0; font: var(--text-md); color: var(--color-muted); }
+.hint { margin: 0; font: var(--text-md); color: var(--color-muted); transition: color var(--motion-fast) var(--motion-ease); }
 .error .hint { color: var(--color-error); }
 .success .hint { color: var(--color-ok); }

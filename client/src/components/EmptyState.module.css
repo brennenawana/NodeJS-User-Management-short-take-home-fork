@@ -4,7 +4,9 @@
   padding: var(--space-40) var(--space-24);
   border: 1px dashed var(--color-line-strong); border-radius: var(--radius-lg);
   text-align: center;
+  animation: fade var(--motion-slow) var(--motion-ease-out) backwards;
 }
 .title { margin: var(--space-8) 0 0; font: var(--text-xl-bold); }
 .body { margin: 0; max-width: 300px; font: var(--text-md); color: var(--color-muted); }
 .action { margin-top: var(--space-8); }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } }
