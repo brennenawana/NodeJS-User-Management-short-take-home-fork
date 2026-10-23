@@ -51,6 +51,7 @@ A Vite, React and TypeScript app in `client/`.
 - `client/src/components/`: one file per Figma component (`AppHeader`, `TimezoneStrip`, `ZoneCell`, `PersonCard`, `AddSheet`, `Avatar`, `SkyChip`, `Button`, `TextField`, `ViewToggle`, `Toast`, `EmptyState`). Props mirror the Figma properties, so `<PersonCard state="pendingLocation">` is the PersonCard / PendingLocation variant.
 - Styles use only the tokens in `design/tokens.css`: light in `:root`, dark in `[data-theme="dark"]`, type as `font: var(--text-md-semibold)`.
 - `client/src/lib/time.ts`: clocks are UTC plus the stored offset, and labels read "Boston · UTC−4".
+- `client/src/lib/map.ts`: the projection for the map view. Pins open the person's card, filtered-out pins dim, and the zip being added shows as a dashed pin.
 - `client/src/api.ts`: the only place that talks to the server.
 - The header wordmark and the page title come from `product.json`.
 
