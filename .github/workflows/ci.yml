@@ -20,6 +20,7 @@ jobs:
       - run: yarn workspace user-management-server test
       - run: yarn workspace user-management-client test
       - run: yarn build
+      - run: yarn build-storybook
 
   e2e:
     runs-on: ubuntu-latest

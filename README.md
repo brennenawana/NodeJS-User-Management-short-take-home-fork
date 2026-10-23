@@ -17,6 +17,7 @@ yarn dev               # API on :8080 and the app on http://localhost:5173
 | `yarn start` | API only |
 | `yarn build` | production build of the client into `client/dist` |
 | `yarn seed` | adds the eight sample people through the configured provider |
+| `yarn storybook` | Storybook on http://localhost:6006, one story per Figma variant |
 | `yarn test` | server and client suites |
 | `yarn typecheck` | both workspaces |
 
@@ -54,6 +55,7 @@ A Vite, React and TypeScript app in `client/`.
 - `client/src/lib/map.ts`: the projection for the map view. Pins open the person's card, filtered-out pins dim, and the zip being added shows as a dashed pin.
 - `client/src/api.ts`: the only place that talks to the server.
 - The header wordmark and the page title come from `product.json`.
+- `client/src/components/*.stories.tsx`: one story per Figma variant, with a light/dark toolbar toggle. Stories that look zips up run against the same fake API as the tests (`client/src/test/fake-api.ts`, through MSW in the browser), and `src/stories.test.tsx` renders every story in Vitest.
 
 Below 640px the layout follows the Mobile / Grid frame: search on its own row, the strip first and scrolling sideways, one column of cards and a floating Add button.
 
@@ -84,7 +86,7 @@ yarn workspace user-management-server test:live   # hits the real providers whos
 
 The e2e run starts its own API with the `fixture` provider and in-memory storage, so it needs no key and leaves `data/` alone. Run `yarn workspace user-management-e2e playwright install chromium` once first.
 
-CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both unit suites, the client build and the e2e test on every push and pull request.
+CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both unit suites, the client and Storybook builds, and the e2e tests on every push and pull request.
 
 ## Design
 
