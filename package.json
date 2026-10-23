@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "server"
+    "server",
+    "client"
   ],
   "scripts": {
+    "dev": "concurrently -k -n api,web -c auto \"yarn workspace user-management-server dev\" \"yarn workspace user-management-client dev\"",
     "start": "yarn workspace user-management-server start",
-    "dev": "yarn workspace user-management-server dev",
-    "test": "yarn workspace user-management-server test",
-    "typecheck": "yarn workspace user-management-server typecheck"
+    "seed": "yarn workspace user-management-server seed",
+    "build": "yarn workspace user-management-client build",
+    "test": "yarn workspace user-management-server test && yarn workspace user-management-client test",
+    "typecheck": "yarn workspace user-management-server typecheck && yarn workspace user-management-client typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
   }
 }
