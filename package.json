@@ -6,14 +6,9 @@
     "server"
   ],
   "scripts": {
-    "start": "nodemon src/index.js localhost 8080",
+    "start": "yarn workspace user-management-server start",
+    "dev": "yarn workspace user-management-server dev",
     "test": "yarn workspace user-management-server test",
     "typecheck": "yarn workspace user-management-server typecheck"
-  },
-  "dependencies": {
-    "express": "4.17.3"
-  },
-  "devDependencies": {
-    "nodemon": "2.0.12"
   }
 }
