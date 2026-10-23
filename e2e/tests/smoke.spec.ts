@@ -1,5 +1,8 @@
 import { expect, test } from "@playwright/test";
 import product from "../../product.json" with { type: "json" };
+import { removeEveryone } from "./reset";
+
+test.beforeEach(({ request }) => removeEveryone(request));
 
 const zone = (page: import("@playwright/test").Page, label: RegExp) =>
   page.getByRole("group", { name: "Filter people by UTC offset" }).getByRole("button", { name: label });
