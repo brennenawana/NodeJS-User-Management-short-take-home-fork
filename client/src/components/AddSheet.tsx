@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { ApiError, type User } from "../api";
+import { ApiError, type User, type ZipPreview } from "../api";
 import { useZipLookup, type ZipLookup } from "../hooks/useZipLookup";
 import { localClock, offsetLabel, SKY_LABEL, skyTime, zoneHint } from "../lib/time";
 import { checkZipInput, lookupCopy, type ZipInput } from "../lib/zip";
@@ -30,9 +30,11 @@ interface Props {
   now: Date;
   onSave: (input: { name: string; zip: string }) => Promise<User>;
   onClose: () => void;
+  /** Called with the resolved zip, or null, so the map can preview it. */
+  onPreview?: (hit: ZipPreview | null) => void;
 }
 
-export function AddSheet({ now, onSave, onClose }: Props) {
+export function AddSheet({ now, onSave, onClose, onPreview }: Props) {
   const id = useId();
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -47,6 +49,10 @@ export function AddSheet({ now, onSave, onClose }: Props) {
   const state = sheetState(input, lookup);
   const hit = lookup.status === "found" ? lookup.hit : null;
   const complete = input.kind === "complete" ? input.zip : "";
+  useEffect(() => {
+    onPreview?.(hit);
+    return () => onPreview?.(null);
+  }, [hit, onPreview]);
 
   const hint =
     input.kind !== "complete" ? input.text

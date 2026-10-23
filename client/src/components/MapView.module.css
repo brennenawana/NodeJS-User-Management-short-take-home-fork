@@ -1,0 +1,23 @@
+.map {
+  box-sizing: border-box; margin-bottom: var(--space-24); padding: var(--space-16) var(--space-20) var(--space-20);
+  background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+  animation: open var(--motion-base) var(--motion-ease-out) backwards;
+}
+.head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-8) var(--space-16); margin-bottom: var(--space-12); }
+.title { margin: 0; font: var(--text-lg-bold); }
+.sub, .hint { margin: 0; font: var(--text-sm); color: var(--color-muted); }
+.hint { margin-left: auto; }
+.canvas { position: relative; aspect-ratio: 590 / 266; max-width: 1000px; margin: 0 auto; }
+.svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.sea { fill: var(--color-surface-2); }
+.grid { stroke: var(--color-map-grid); stroke-width: 0.6; stroke-dasharray: 2 4; fill: none; }
+.land { fill: var(--color-map-land); stroke: var(--color-map-coast); stroke-width: 1; stroke-linejoin: round; }
+.lakes { fill: var(--color-surface-2); stroke: var(--color-map-coast); stroke-width: 0.8; stroke-linejoin: round; }
+.band { fill: var(--color-map-band); }
+.edges { stroke: var(--color-accent-ink); stroke-width: 0.8; stroke-dasharray: 3 3; opacity: 0.6; fill: none; }
+.bandLabel { /* 9px in viewBox units, so it scales with the map */ font: var(--text-xs-bold); font-size: 9px; letter-spacing: 0.1em; fill: var(--color-muted); text-anchor: middle; }
+@keyframes open { from { opacity: 0; transform: translateY(-6px); } }
+@media (max-width: 640px) {
+  .map { padding: var(--space-12); }
+  .hint { flex-basis: 100%; margin-left: 0; }
+}
