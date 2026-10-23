@@ -1,5 +1,7 @@
 # User Management
 
+A small app for a distributed team: a card for each person with their local time, and a strip that groups everyone by UTC offset. Adding someone takes a name and a US zip code; the city, coordinates and offset are looked up for you.
+
 ## Getting started
 
 ```sh
