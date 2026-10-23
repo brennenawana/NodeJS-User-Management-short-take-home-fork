@@ -1,0 +1,318 @@
+/*
+ * Design tokens.
+ * Mirrors the variables in the Figma file (fileKey Tu8Kz1qqdVWAczefkHzlpE).
+ * Every property name is the variable's WEB code syntax in Figma, so
+ * Dev Mode's `var(--color-bg)` resolves to the property defined here.
+ *
+ *   Primitives  `stone/75`        -> --palette-stone-75   (raw values, not for direct use in UI)
+ *   Color       `map/land`        -> --color-map-land     (Light in :root, Dark in [data-theme="dark"])
+ *   Spacing     `space/16`        -> --space-16
+ *   Radius      `radius/md`       -> --radius-md
+ *   Text style  `text/md bold`    -> --text-md-bold        (font shorthand; styles have no Figma code syntax)
+ *   Effect      `Shadow / Card`   -> --shadow-card
+ *
+ * Change a token in Figma first, then update this file in the same PR.
+ */
+
+:root {
+  /* Primitives */
+  --palette-white: #FFFFFF;
+  --palette-stone-25: #F2F1EC;
+  --palette-stone-50: #F7F7F3;
+  --palette-stone-75: #F4F5F1;
+  --palette-stone-100: #ECEDE8;
+  --palette-stone-150: #ECECE6;
+  --palette-stone-200: #E4E3DC;
+  --palette-stone-250: #D9DBD3;
+  --palette-stone-300: #C9C7BE;
+  --palette-stone-400: #B3B0A8;
+  --palette-stone-600: #5C5853;
+  --palette-stone-900: #1F1D1A;
+  --palette-graphite-700: #4A5058;
+  --palette-graphite-800: #30353B;
+  --palette-graphite-825: #353A41;
+  --palette-graphite-850: #272B30;
+  --palette-graphite-875: #2A2E34;
+  --palette-graphite-900: #1F2226;
+  --palette-graphite-950: #16181B;
+  --palette-tangerine-50: #FCEEE3;
+  --palette-tangerine-300: #FBAF74;
+  --palette-tangerine-500: #F27D26;
+  --palette-tangerine-700: #914308;
+  --palette-tangerine-900: #423124;
+  --palette-tangerine-500-a8: #F27D2614;
+  --palette-tangerine-500-a9: #F27D2617;
+  --palette-green-50: #E4F3E8;
+  --palette-green-300: #9FD9A8;
+  --palette-green-700: #1F6B3A;
+  --palette-green-900: #1F3326;
+  --palette-red-50: #FDE8E6;
+  --palette-red-300: #FF8F86;
+  --palette-red-700: #B42318;
+  --palette-red-900: #3F2320;
+  --palette-amber-50: #FFF1DC;
+  --palette-amber-100: #F7E1CC;
+  --palette-amber-800: #6E3A0A;
+  --palette-amber-900: #3B3220;
+  --palette-sky-light-morning-bg: #ECEEF8;
+  --palette-sky-light-morning-disc: #C9640A;
+  --palette-sky-light-morning-horizon: #E8D3A8;
+  --palette-sky-light-afternoon-bg: #D6EAFC;
+  --palette-sky-light-afternoon-disc: #BE5F06;
+  --palette-sky-light-afternoon-horizon: #BFDCF6;
+  --palette-sky-light-evening-bg: #F8D5C6;
+  --palette-sky-light-evening-disc: #B5401A;
+  --palette-sky-light-evening-horizon: #E3A58C;
+  --palette-sky-light-night-bg: #2B3350;
+  --palette-sky-light-night-disc: #EEF1F8;
+  --palette-sky-light-night-horizon: #3A4466;
+  --palette-sky-light-star: #C9D1EC;
+  --palette-sky-dark-morning-bg: #262B3F;
+  --palette-sky-dark-morning-disc: #F2A43A;
+  --palette-sky-dark-morning-horizon: #4A3C22;
+  --palette-sky-dark-afternoon-bg: #20364E;
+  --palette-sky-dark-afternoon-disc: #F6B21B;
+  --palette-sky-dark-afternoon-horizon: #2C4560;
+  --palette-sky-dark-evening-bg: #42271E;
+  --palette-sky-dark-evening-disc: #F28352;
+  --palette-sky-dark-evening-horizon: #5E382A;
+  --palette-sky-dark-night-bg: #1A2038;
+  --palette-sky-dark-night-disc: #EEF1F8;
+  --palette-sky-dark-night-horizon: #262E4C;
+  --palette-sky-dark-star: #9FB0E0;
+  --palette-shadow-ink-5: #1E1C180D;
+  --palette-shadow-ink-12: #1E1C181F;
+  --palette-shadow-ink-16: #1E1C1829;
+  --palette-shadow-black-30: #0000004D;
+  --palette-shadow-black-60: #00000099;
+  --palette-hue-0-bg-light: #F4D7D7;
+  --palette-hue-0-fg-light: #732121;
+  --palette-hue-0-bg-dark: #553030;
+  --palette-hue-0-fg-dark: #F1BCBC;
+  --palette-hue-30-bg-light: #F4E6D7;
+  --palette-hue-30-fg-light: #734A21;
+  --palette-hue-30-bg-dark: #554230;
+  --palette-hue-30-fg-dark: #F1D6BC;
+  --palette-hue-60-bg-light: #F4F4D7;
+  --palette-hue-60-fg-light: #737321;
+  --palette-hue-60-bg-dark: #555530;
+  --palette-hue-60-fg-dark: #F1F1BC;
+  --palette-hue-90-bg-light: #E6F4D7;
+  --palette-hue-90-fg-light: #4A7321;
+  --palette-hue-90-bg-dark: #425530;
+  --palette-hue-90-fg-dark: #D6F1BC;
+  --palette-hue-120-bg-light: #D7F4D7;
+  --palette-hue-120-fg-light: #217321;
+  --palette-hue-120-bg-dark: #305530;
+  --palette-hue-120-fg-dark: #BCF1BC;
+  --palette-hue-150-bg-light: #D7F4E6;
+  --palette-hue-150-fg-light: #21734A;
+  --palette-hue-150-bg-dark: #305542;
+  --palette-hue-150-fg-dark: #BCF1D6;
+  --palette-hue-180-bg-light: #D7F4F4;
+  --palette-hue-180-fg-light: #217373;
+  --palette-hue-180-bg-dark: #305555;
+  --palette-hue-180-fg-dark: #BCF1F1;
+  --palette-hue-210-bg-light: #D7E5F4;
+  --palette-hue-210-fg-light: #214A73;
+  --palette-hue-210-bg-dark: #304255;
+  --palette-hue-210-fg-dark: #BCD6F1;
+  --palette-hue-240-bg-light: #D7D7F4;
+  --palette-hue-240-fg-light: #212173;
+  --palette-hue-240-bg-dark: #303055;
+  --palette-hue-240-fg-dark: #BCBCF1;
+  --palette-hue-270-bg-light: #E5D7F4;
+  --palette-hue-270-fg-light: #4A2173;
+  --palette-hue-270-bg-dark: #423055;
+  --palette-hue-270-fg-dark: #D6BCF1;
+  --palette-hue-300-bg-light: #F4D7F4;
+  --palette-hue-300-fg-light: #732173;
+  --palette-hue-300-bg-dark: #553055;
+  --palette-hue-300-fg-dark: #F1BCF1;
+  --palette-hue-330-bg-light: #F4D7E6;
+  --palette-hue-330-fg-light: #73214A;
+  --palette-hue-330-bg-dark: #553042;
+  --palette-hue-330-fg-dark: #F1BCD6;
+
+  /* Spacing (4/8 scale) */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 999px;
+
+  /* Type: one property per Figma text style (`text/md semibold` -> --text-md-semibold).
+     Use as `font: var(--text-md-semibold)`; add the -tracking / -case companions where listed. */
+  --font-family: 'Nunito', system-ui, sans-serif;
+  --text-xs: 400 12px/16px var(--font-family);
+  --text-xs-bold: 700 12px/16px var(--font-family);
+  --text-xs-label: 600 12px/16px var(--font-family);
+  --text-xs-label-tracking: 0.08em;
+  --text-xs-label-case: uppercase;
+  --text-sm: 400 13px/19px var(--font-family);
+  --text-sm-bold: 700 13px/19px var(--font-family);
+  --text-md: 400 14px/20px var(--font-family);
+  --text-md-semibold: 600 14px/20px var(--font-family);
+  --text-md-bold: 700 14px/20px var(--font-family);
+  --text-base: 400 15px/22px var(--font-family);
+  --text-base-semibold: 600 15px/22px var(--font-family);
+  --text-base-bold: 700 15px/22px var(--font-family);
+  --text-lg-bold: 700 16px/22px var(--font-family);
+  --text-xl-bold: 700 20px/26px var(--font-family);
+  --text-h1: 800 26px/31px var(--font-family);
+  --text-h1-tracking: -0.01em;
+  --text-clock: 700 28px/31px var(--font-family);
+  --text-clock-tracking: -0.01em;
+  --text-clock-sm: 700 26px/29px var(--font-family);
+  --text-clock-sm-tracking: -0.01em;
+
+  /* Shadows: Figma effect styles. Colours are tokens, so they switch with the theme. */
+  --shadow-card: 0 1px 2px 0 var(--color-shadow-1), 0 10px 28px -14px var(--color-shadow-2); /* Shadow / Card */
+  --shadow-segment: 0 1px 2px 0 var(--color-shadow-segment); /* Shadow / Segment */
+
+  /* Color: Light mode */
+  --color-bg: var(--palette-stone-75); /* #F4F5F1 */
+  --color-surface: var(--palette-white); /* #FFFFFF */
+  --color-surface-2: var(--palette-stone-100); /* #ECEDE8 */
+  --color-ink: var(--palette-stone-900); /* #1F1D1A */
+  --color-muted: var(--palette-stone-600); /* #5C5853 */
+  --color-line: var(--palette-stone-200); /* #E4E3DC */
+  --color-line-strong: var(--palette-stone-300); /* #C9C7BE */
+  --color-accent: var(--palette-tangerine-500); /* #F27D26 */
+  --color-on-accent: var(--palette-stone-900); /* #1F1D1A */
+  --color-accent-ink: var(--palette-tangerine-700); /* #914308 */
+  --color-accent-soft: var(--palette-tangerine-50); /* #FCEEE3 */
+  --color-ok: var(--palette-green-700); /* #1F6B3A */
+  --color-ok-soft: var(--palette-green-50); /* #E4F3E8 */
+  --color-error: var(--palette-red-700); /* #B42318 */
+  --color-error-soft: var(--palette-red-50); /* #FDE8E6 */
+  --color-notice: var(--palette-amber-800); /* #6E3A0A */
+  --color-notice-soft: var(--palette-amber-50); /* #FFF1DC */
+  --color-inverse: var(--palette-stone-900); /* #1F1D1A */
+  --color-on-inverse: var(--palette-stone-25); /* #F2F1EC */
+  --color-map-land: var(--palette-stone-200); /* #E4E3DC */
+  --color-map-coast: var(--palette-stone-300); /* #C9C7BE */
+  --color-map-grid: var(--palette-stone-250); /* #D9DBD3 */
+  --color-map-band: var(--palette-tangerine-500-a8); /* #F27D2614 */
+  --color-skeleton: var(--palette-stone-150); /* #ECECE6 */
+  --color-skeleton-hi: var(--palette-stone-50); /* #F7F7F3 */
+  --color-shadow-1: var(--palette-shadow-ink-5); /* #1E1C180D */
+  --color-shadow-2: var(--palette-shadow-ink-16); /* #1E1C1829 */
+  --color-shadow-segment: var(--palette-shadow-ink-12); /* #1E1C181F */
+  --color-sky-morning-bg: var(--palette-sky-light-morning-bg); /* #ECEEF8 */
+  --color-sky-morning-disc: var(--palette-sky-light-morning-disc); /* #C9640A */
+  --color-sky-morning-horizon: var(--palette-sky-light-morning-horizon); /* #E8D3A8 */
+  --color-sky-afternoon-bg: var(--palette-sky-light-afternoon-bg); /* #D6EAFC */
+  --color-sky-afternoon-disc: var(--palette-sky-light-afternoon-disc); /* #BE5F06 */
+  --color-sky-afternoon-horizon: var(--palette-sky-light-afternoon-horizon); /* #BFDCF6 */
+  --color-sky-evening-bg: var(--palette-sky-light-evening-bg); /* #F8D5C6 */
+  --color-sky-evening-disc: var(--palette-sky-light-evening-disc); /* #B5401A */
+  --color-sky-evening-horizon: var(--palette-sky-light-evening-horizon); /* #E3A58C */
+  --color-sky-night-bg: var(--palette-sky-light-night-bg); /* #2B3350 */
+  --color-sky-night-disc: var(--palette-sky-light-night-disc); /* #EEF1F8 */
+  --color-sky-night-horizon: var(--palette-sky-light-night-horizon); /* #3A4466 */
+  --color-sky-star: var(--palette-sky-light-star); /* #C9D1EC */
+  --color-avatar-0-bg: var(--palette-hue-0-bg-light); /* #F4D7D7 */
+  --color-avatar-0-fg: var(--palette-hue-0-fg-light); /* #732121 */
+  --color-avatar-30-bg: var(--palette-hue-30-bg-light); /* #F4E6D7 */
+  --color-avatar-30-fg: var(--palette-hue-30-fg-light); /* #734A21 */
+  --color-avatar-60-bg: var(--palette-hue-60-bg-light); /* #F4F4D7 */
+  --color-avatar-60-fg: var(--palette-hue-60-fg-light); /* #737321 */
+  --color-avatar-90-bg: var(--palette-hue-90-bg-light); /* #E6F4D7 */
+  --color-avatar-90-fg: var(--palette-hue-90-fg-light); /* #4A7321 */
+  --color-avatar-120-bg: var(--palette-hue-120-bg-light); /* #D7F4D7 */
+  --color-avatar-120-fg: var(--palette-hue-120-fg-light); /* #217321 */
+  --color-avatar-150-bg: var(--palette-hue-150-bg-light); /* #D7F4E6 */
+  --color-avatar-150-fg: var(--palette-hue-150-fg-light); /* #21734A */
+  --color-avatar-180-bg: var(--palette-hue-180-bg-light); /* #D7F4F4 */
+  --color-avatar-180-fg: var(--palette-hue-180-fg-light); /* #217373 */
+  --color-avatar-210-bg: var(--palette-hue-210-bg-light); /* #D7E5F4 */
+  --color-avatar-210-fg: var(--palette-hue-210-fg-light); /* #214A73 */
+  --color-avatar-240-bg: var(--palette-hue-240-bg-light); /* #D7D7F4 */
+  --color-avatar-240-fg: var(--palette-hue-240-fg-light); /* #212173 */
+  --color-avatar-270-bg: var(--palette-hue-270-bg-light); /* #E5D7F4 */
+  --color-avatar-270-fg: var(--palette-hue-270-fg-light); /* #4A2173 */
+  --color-avatar-300-bg: var(--palette-hue-300-bg-light); /* #F4D7F4 */
+  --color-avatar-300-fg: var(--palette-hue-300-fg-light); /* #732173 */
+  --color-avatar-330-bg: var(--palette-hue-330-bg-light); /* #F4D7E6 */
+  --color-avatar-330-fg: var(--palette-hue-330-fg-light); /* #73214A */
+}
+
+[data-theme="dark"] {
+  /* Color: Dark mode */
+  --color-bg: var(--palette-graphite-950); /* #16181B */
+  --color-surface: var(--palette-graphite-900); /* #1F2226 */
+  --color-surface-2: var(--palette-graphite-850); /* #272B30 */
+  --color-ink: var(--palette-stone-25); /* #F2F1EC */
+  --color-muted: var(--palette-stone-400); /* #B3B0A8 */
+  --color-line: var(--palette-graphite-800); /* #30353B */
+  --color-line-strong: var(--palette-graphite-700); /* #4A5058 */
+  --color-accent: var(--palette-tangerine-500); /* #F27D26 */
+  --color-on-accent: var(--palette-stone-900); /* #1F1D1A */
+  --color-accent-ink: var(--palette-tangerine-300); /* #FBAF74 */
+  --color-accent-soft: var(--palette-tangerine-900); /* #423124 */
+  --color-ok: var(--palette-green-300); /* #9FD9A8 */
+  --color-ok-soft: var(--palette-green-900); /* #1F3326 */
+  --color-error: var(--palette-red-300); /* #FF8F86 */
+  --color-error-soft: var(--palette-red-900); /* #3F2320 */
+  --color-notice: var(--palette-amber-100); /* #F7E1CC */
+  --color-notice-soft: var(--palette-amber-900); /* #3B3220 */
+  --color-inverse: var(--palette-stone-25); /* #F2F1EC */
+  --color-on-inverse: var(--palette-stone-900); /* #1F1D1A */
+  --color-map-land: var(--palette-graphite-800); /* #30353B */
+  --color-map-coast: var(--palette-graphite-700); /* #4A5058 */
+  --color-map-grid: var(--palette-graphite-800); /* #30353B */
+  --color-map-band: var(--palette-tangerine-500-a9); /* #F27D2617 */
+  --color-skeleton: var(--palette-graphite-875); /* #2A2E34 */
+  --color-skeleton-hi: var(--palette-graphite-825); /* #353A41 */
+  --color-shadow-1: var(--palette-shadow-black-30); /* #0000004D */
+  --color-shadow-2: var(--palette-shadow-black-60); /* #00000099 */
+  --color-shadow-segment: var(--palette-shadow-ink-12); /* #1E1C181F */
+  --color-sky-morning-bg: var(--palette-sky-dark-morning-bg); /* #262B3F */
+  --color-sky-morning-disc: var(--palette-sky-dark-morning-disc); /* #F2A43A */
+  --color-sky-morning-horizon: var(--palette-sky-dark-morning-horizon); /* #4A3C22 */
+  --color-sky-afternoon-bg: var(--palette-sky-dark-afternoon-bg); /* #20364E */
+  --color-sky-afternoon-disc: var(--palette-sky-dark-afternoon-disc); /* #F6B21B */
+  --color-sky-afternoon-horizon: var(--palette-sky-dark-afternoon-horizon); /* #2C4560 */
+  --color-sky-evening-bg: var(--palette-sky-dark-evening-bg); /* #42271E */
+  --color-sky-evening-disc: var(--palette-sky-dark-evening-disc); /* #F28352 */
+  --color-sky-evening-horizon: var(--palette-sky-dark-evening-horizon); /* #5E382A */
+  --color-sky-night-bg: var(--palette-sky-dark-night-bg); /* #1A2038 */
+  --color-sky-night-disc: var(--palette-sky-dark-night-disc); /* #EEF1F8 */
+  --color-sky-night-horizon: var(--palette-sky-dark-night-horizon); /* #262E4C */
+  --color-sky-star: var(--palette-sky-dark-star); /* #9FB0E0 */
+  --color-avatar-0-bg: var(--palette-hue-0-bg-dark); /* #553030 */
+  --color-avatar-0-fg: var(--palette-hue-0-fg-dark); /* #F1BCBC */
+  --color-avatar-30-bg: var(--palette-hue-30-bg-dark); /* #554230 */
+  --color-avatar-30-fg: var(--palette-hue-30-fg-dark); /* #F1D6BC */
+  --color-avatar-60-bg: var(--palette-hue-60-bg-dark); /* #555530 */
+  --color-avatar-60-fg: var(--palette-hue-60-fg-dark); /* #F1F1BC */
+  --color-avatar-90-bg: var(--palette-hue-90-bg-dark); /* #425530 */
+  --color-avatar-90-fg: var(--palette-hue-90-fg-dark); /* #D6F1BC */
+  --color-avatar-120-bg: var(--palette-hue-120-bg-dark); /* #305530 */
+  --color-avatar-120-fg: var(--palette-hue-120-fg-dark); /* #BCF1BC */
+  --color-avatar-150-bg: var(--palette-hue-150-bg-dark); /* #305542 */
+  --color-avatar-150-fg: var(--palette-hue-150-fg-dark); /* #BCF1D6 */
+  --color-avatar-180-bg: var(--palette-hue-180-bg-dark); /* #305555 */
+  --color-avatar-180-fg: var(--palette-hue-180-fg-dark); /* #BCF1F1 */
+  --color-avatar-210-bg: var(--palette-hue-210-bg-dark); /* #304255 */
+  --color-avatar-210-fg: var(--palette-hue-210-fg-dark); /* #BCD6F1 */
+  --color-avatar-240-bg: var(--palette-hue-240-bg-dark); /* #303055 */
+  --color-avatar-240-fg: var(--palette-hue-240-fg-dark); /* #BCBCF1 */
+  --color-avatar-270-bg: var(--palette-hue-270-bg-dark); /* #423055 */
+  --color-avatar-270-fg: var(--palette-hue-270-fg-dark); /* #D6BCF1 */
+  --color-avatar-300-bg: var(--palette-hue-300-bg-dark); /* #553055 */
+  --color-avatar-300-fg: var(--palette-hue-300-fg-dark); /* #F1BCF1 */
+  --color-avatar-330-bg: var(--palette-hue-330-bg-dark); /* #553042 */
+  --color-avatar-330-fg: var(--palette-hue-330-fg-dark); /* #F1BCD6 */
+}
