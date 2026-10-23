@@ -6,6 +6,8 @@
   border-radius: var(--radius-md);
   background: var(--color-inverse); color: var(--color-on-inverse);
   box-shadow: var(--shadow-card);
+  animation: rise var(--motion-base) var(--motion-ease-out) backwards;
 }
 .message { font: var(--text-md-semibold); }
 .close { color: var(--color-on-inverse); }
+@keyframes rise { from { opacity: 0; transform: translate(-50%, 12px); } }

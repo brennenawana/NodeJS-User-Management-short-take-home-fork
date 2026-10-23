@@ -2,6 +2,7 @@
   box-sizing: border-box; margin-bottom: var(--space-24); padding: var(--space-24);
   display: flex; flex-wrap: wrap; gap: var(--space-24) var(--space-40);
   background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+  animation: slide-in var(--motion-base) var(--motion-ease-out) backwards;
 }
 .form { flex: 1 1 320px; min-width: 0; }
 .top { display: flex; align-items: flex-start; gap: var(--space-12); }
@@ -12,7 +13,7 @@
 .fields > :first-child { flex: 1 1 220px; }
 .fields > :last-child { flex: 0 1 180px; min-width: 140px; }
 .zipInput { letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
-.hint { margin: var(--space-8) 0 0; min-height: 24px; display: flex; align-items: flex-start; gap: var(--space-8); font: var(--text-md); color: var(--color-muted); }
+.hint { transition: color var(--motion-fast) var(--motion-ease); margin: var(--space-8) 0 0; min-height: 24px; display: flex; align-items: flex-start; gap: var(--space-8); font: var(--text-md); color: var(--color-muted); }
 .hint svg { flex: 0 0 auto; margin-top: 2px; }
 .resolved .hint { color: var(--color-ok); }
 .invalidZip .hint { color: var(--color-error); }
@@ -21,13 +22,17 @@
 .error { margin: var(--space-8) 0 0; color: var(--color-error); font: var(--text-md); }
 .preview { flex: 0 1 340px; min-width: 260px; display: flex; flex-direction: column; gap: var(--space-8); }
 .eyebrow { margin: 0; font: var(--text-xs-label); letter-spacing: var(--text-xs-label-tracking); text-transform: var(--text-xs-label-case); color: var(--color-muted); }
-.card { box-sizing: border-box; min-height: 145px; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12); border-radius: var(--radius-lg); border: 1px dashed var(--color-line-strong); background: var(--color-bg); }
+.card { transition: border-color var(--motion-base) var(--motion-ease); box-sizing: border-box; min-height: 145px; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12); border-radius: var(--radius-lg); border: 1px dashed var(--color-line-strong); background: var(--color-bg); }
 .who { display: flex; align-items: center; gap: var(--space-12); min-width: 0; }
 .who > div { min-width: 0; }
 .name { margin: 0; font: var(--text-lg-bold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .placeholder { color: var(--color-muted); }
 .place { margin: 0; font: var(--text-sm); color: var(--color-muted); }
+.clockRow, .waiting { animation: fade var(--motion-base) var(--motion-ease-out) backwards; }
 .clockRow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); }
 .time { margin: 0; font: var(--text-clock); letter-spacing: var(--text-clock-tracking); font-variant-numeric: tabular-nums; }
 .period { margin: var(--space-4) 0 0; font: var(--text-sm); color: var(--color-muted); }
 .waiting { margin: 0; font: var(--text-md); color: var(--color-muted); }
+.resolved .card { border-color: var(--color-ok); }
+@keyframes slide-in { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes fade { from { opacity: 0; } }

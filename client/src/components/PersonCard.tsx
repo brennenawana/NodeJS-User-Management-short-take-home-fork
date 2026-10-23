@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import { ApiError, isLocated, type User } from "../api";
 import { useZipLookup } from "../hooks/useZipLookup";
 import { localClock, offsetLabel, shortDate, SKY_LABEL, skyTime, zoneHint } from "../lib/time";
@@ -23,7 +23,7 @@ export interface PersonCardActions {
 
 type Props =
   | { state: "skeleton" }
-  | ({ state: Exclude<PersonCardState, "skeleton">; user: User; now: Date } & PersonCardActions);
+  | ({ state: Exclude<PersonCardState, "skeleton">; user: User; now: Date; index?: number } & PersonCardActions);
 
 /**
  * Figma: PersonCard. `state` is the Figma "State" variant. A pending location
@@ -52,7 +52,7 @@ function SkeletonCard() {
   );
 }
 
-function Card({ state, user, now, onToggle, onEdit, onCancelEdit, onSave, onRemove, onRefresh }: Extract<Props, { user: User }>) {
+function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onSave, onRemove, onRefresh }: Extract<Props, { user: User }>) {
   const [menuOpen, setMenuOpen] = useState(false);
   const expanded = state === "expanded" || state === "editing";
   const located = isLocated(user);
@@ -69,7 +69,8 @@ function Card({ state, user, now, onToggle, onEdit, onCancelEdit, onSave, onRemo
   }, [menuOpen]);
 
   return (
-    <li className={`${styles.card} ${expanded ? styles.expanded : ""}`} data-state={state}>
+    <li className={`${styles.card} ${expanded ? styles.expanded : ""}`} data-state={state}
+      style={{ "--enter-index": Math.min(index, 8) } as CSSProperties}>
       <div className={styles.head}>
         <button type="button" className={styles.identity} aria-expanded={expanded} onClick={onToggle}>
           <Avatar name={user.name} />

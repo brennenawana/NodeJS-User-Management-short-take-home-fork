@@ -24,5 +24,16 @@ export function useTheme() {
       // not fatal
     }
   }, [theme]);
-  return { theme, toggle: () => setTheme((t) => (t === "dark" ? "light" : "dark")) };
+  const toggle = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    const apply = () => {
+      document.documentElement.dataset.theme = next;
+      setTheme(next);
+    };
+    // Crossfade the whole page where the browser can, unless motion is reduced.
+    const calm = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (document.startViewTransition && !calm) document.startViewTransition(apply);
+    else apply();
+  };
+  return { theme, toggle };
 }
