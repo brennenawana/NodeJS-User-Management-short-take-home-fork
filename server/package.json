@@ -8,7 +8,8 @@
     "start": "tsx src/main.ts",
     "test": "node --import tsx --test \"src/**/*.test.ts\"",
     "test:live": "LIVE=1 node --env-file-if-exists=../.env --import tsx --test src/providers/location/live.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed": "tsx src/seed.ts"
   },
   "dependencies": {
     "express": "^5.1.0",

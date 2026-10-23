@@ -1,0 +1,14 @@
+.avatar {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--avatar-bg);
+  color: var(--avatar-fg);
+  font: var(--text-base-bold);
+  letter-spacing: 0.02em;
+}
+.sm { width: 32px; height: 32px; font: var(--text-xs-bold); }
+.md { width: 48px; height: 48px; }
+.lg { width: 64px; height: 64px; font: var(--text-xl-bold); }

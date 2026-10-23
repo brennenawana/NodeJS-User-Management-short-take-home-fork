@@ -5,7 +5,7 @@ import { storages, type StorageName } from "./storage/index.js";
 const names = <T extends string>(o: Record<T, unknown>) => Object.keys(o) as [T, ...T[]];
 
 const configSchema = z.object({
-  PORT: z.coerce.number().int().min(0).max(65535).default(8080),
+  API_PORT: z.coerce.number().int().min(0).max(65535).default(8080),
   LOCATION_PROVIDER: z.enum(names(locationProviders)).default("fixture"),
   STORAGE: z.enum(names(storages)).default("json-file"),
 });
@@ -23,6 +23,6 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     const problems = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
     throw new Error(`Invalid configuration. ${problems}`);
   }
-  const { PORT, LOCATION_PROVIDER, STORAGE } = parsed.data;
-  return { port: PORT, locationProvider: LOCATION_PROVIDER, storage: STORAGE };
+  const { API_PORT, LOCATION_PROVIDER, STORAGE } = parsed.data;
+  return { port: API_PORT, locationProvider: LOCATION_PROVIDER, storage: STORAGE };
 }

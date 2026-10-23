@@ -1,0 +1,58 @@
+.card {
+  position: relative; box-sizing: border-box; min-width: 0;
+  display: flex; flex-direction: column; gap: var(--space-12);
+  padding: var(--space-16);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.expanded, .editing { grid-column: 1 / -1; border-color: var(--color-accent); }
+.head { display: flex; align-items: center; gap: var(--space-12); }
+.identity {
+  flex: 1 1 auto; min-width: 0; min-height: 48px;
+  display: flex; align-items: center; gap: var(--space-12);
+  padding: 0; border: 0; border-radius: var(--radius-md); background: transparent;
+  color: var(--color-ink); text-align: left; cursor: pointer;
+}
+.identity:focus-visible { outline: 2px solid var(--color-accent-ink); outline-offset: 2px; }
+.names { display: block; min-width: 0; }
+.name { display: block; font: var(--text-lg-bold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.place { display: block; font: var(--text-sm); color: var(--color-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.menu {
+  position: absolute; top: 64px; right: var(--space-12); z-index: 5;
+  min-width: 168px; padding: var(--space-4);
+  display: flex; flex-direction: column;
+  background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); box-shadow: var(--shadow-card);
+}
+.menu button { justify-content: flex-start; border: 0; }
+.clockRow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); }
+.time { margin: 0; font: var(--text-clock); letter-spacing: var(--text-clock-tracking); font-variant-numeric: tabular-nums; }
+.period { margin: var(--space-4) 0 0; font: var(--text-sm); color: var(--color-muted); }
+.pending {
+  display: flex; align-items: center; gap: var(--space-8);
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-12);
+  border-radius: var(--radius-md);
+  background: var(--color-notice-soft); color: var(--color-notice); font: var(--text-sm);
+}
+.pending span { flex: 1 1 auto; min-width: 0; }
+.pending button { color: var(--color-notice); font: var(--text-sm-bold); }
+.detail { display: flex; flex-wrap: wrap; gap: var(--space-16) var(--space-32); align-items: flex-start; padding-top: var(--space-16); border-top: 1px solid var(--color-line); }
+.facts { margin: 0; flex: 1 1 420px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, max-content)); gap: var(--space-12) var(--space-32); }
+.facts dt { font: var(--text-xs-label); letter-spacing: var(--text-xs-label-tracking); text-transform: var(--text-xs-label-case); color: var(--color-muted); }
+.facts dd { margin: 2px 0 0; font: var(--text-base-semibold); font-variant-numeric: tabular-nums; }
+.soft { color: var(--color-muted); font-weight: 400; }
+.side { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-8); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-8); justify-content: flex-end; }
+.updated { margin: 0; display: flex; align-items: center; gap: var(--space-4); font: var(--text-sm); color: var(--color-muted); }
+.updated button { color: var(--color-accent-ink); font: var(--text-sm-bold); padding: 0 var(--space-8); }
+.form { box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-12); padding: var(--space-16); border-radius: var(--radius-md); background: var(--color-surface-2); }
+.fields { display: flex; flex-wrap: wrap; gap: var(--space-12); }
+.fields > :first-child { flex: 1 1 220px; }
+.fields > :last-child { flex: 0 1 160px; min-width: 130px; }
+.fields input { height: 44px; background: var(--color-surface); }
+.zipNote { margin: 0; display: flex; align-items: flex-start; gap: var(--space-8); padding: var(--space-12); border-radius: var(--radius-md); background: var(--color-notice-soft); color: var(--color-notice); font: var(--text-md); }
+.formError { margin: 0; color: var(--color-error); font: var(--text-md); }
+.skeleton { pointer-events: none; }
+.bar { display: block; border-radius: var(--radius-sm); background: linear-gradient(90deg, var(--color-skeleton) 0%, var(--color-skeleton-hi) 50%, var(--color-skeleton) 100%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
