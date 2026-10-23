@@ -4,7 +4,8 @@
   "private": true,
   "workspaces": [
     "server",
-    "client"
+    "client",
+    "e2e"
   ],
   "scripts": {
     "dev": "concurrently -k -n api,web -c auto \"yarn workspace user-management-server dev\" \"yarn workspace user-management-client dev\"",

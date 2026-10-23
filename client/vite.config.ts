@@ -11,12 +11,12 @@ function productName(): Plugin {
   };
 }
 
+const proxy = { "/api": `http://localhost:${process.env.API_PORT ?? 8080}` };
+
 export default defineConfig({
   plugins: [react(), productName()],
-  server: {
-    port: 5173,
-    proxy: { "/api": `http://localhost:${process.env.API_PORT ?? 8080}` },
-  },
+  server: { port: 5173, proxy },
+  preview: { proxy },
   test: {
     environment: "jsdom",
     globals: true,

@@ -36,3 +36,7 @@ Thumbs.db
 # agent tooling: shared skills are committed, per-tool settings stay local
 .claude/*
 !.claude/skills
+
+# test output
+e2e/test-results/
+e2e/playwright-report/
