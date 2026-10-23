@@ -1,0 +1,20 @@
+{
+  "status": 200,
+  "body": {
+    "results": [
+      {
+        "address_components": [
+          { "long_name": "02108", "short_name": "02108", "types": ["postal_code"] },
+          { "long_name": "Boston", "short_name": "Boston", "types": ["locality", "political"] },
+          { "long_name": "Suffolk County", "short_name": "Suffolk County", "types": ["administrative_area_level_2", "political"] },
+          { "long_name": "Massachusetts", "short_name": "MA", "types": ["administrative_area_level_1", "political"] },
+          { "long_name": "United States", "short_name": "US", "types": ["country", "political"] }
+        ],
+        "formatted_address": "Boston, MA 02108, USA",
+        "geometry": { "location": { "lat": 42.3576, "lng": -71.0684 }, "location_type": "APPROXIMATE" },
+        "types": ["postal_code"]
+      }
+    ],
+    "status": "OK"
+  }
+}
