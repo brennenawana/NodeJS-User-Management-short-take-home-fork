@@ -1,0 +1,11 @@
+.strip { margin-bottom: var(--space-24); }
+.row { display: flex; gap: var(--space-12); overflow-x: auto; padding-bottom: var(--space-4); scroll-snap-type: x proximity; }
+.row > * { scroll-snap-align: start; }
+
+/* Mobile / Grid: 168px cells that scroll edge to edge, no scrollbar. */
+@media (max-width: 640px) {
+  .strip { order: -1; margin: 0 calc(-1 * var(--space-16)) var(--space-8); }
+  .row { padding: var(--space-4) var(--space-16) var(--space-8); scroll-padding-inline: var(--space-16); scrollbar-width: none; }
+  .row::-webkit-scrollbar { display: none; }
+  .row > * { flex: 0 0 168px; }
+}
