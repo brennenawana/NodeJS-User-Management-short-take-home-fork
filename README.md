@@ -54,7 +54,7 @@ A Vite, React and TypeScript app in `client/`.
 - `client/src/api.ts`: the only place that talks to the server.
 - The header wordmark and the page title come from `product.json`.
 
-The map view isn't built yet; the toggle says so.
+Below 640px the layout follows the Mobile / Grid frame: search on its own row, the strip first and scrolling sideways, one column of cards and a floating Add button.
 
 ## Location providers
 
