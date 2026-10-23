@@ -7,7 +7,8 @@
   "libraries": "Community kits (M3, SDS, iOS...) were available, but their assets used ALL_SCOPES vars and a different API -> build local library matching React names",
   "cssScheme": "WEB code syntax = var(--{prefix}-{path with / -> -}); prefixes: Color -> --color-*, Spacing 'space/N' -> --space-N, Radius 'radius/x' -> --radius-x, Primitives -> --palette-*. design/tokens.css: primitives/spacing/radius + Light colours in :root, Dark colours in [data-theme=\"dark\"], semantic colours as var(--palette-*) aliases",
   "avatarHues": "12 hue buckets (0..330 step 30), names map: Maya 210, Daniel 90, Priya 120, Tomas 240, Grace 300, Jonah 30, Lena 120, Sam 30, Noor 240, Amara 150, NewPerson 90",
-  "referenceTime": "light screens UTC 16:50 -> UTC-4 12:50 PM Afternoon, UTC-5 11:50 AM Morning, UTC-6 10:50 AM Morning, UTC-7 9:50 AM Morning; dark screen UTC 01:05 -> -4 9:05 PM Night, -5 8:05 PM Evening, -6 7:05 PM Evening, -7 6:05 PM Evening"
+  "referenceTime": "light screens UTC 16:50 -> UTC-4 12:50 PM Afternoon, UTC-5 11:50 AM Morning, UTC-6 10:50 AM Morning, UTC-7 9:50 AM Morning; dark screen UTC 01:05 -> -4 9:05 PM Night, -5 8:05 PM Evening, -6 7:05 PM Evening, -7 6:05 PM Evening",
+  "productName": "Placeholder name until a real one lands. Product collection holds product/name ('User Management') and product/short-name ('Users'), scope TEXT_CONTENT, WEB code syntax product.name / product.shortName pointing at product.json. AppHeader wordmark (10:180 Desktop, 10:217 Mobile) binds product/short-name; Cover title 43:11 binds product/name. AddSheet save label reads 'Add person' so the name stays out of copy."
  },
  "entities": {
   "pages": {
@@ -29,9 +30,15 @@
    "modes": {
     "light": "2:1",
     "dark": "2:2"
+   },
+   "Product": "VariableCollectionId:55:3583"
+  },
+  "variables": {
+   "product": {
+    "product/name": "VariableID:55:3584",
+    "product/short-name": "VariableID:55:3585"
    }
   },
-  "variables": {},
   "textStyles": {
    "count": 16,
    "names": [
