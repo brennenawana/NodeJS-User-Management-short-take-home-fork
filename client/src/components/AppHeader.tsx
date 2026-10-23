@@ -29,7 +29,7 @@ export function AppHeader({ query, onQuery, view, onView, theme, onToggleTheme, 
           <span className={styles.srOnly}>Search people</span>
           <input type="search" className={styles.searchInput} placeholder="Search by name or city" value={query} onChange={(e) => onQuery(e.target.value)} />
         </label>
-        <ViewToggle active={view} onChange={onView} />
+        <div className={styles.toggle}><ViewToggle active={view} onChange={onView} /></div>
         <Button variant="secondary" icon={theme === "dark" ? "sun" : "moon"} aria-pressed={theme === "dark"}
           aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"} onClick={onToggleTheme} />
         <Button className={styles.add} icon="plus" label="Add a person" onClick={onAdd} />

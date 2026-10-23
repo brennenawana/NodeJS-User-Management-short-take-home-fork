@@ -104,6 +104,8 @@ export function App() {
         )}
       </main>
 
+      {!sheetOpen && <Button className={styles.fab} icon="plus" label="Add a person" onClick={openSheet} />}
+
       {people.removed ? (
         <Toast message={`${people.removed.name} was removed.`} onUndo={people.undo} onDismiss={people.dismissRemoved} />
       ) : people.notice ? (

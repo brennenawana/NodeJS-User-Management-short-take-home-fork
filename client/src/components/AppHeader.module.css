@@ -21,7 +21,10 @@
 .searchInput:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
 .add { margin-left: auto; }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Figma: AppHeader / Device=Mobile. Search drops to its own row and Add moves to a floating button. */
 @media (max-width: 640px) {
-  .inner { padding: var(--space-12) var(--space-16); }
+  .inner { padding: var(--space-12) var(--space-16); gap: var(--space-12) var(--space-8); }
   .search { order: 5; flex-basis: 100%; max-width: none; }
+  .toggle { margin-left: auto; }
+  .add { display: none; }
 }

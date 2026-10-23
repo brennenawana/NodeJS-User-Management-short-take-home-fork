@@ -9,10 +9,8 @@
   animation: enter var(--motion-slow) var(--motion-ease-out) backwards;
   animation-delay: calc(var(--motion-fast) / 4 * var(--enter-index, 0));
 }
-.card:not(.skeleton):hover { transform: translateY(-2px); border-color: var(--color-line-strong); }
-.expanded:hover, .editing:hover { transform: none; }
-.expanded, .editing { grid-column: 1 / -1; border-color: var(--color-accent); }
-.expanded:hover { border-color: var(--color-accent); }
+.card:not(.skeleton):not(.expanded):hover { transform: translateY(-2px); border-color: var(--color-line-strong); }
+.expanded { grid-column: 1 / -1; border-color: var(--color-accent); }
 .head { display: flex; align-items: center; gap: var(--space-12); }
 .identity {
   flex: 1 1 auto; min-width: 0; min-height: 48px;
@@ -70,3 +68,12 @@
 @keyframes enter { from { opacity: 0; transform: translateY(8px); } }
 @keyframes pop { from { opacity: 0; transform: scale(0.96) translateY(-4px); } }
 @keyframes reveal { from { opacity: 0; transform: translateY(-4px); } }
+/* Mobile: details stack and the actions share the full width. */
+@media (max-width: 640px) {
+  .facts { flex-basis: 100%; grid-template-columns: repeat(3, auto); justify-content: space-between; column-gap: var(--space-16); }
+  .facts dd { white-space: nowrap; }
+  .facts > :first-child { grid-column: 1 / -1; }
+  .side { margin-left: 0; width: 100%; align-items: stretch; }
+  .actions > :not(:last-child) { flex: 1 1 0; }
+  .updated { justify-content: flex-start; flex-wrap: wrap; }
+}

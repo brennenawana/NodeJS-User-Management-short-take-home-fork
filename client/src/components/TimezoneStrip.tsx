@@ -2,6 +2,7 @@ import { isLocated, type User } from "../api";
 import { firstName } from "../lib/people";
 import { localClock, offsetLabel, zoneHint } from "../lib/time";
 import { ZoneCell } from "./ZoneCell";
+import styles from "./TimezoneStrip.module.css";
 
 interface Props {
   users: User[];
@@ -18,9 +19,8 @@ export function TimezoneStrip({ users, now, active, onPick }: Props) {
   const offsets = [...groups.keys()].sort((a, b) => a - b);
   if (!offsets.length) return null;
   return (
-    <section aria-label="Time zones" style={{ marginBottom: "var(--space-24)" }}>
-      <div role="group" aria-label="Filter people by UTC offset"
-        style={{ display: "flex", gap: "var(--space-12)", overflowX: "auto", paddingBottom: "var(--space-4)" }}>
+    <section aria-label="Time zones" className={styles.strip}>
+      <div role="group" aria-label="Filter people by UTC offset" className={styles.row}>
         {offsets.map((off) => {
           const members = groups.get(off)!;
           return (

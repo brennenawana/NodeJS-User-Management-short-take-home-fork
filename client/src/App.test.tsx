@@ -36,7 +36,7 @@ describe("App", () => {
 
   test("adding someone puts their card in the grid, expanded", async () => {
     const user = await renderApp(team());
-    await user.click(screen.getByRole("button", { name: "Add a person" }));
+    await user.click(within(screen.getByRole("banner")).getByRole("button", { name: "Add a person" }));
     await user.type(screen.getByLabelText("Name"), "Grace Whitfield");
     await user.type(screen.getByLabelText("Zip code"), "80202");
     await waitFor(() => expect(screen.getByRole("button", { name: "Add person" })).toBeEnabled());
@@ -44,6 +44,14 @@ describe("App", () => {
     await waitFor(() => expect(screen.queryByRole("region", { name: "Add a person" })).not.toBeInTheDocument());
     expect(card("Grace Whitfield")).toHaveAttribute("data-state", "expanded");
     expect(within(card("Grace Whitfield")).getAllByText("Denver · UTC−6").length).toBeGreaterThan(0);
+  });
+
+  test("the floating add button (mobile) opens the sheet and steps aside while it's open", async () => {
+    const user = await renderApp(team());
+    const floating = screen.getAllByRole("button", { name: "Add a person" }).find((b) => !screen.getByRole("banner").contains(b))!;
+    await user.click(floating);
+    expect(screen.getByRole("region", { name: "Add a person" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Add a person" })).toHaveLength(1);
   });
 
   test("the timezone strip groups by offset and filters the grid", async () => {

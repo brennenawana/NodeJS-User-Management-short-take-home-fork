@@ -7,7 +7,9 @@ const WEB_PORT = 5191;
 
 export default defineConfig({
   testDir: "tests",
+  // One worker: every test shares the same in-memory API.
   fullyParallel: false,
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
