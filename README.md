@@ -4,7 +4,8 @@
 
 ```sh
 yarn install
-yarn start   # API with nodemon on port 8080
+cp .env.example .env   # optional: the defaults run offline
+yarn dev               # API on http://localhost:8080, restarts on change
 ```
 
 ## Server
@@ -14,7 +15,9 @@ A TypeScript Express API in `server/`.
 - `server/src/core/`: the user record, the users service and the ports it depends on (`LocationProvider`, `UsersRepo`, `Clock`). Nothing in here knows about HTTP, files or any vendor.
 - `server/src/storage/<name>/`: `UsersRepo` implementations (`memory`, `json-file`). Each one passes `storage/repo-contract.ts`.
 - `server/src/http/`: routes, request validation and error responses.
+- `server/src/providers/location/<name>/`: `LocationProvider` implementations, listed in `providers/location/index.ts`.
 - `server/src/app.ts`: `buildApp({ repo, locationProvider, clock })` wires it together.
+- `server/src/main.ts`: reads `.env` through `config.ts` and picks the concrete storage and provider. It's the only file that does.
 - `product.json`: the product name. Code imports it, and a test fails if the README title or a package name drifts from it.
 
 A user is `id, name, zip, city, lat, lon, utcOffsetSeconds, locationUpdatedAt`. A timezone is a UTC offset in seconds, captured when the location was looked up. If the lookup fails, the user is still saved with the location fields set to `null` until a refresh succeeds. Editing only looks the zip up again when it changes.
@@ -29,11 +32,28 @@ A user is `id, name, zip, city, lat, lon, utcOffsetSeconds, locationUpdatedAt`. 
 
 Errors come back as `{ error: { code, message, field? } }`, and the messages are written for people.
 
+## Location providers
+
+`LOCATION_PROVIDER` picks how a zip becomes a city, coordinates and a UTC offset.
+
+| Name | Needs | Notes |
+|---|---|---|
+| `fixture` (default) | nothing | Offline table of sample zips. `00001` simulates an outage. |
+| `openweathermap` | `OPENWEATHER_API_KEY` | One call to the current weather API; uses `name`, `coord` and `timezone`. |
+| `google` | `GOOGLE_MAPS_API_KEY` | Geocoding API, then the Time Zone API at the current time; the offset is `rawOffset + dstOffset`. |
+
+Each provider validates what it gets back and reports failures as one of two errors: `ZipNotFound` or `ProviderUnavailable`. Every provider runs `providers/location/conformance.ts`. Adapter tests run against saved responses in `fixtures/`: real captures for OpenWeatherMap (`node scripts/probe-openweathermap.mjs` refreshes them), and hand-written ones for Google (see `fixtures/google/README.md`).
+
+To add a provider, create `server/src/providers/location/<name>/index.ts` exporting `fromEnv(env)`, add it to `providers/location/index.ts`, run the conformance suite against it, and list its variables in `.env.example`.
+
+`STORAGE` picks `json-file` (default, `DATA_FILE`) or `memory`.
+
 ## Tests
 
 ```sh
 yarn test        # server: node:test
 yarn typecheck
+yarn workspace user-management-server test:live   # hits the real providers whose keys are in .env
 ```
 
 ## Design
