@@ -70,9 +70,7 @@
 @keyframes reveal { from { opacity: 0; transform: translateY(-4px); } }
 /* Mobile: details stack and the actions share the full width. */
 @media (max-width: 640px) {
-  .facts { flex-basis: 100%; grid-template-columns: repeat(3, auto); justify-content: space-between; column-gap: var(--space-16); }
-  .facts dd { white-space: nowrap; }
-  .facts > :first-child { grid-column: 1 / -1; }
+  .facts { flex-basis: 100%; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-16); }
   .side { margin-left: 0; width: 100%; align-items: stretch; }
   .actions > :not(:last-child) { flex: 1 1 0; }
   .updated { justify-content: flex-start; flex-wrap: wrap; }
