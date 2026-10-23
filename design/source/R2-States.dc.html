@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>R2 · components and states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#9A4208}a:hover{color:#6E2E04}
+button,input{font-family:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+input::placeholder{color:inherit;opacity:.7}
+:focus-visible{outline:3px solid #F27D26;outline-offset:2px}
+@keyframes shimmer{0%{background-position:-320px 0}100%{background-position:320px 0}}
+</style>
+</helmet>
+<div style="width:1440px;height:1000px;box-sizing:border-box;overflow:hidden;background:{{t.bg}};color:{{t.ink}};font-family:{{t.fontBody}};font-size:14px;line-height:1.45;padding:24px;display:flex;flex-direction:column;gap:12px;">
+
+  <!-- Sheet title -->
+  <div style="display:flex;align-items:center;gap:12px;flex:0 0 auto;height:24px;">
+    <span style="display:inline-flex;align-items:center;gap:8px;font-family:{{t.fontDisplay}};font-weight:800;font-size:15px;letter-spacing:{{t.track.name}};">
+      <span style="width:24px;height:24px;border-radius:{{t.rSm}};background:{{t.accent}};display:inline-flex;align-items:center;justify-content:center;">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="{{t.onAccent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="5.5" r="2.5"></circle><circle cx="11" cy="6.5" r="2"></circle><path d="M1.5 13.5c.6-2.3 2.2-3.5 4-3.5s3.4 1.2 4 3.5"></path><path d="M10 13.5c.4-1.6 1.6-2.6 3-2.6 .7 0 1.2.2 1.6.5"></path></svg>
+      </span>
+      Users
+    </span>
+    <span style="font-size:13px;color:{{t.muted}};">R2 · components and key states</span>
+    <span style="margin-left:auto;font-size:13px;color:{{t.muted}};">{{themeLine}}</span>
+  </div>
+
+  <div style="flex:1 1 auto;min-height:0;display:grid;grid-template-columns:392px minmax(0, 1fr);gap:20px;">
+
+    <!-- ===================== Components column ===================== -->
+    <section aria-label="Components" style="box-sizing:border-box;min-height:0;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;">
+
+      <!-- Avatar -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">Avatar / sm · md · lg</p>
+        <div style="display:flex;align-items:flex-end;gap:16px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <span aria-hidden="true" style="width:32px;height:32px;border-radius:{{t.rFull}};background:{{avMayaBg}};color:{{avMayaFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">MO</span>
+            <span style="font-size:12px;color:{{t.muted}};">32</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <span aria-hidden="true" style="width:48px;height:48px;border-radius:{{t.rFull}};background:{{avPriyaBg}};color:{{avPriyaFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;">PR</span>
+            <span style="font-size:12px;color:{{t.muted}};">48</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <span aria-hidden="true" style="width:64px;height:64px;border-radius:{{t.rFull}};background:{{avTomasBg}};color:{{avTomasFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;">TL</span>
+            <span style="font-size:12px;color:{{t.muted}};">64</span>
+          </div>
+          <p style="margin:0 0 20px auto;font-size:12px;color:{{t.muted}};max-width:150px;">Hue from the name, fixed lightness per theme.</p>
+        </div>
+      </div>
+
+      <!-- SkyChip -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">SkyChip / Morning · Afternoon · Evening · Night</p>
+        <div style="display:flex;gap:16px;">
+          <sc-for list="{{chips}}" as="c" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <svg width="72" height="36" viewBox="0 0 72 36" role="img" aria-label="{{c.aria}}">
+                <rect x="0" y="0" width="72" height="36" rx="12" fill="{{c.skyBg}}"></rect>
+                <sc-if value="{{c.isSun}}" hint-placeholder-val="{{ true }}">
+                  <path d="{{c.rays}}" fill="none" stroke="{{c.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                  <circle cx="36" cy="{{c.sunY}}" r="{{c.sunR}}" fill="{{c.disc}}"></circle>
+                </sc-if>
+                <sc-if value="{{c.isNight}}" hint-placeholder-val="{{ false }}">
+                  <circle cx="14" cy="9" r="1.3" fill="{{c.star}}"></circle>
+                  <circle cx="52" cy="8" r="1.5" fill="{{c.star}}"></circle>
+                  <circle cx="60" cy="17" r="1.1" fill="{{c.star}}"></circle>
+                  <circle cx="23" cy="21" r=".9" fill="{{c.star}}"></circle>
+                  <circle cx="35" cy="14" r="6.5" fill="{{c.disc}}"></circle>
+                  <circle cx="38.2" cy="11.6" r="5.6" fill="{{c.skyBg}}"></circle>
+                </sc-if>
+                <sc-if value="{{c.hasGround}}" hint-placeholder-val="{{ true }}">
+                  <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{c.horizon}}"></path>
+                </sc-if>
+              </svg>
+              <span style="font-size:12px;color:{{t.muted}};">{{c.period}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- ZoneCell -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">ZoneCell / Default · Active</p>
+        <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;">
+          <button type="button" aria-pressed="false" style="box-sizing:border-box;text-align:left;min-height:92px;padding:12px 16px 16px;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};color:{{t.ink}};box-shadow:{{t.shadow}};display:flex;flex-direction:column;gap:4px;min-width:0;">
+            <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font-weight:700;font-size:15px;">UTC−5</span><span style="font-size:13px;color:{{t.muted}};">Central</span></span>
+            <span style="font-family:{{t.fontDisplay}};font-size:26px;font-weight:700;letter-spacing:{{t.track.clock}};line-height:1.1;font-variant-numeric:tabular-nums;">{{chiTime}}</span>
+            <span style="font-size:13px;color:{{t.muted}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">2 people · Priya, Sam</span>
+          </button>
+          <button type="button" aria-pressed="true" style="box-sizing:border-box;text-align:left;min-height:92px;padding:12px 16px 16px;border-radius:{{t.rLg}};border:1px solid {{t.accent}};background:{{t.accent}};color:{{t.onAccent}};box-shadow:{{t.shadow}};display:flex;flex-direction:column;gap:4px;min-width:0;">
+            <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font-weight:700;font-size:15px;">UTC−4</span><span style="font-size:13px;">Eastern</span></span>
+            <span style="font-family:{{t.fontDisplay}};font-size:26px;font-weight:700;letter-spacing:{{t.track.clock}};line-height:1.1;font-variant-numeric:tabular-nums;">{{bosTime}}</span>
+            <span style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">3 people · Maya, Jonah, Lena</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ViewToggle -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">ViewToggle / Grid active · Map</p>
+        <div role="group" aria-label="View" style="display:inline-flex;align-self:flex-start;background:{{t.surface2}};border:1px solid {{t.line}};border-radius:{{t.rMd}};padding:2px;gap:2px;">
+          <button type="button" aria-pressed="true" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:{{t.rSm}};border:0;font-weight:600;font-size:14px;background:{{t.surface}};color:{{t.ink}};box-shadow:0 1px 2px rgba(30,28,24,.12);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"></rect><rect x="13" y="4" width="7" height="7" rx="1.5"></rect><rect x="4" y="13" width="7" height="7" rx="1.5"></rect><rect x="13" y="13" width="7" height="7" rx="1.5"></rect></svg>
+            Grid
+          </button>
+          <button type="button" aria-pressed="false" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:{{t.rSm}};border:0;font-weight:600;font-size:14px;background:transparent;color:{{t.muted}};">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"></path><circle cx="12" cy="11" r="2"></circle></svg>
+            Map
+          </button>
+        </div>
+      </div>
+
+      <!-- Button -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">Button / Primary · Secondary · Ghost · Danger — Default, Disabled</p>
+        <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:8px;">
+          <button type="button" style="min-height:44px;padding:0 8px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:13px;white-space:nowrap;">Primary</button>
+          <button type="button" style="min-height:44px;padding:0 8px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:13px;white-space:nowrap;">Secondary</button>
+          <button type="button" style="min-height:44px;padding:0 8px;border-radius:{{t.rSm}};border:0;background:transparent;color:{{t.accentInk}};font-weight:600;font-size:13px;white-space:nowrap;">Ghost</button>
+          <button type="button" style="min-height:44px;padding:0 8px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.error}};font-weight:600;font-size:13px;white-space:nowrap;">Danger</button>
+          <button type="button" disabled="true" style="min-height:44px;padding:0 8px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:13px;white-space:nowrap;opacity:.55;">Primary</button>
+          <button type="button" disabled="true" style="min-height:44px;padding:0 8px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:13px;white-space:nowrap;opacity:.55;">Secondary</button>
+          <button type="button" disabled="true" style="min-height:44px;padding:0 8px;border-radius:{{t.rSm}};border:0;background:transparent;color:{{t.accentInk}};font-weight:600;font-size:13px;white-space:nowrap;opacity:.55;">Ghost</button>
+          <button type="button" disabled="true" style="min-height:44px;padding:0 8px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.error}};font-weight:600;font-size:13px;white-space:nowrap;opacity:.55;">Danger</button>
+        </div>
+      </div>
+
+      <!-- TextField -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">TextField / Default · Focus · Error · Success</p>
+        <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;">
+          <div>
+            <label for="tf-default" style="display:block;font-weight:600;font-size:13px;margin-bottom:4px;">Name</label>
+            <input id="tf-default" type="text" placeholder="e.g. Maya Okafor" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;">
+            <p style="margin:4px 0 0;font-size:12px;color:{{t.muted}};">Default</p>
+          </div>
+          <div>
+            <label for="tf-focus" style="display:block;font-weight:600;font-size:13px;margin-bottom:4px;">Zip code</label>
+            <input id="tf-focus" type="text" inputmode="numeric" value="021" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.lineStrong}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;letter-spacing:.06em;outline:3px solid {{t.accent}};outline-offset:2px;">
+            <p style="margin:4px 0 0;font-size:12px;color:{{t.muted}};">Focus · 3px ring</p>
+          </div>
+          <div>
+            <label for="tf-error" style="display:block;font-weight:600;font-size:13px;margin-bottom:4px;">Zip code</label>
+            <input id="tf-error" type="text" inputmode="numeric" value="0210" aria-invalid="true" aria-describedby="tf-error-hint" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:2px solid {{t.error}};background:{{t.bg}};color:{{t.ink}};padding:0 11px;font-size:15px;letter-spacing:.06em;">
+            <p id="tf-error-hint" style="margin:4px 0 0;font-size:12px;color:{{t.error}};">Error · one short</p>
+          </div>
+          <div>
+            <label for="tf-ok" style="display:block;font-weight:600;font-size:13px;margin-bottom:4px;">Zip code</label>
+            <input id="tf-ok" type="text" inputmode="numeric" value="02108" aria-describedby="tf-ok-hint" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.ok}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;letter-spacing:.06em;">
+            <p id="tf-ok-hint" style="margin:4px 0 0;font-size:12px;color:{{t.ok}};">Success · Boston · UTC−4</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">Toast / Undo</p>
+        <div role="status" style="display:flex;align-items:center;gap:8px;background:{{t.inverse}};color:{{t.onInverse}};border-radius:{{t.rMd}};padding:8px 8px 8px 16px;box-shadow:{{t.shadow}};box-sizing:border-box;">
+          <span style="flex:1 1 auto;font-size:14px;font-weight:600;">Jonah Abernathy was removed.</span>
+          <button type="button" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:{{t.rSm}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg>
+            Undo
+          </button>
+          <button type="button" aria-label="Dismiss" style="width:44px;height:44px;border-radius:{{t.rSm}};border:0;background:transparent;color:{{t.onInverse}};display:inline-flex;align-items:center;justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Key states 3 × 3 ===================== -->
+    <div style="min-height:0;display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));grid-template-rows:repeat(3, minmax(0, 1fr));gap:16px;">
+
+      <!-- AddSheet / Empty -->
+      <section aria-label="Add sheet, empty" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">AddSheet / Empty</p>
+        <div style="flex:1 1 auto;min-height:0;box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};box-shadow:{{t.shadow}};padding:16px;overflow:hidden;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;">
+            <div style="flex:1 1 auto;min-width:0;">
+              <label for="p1-name" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Name</label>
+              <input id="p1-name" type="text" placeholder="e.g. Maya Okafor" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;">
+            </div>
+            <div style="flex:0 0 104px;">
+              <label for="p1-zip" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Zip code</label>
+              <input id="p1-zip" type="text" inputmode="numeric" maxlength="5" placeholder="5 digits" aria-describedby="p1-hint" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;letter-spacing:.06em;">
+            </div>
+          </div>
+          <p id="p1-hint" style="margin:0;font-size:13px;color:{{t.muted}};">Enter a 5-digit US zip code.</p>
+          <div style="box-sizing:border-box;border-radius:{{t.rMd}};border:1px dashed {{t.lineStrong}};background:{{t.bg}};padding:12px;display:flex;align-items:center;gap:12px;">
+            <span aria-hidden="true" style="width:40px;height:40px;border-radius:{{t.rFull}};background:{{t.surface2}};color:{{t.muted}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">?</span>
+            <div style="min-width:0;"><p style="margin:0;font-family:{{t.fontDisplay}};font-weight:700;font-size:15px;letter-spacing:{{t.track.name}};color:{{t.muted}};">Their name</p><p style="margin:0;font-size:12px;color:{{t.muted}};">City appears here</p></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:auto;">
+            <button type="button" disabled="true" style="min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;opacity:.55;">Add person</button>
+            <button type="button" style="min-height:44px;padding:0 12px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:14px;">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- AddSheet / Looking up -->
+      <section aria-label="Add sheet, looking up the zip" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">AddSheet / Looking up</p>
+        <div style="flex:1 1 auto;min-height:0;box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};box-shadow:{{t.shadow}};padding:16px;overflow:hidden;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;">
+            <div style="flex:1 1 auto;min-width:0;">
+              <label for="p2-name" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Name</label>
+              <input id="p2-name" type="text" value="Noor Haddad" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;">
+            </div>
+            <div style="flex:0 0 104px;">
+              <label for="p2-zip" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Zip code</label>
+              <input id="p2-zip" type="text" inputmode="numeric" maxlength="5" value="02108" aria-describedby="p2-hint" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;letter-spacing:.06em;">
+            </div>
+          </div>
+          <p id="p2-hint" aria-live="polite" style="margin:0;font-size:13px;color:{{t.muted}};display:flex;align-items:center;gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+            Looking up 02108…
+          </p>
+          <div style="box-sizing:border-box;border-radius:{{t.rMd}};border:1px dashed {{t.lineStrong}};background:{{t.bg}};padding:12px;display:flex;align-items:center;gap:12px;">
+            <span aria-hidden="true" style="width:40px;height:40px;border-radius:{{t.rFull}};background:{{avNoorBg}};color:{{avNoorFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">NH</span>
+            <div style="min-width:0;flex:1 1 auto;"><p style="margin:0;font-family:{{t.fontDisplay}};font-weight:700;font-size:15px;letter-spacing:{{t.track.name}};">Noor Haddad</p><p style="margin:0;font-size:12px;color:{{t.muted}};">Looking up 02108…</p></div>
+            <span aria-hidden="true" style="display:block;height:24px;width:72px;border-radius:{{t.rSm}};background:{{t.skelFill}};background-size:640px 100%;animation:shimmer 1.6s linear infinite;"></span>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:auto;">
+            <button type="button" disabled="true" style="min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;opacity:.55;">Add person</button>
+            <button type="button" style="min-height:44px;padding:0 12px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:14px;">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- AddSheet / Resolved preview -->
+      <section aria-label="Add sheet, resolved preview" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">AddSheet / Resolved preview</p>
+        <div style="flex:1 1 auto;min-height:0;box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};box-shadow:{{t.shadow}};padding:16px;overflow:hidden;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;">
+            <div style="flex:1 1 auto;min-width:0;">
+              <label for="p3-name" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Name</label>
+              <input id="p3-name" type="text" value="Noor Haddad" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;">
+            </div>
+            <div style="flex:0 0 104px;">
+              <label for="p3-zip" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Zip code</label>
+              <input id="p3-zip" type="text" inputmode="numeric" maxlength="5" value="02108" aria-describedby="p3-hint" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.ok}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;letter-spacing:.06em;">
+            </div>
+          </div>
+          <p id="p3-hint" aria-live="polite" style="margin:0;font-size:13px;color:{{t.ok}};display:flex;align-items:center;gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"></path></svg>
+            Boston · UTC−4
+          </p>
+          <div style="box-sizing:border-box;border-radius:{{t.rMd}};border:1px dashed {{t.lineStrong}};background:{{t.bg}};padding:12px;display:flex;align-items:center;gap:12px;">
+            <span aria-hidden="true" style="width:40px;height:40px;border-radius:{{t.rFull}};background:{{avNoorBg}};color:{{avNoorFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">NH</span>
+            <div style="min-width:0;flex:1 1 auto;"><p style="margin:0;font-family:{{t.fontDisplay}};font-weight:700;font-size:15px;letter-spacing:{{t.track.name}};">Noor Haddad</p><p style="margin:0;font-size:12px;color:{{t.muted}};">Boston · UTC−4</p></div>
+            <div style="text-align:right;flex:0 0 auto;"><p style="margin:0;font-family:{{t.fontDisplay}};font-size:20px;font-weight:700;letter-spacing:{{t.track.clock}};line-height:1.1;font-variant-numeric:tabular-nums;">{{bosTime}}</p><p style="margin:2px 0 0;font-size:12px;color:{{t.muted}};">{{bosPeriod}} · Eastern</p></div>
+            <!-- SkyChip, compact 48×24 -->
+            <svg width="48" height="24" viewBox="0 0 72 36" role="img" aria-label="{{bos.aria}}" style="flex:0 0 auto;">
+              <rect x="0" y="0" width="72" height="36" rx="12" fill="{{bos.skyBg}}"></rect>
+              <sc-if value="{{bos.isSun}}" hint-placeholder-val="{{ true }}">
+                <path d="{{bos.rays}}" fill="none" stroke="{{bos.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                <circle cx="36" cy="{{bos.sunY}}" r="{{bos.sunR}}" fill="{{bos.disc}}"></circle>
+              </sc-if>
+              <sc-if value="{{bos.isNight}}" hint-placeholder-val="{{ false }}">
+                <circle cx="14" cy="9" r="1.3" fill="{{bos.star}}"></circle>
+                <circle cx="52" cy="8" r="1.5" fill="{{bos.star}}"></circle>
+                <circle cx="60" cy="17" r="1.1" fill="{{bos.star}}"></circle>
+                <circle cx="23" cy="21" r=".9" fill="{{bos.star}}"></circle>
+                <circle cx="35" cy="14" r="6.5" fill="{{bos.disc}}"></circle>
+                <circle cx="38.2" cy="11.6" r="5.6" fill="{{bos.skyBg}}"></circle>
+              </sc-if>
+              <sc-if value="{{bos.hasGround}}" hint-placeholder-val="{{ true }}">
+                <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{bos.horizon}}"></path>
+              </sc-if>
+            </svg>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:auto;">
+            <button type="button" style="min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;">Add person</button>
+            <button type="button" style="min-height:44px;padding:0 12px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:14px;">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- AddSheet / Invalid zip -->
+      <section aria-label="Add sheet, invalid zip" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">AddSheet / Invalid zip — TextField / Error</p>
+        <div style="flex:1 1 auto;min-height:0;box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};box-shadow:{{t.shadow}};padding:16px;overflow:hidden;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;">
+            <div style="flex:1 1 auto;min-width:0;">
+              <label for="p4-name" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Name</label>
+              <input id="p4-name" type="text" value="Lena Hoffmann" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;">
+            </div>
+            <div style="flex:0 0 104px;">
+              <label for="p4-zip" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Zip code</label>
+              <input id="p4-zip" type="text" inputmode="numeric" maxlength="5" value="0210" aria-invalid="true" aria-describedby="p4-hint" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:2px solid {{t.error}};background:{{t.bg}};color:{{t.ink}};padding:0 11px;font-size:15px;letter-spacing:.06em;">
+            </div>
+          </div>
+          <p id="p4-hint" role="alert" style="margin:0;font-size:13px;color:{{t.error}};display:flex;align-items:flex-start;gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:2px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+            <span>Zip codes are 5 digits — 0210 is one short.</span>
+          </p>
+          <div style="box-sizing:border-box;border-radius:{{t.rMd}};border:1px dashed {{t.lineStrong}};background:{{t.bg}};padding:12px;display:flex;align-items:center;gap:12px;">
+            <span aria-hidden="true" style="width:40px;height:40px;border-radius:{{t.rFull}};background:{{avLenaBg}};color:{{avLenaFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">LH</span>
+            <div style="min-width:0;"><p style="margin:0;font-family:{{t.fontDisplay}};font-weight:700;font-size:15px;letter-spacing:{{t.track.name}};">Lena Hoffmann</p><p style="margin:0;font-size:12px;color:{{t.muted}};">City appears once the zip is complete</p></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:auto;">
+            <button type="button" disabled="true" style="min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;opacity:.55;">Add person</button>
+            <button type="button" style="min-height:44px;padding:0 12px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:14px;">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- AddSheet / Lookup failed -->
+      <section aria-label="Add sheet, lookup failed" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">AddSheet / Lookup failed — save anyway</p>
+        <div style="flex:1 1 auto;min-height:0;box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};box-shadow:{{t.shadow}};padding:16px;overflow:hidden;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;">
+            <div style="flex:1 1 auto;min-width:0;">
+              <label for="p5-name" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Name</label>
+              <input id="p5-name" type="text" value="Amara Osei" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;">
+            </div>
+            <div style="flex:0 0 104px;">
+              <label for="p5-zip" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Zip code</label>
+              <input id="p5-zip" type="text" inputmode="numeric" maxlength="5" value="30303" aria-describedby="p5-hint" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.lineStrong}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;letter-spacing:.06em;">
+            </div>
+          </div>
+          <div id="p5-hint" role="status" style="box-sizing:border-box;display:flex;align-items:flex-start;gap:8px;background:{{t.noticeSoft}};color:{{t.notice}};border-radius:{{t.rMd}};padding:10px 12px;font-size:13px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:2px;"><path d="M12 3 2.5 20h19L12 3Z"></path><path d="M12 10v4M12 17h.01"></path></svg>
+            <span>We could not look up 30303 right now. You can still save and we will retry in the background.</span>
+          </div>
+          <p style="margin:0;font-size:12px;color:{{t.muted}};">The card shows "location pending" until the lookup succeeds.</p>
+          <div style="display:flex;gap:8px;margin-top:auto;flex-wrap:wrap;">
+            <button type="button" style="min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;">Save anyway</button>
+            <button type="button" style="min-height:44px;padding:0 12px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:14px;">Try again</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PersonCard / Editing -->
+      <section aria-label="Person card, editing with zip changed" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">PersonCard / Editing — zip changed notice</p>
+        <div style="flex:1 1 auto;min-height:0;box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.accent}};background:{{t.surface}};box-shadow:{{t.shadow}};padding:12px;overflow:hidden;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span aria-hidden="true" style="width:44px;height:44px;border-radius:{{t.rFull}};background:{{avDanielBg}};color:{{avDanielFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">DR</span>
+            <div style="min-width:0;flex:1 1 auto;"><p style="margin:0;font-family:{{t.fontDisplay}};font-weight:700;font-size:15px;letter-spacing:{{t.track.name}};">Daniel Reyes</p><p style="margin:0;font-size:12px;color:{{t.muted}};">San Francisco · UTC−7</p></div>
+            <div style="text-align:right;"><p style="margin:0;font-family:{{t.fontDisplay}};font-size:16px;font-weight:700;letter-spacing:{{t.track.clock}};font-variant-numeric:tabular-nums;">{{sfTime}}</p><p style="margin:0;font-size:12px;color:{{t.muted}};">{{sfPeriod}} · Pacific</p></div>
+          </div>
+          <form style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;gap:12px;">
+              <div style="flex:1 1 auto;min-width:0;">
+                <label for="p6-name" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Name</label>
+                <input id="p6-name" type="text" value="Daniel Reyes" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;">
+              </div>
+              <div style="flex:0 0 104px;">
+                <label for="p6-zip" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Zip code</label>
+                <input id="p6-zip" type="text" inputmode="numeric" maxlength="5" value="98101" aria-describedby="p6-note" style="box-sizing:border-box;width:100%;height:44px;border-radius:{{t.rMd}};border:1px solid {{t.accentInk}};background:{{t.bg}};color:{{t.ink}};padding:0 12px;font-size:15px;letter-spacing:.06em;">
+              </div>
+            </div>
+            <p id="p6-note" style="margin:0;display:flex;align-items:flex-start;gap:8px;font-size:13px;color:{{t.notice}};background:{{t.noticeSoft}};border-radius:{{t.rMd}};padding:8px 12px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:2px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+              <span>Location and UTC offset will update when you save. Looks like Seattle · UTC−7.</span>
+            </p>
+            <div style="display:flex;gap:8px;">
+              <button type="submit" style="min-height:44px;padding:0 16px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;">Save changes</button>
+              <button type="button" style="min-height:44px;padding:0 12px;border-radius:{{t.rMd}};border:1px solid {{t.line}};background:transparent;color:{{t.ink}};font-weight:600;font-size:14px;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- PersonCard / Pending-location + Skeleton -->
+      <section aria-label="Person card, pending location and skeleton" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">PersonCard / Pending-location</p>
+        <div style="box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};box-shadow:{{t.shadow}};padding:12px;display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span aria-hidden="true" style="width:44px;height:44px;border-radius:{{t.rFull}};background:{{avAmaraBg}};color:{{avAmaraFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">AO</span>
+            <div style="min-width:0;flex:1 1 auto;"><p style="margin:0;font-family:{{t.fontDisplay}};font-weight:700;font-size:15px;letter-spacing:{{t.track.name}};">Amara Osei</p><p style="margin:0;font-size:12px;color:{{t.muted}};">30303 · location pending</p></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:{{t.noticeSoft}};color:{{t.notice}};border-radius:{{t.rMd}};padding:0 4px 0 12px;font-size:13px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+            <span style="flex:1 1 auto;min-width:0;">Location pending. We will retry the lookup.</span>
+            <button type="button" style="flex:0 0 auto;min-height:44px;padding:0 10px;border-radius:{{t.rSm}};border:0;background:transparent;color:{{t.notice}};font-weight:700;font-size:13px;">Try now</button>
+          </div>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">PersonCard / Skeleton</p>
+        <div aria-busy="true" style="box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.surface}};padding:12px;display:flex;flex-direction:column;gap:12px;">
+          <div aria-hidden="true" style="display:flex;align-items:center;gap:12px;">
+            <span style="width:44px;height:44px;border-radius:{{t.rFull}};background:{{t.skelFill}};background-size:640px 100%;animation:shimmer 1.6s linear infinite;"></span>
+            <div style="flex:1 1 auto;display:flex;flex-direction:column;gap:8px;">
+              <span style="display:block;height:12px;width:58%;border-radius:{{t.rSm}};background:{{t.skelFill}};background-size:640px 100%;animation:shimmer 1.6s linear infinite;"></span>
+              <span style="display:block;height:10px;width:40%;border-radius:{{t.rSm}};background:{{t.skelFill}};background-size:640px 100%;animation:shimmer 1.6s linear infinite;"></span>
+            </div>
+          </div>
+          <div aria-hidden="true" style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="display:block;height:24px;width:84px;border-radius:{{t.rSm}};background:{{t.skelFill}};background-size:640px 100%;animation:shimmer 1.6s linear infinite;"></span>
+            <span style="display:block;height:24px;width:48px;border-radius:{{t.rSm}};background:{{t.skelFill}};background-size:640px 100%;animation:shimmer 1.6s linear infinite;"></span>
+          </div>
+          <p style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);margin:0;">Loading people</p>
+        </div>
+      </section>
+
+      <!-- EmptyState -->
+      <section aria-label="Empty list" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">EmptyState</p>
+        <div style="flex:1 1 auto;min-height:0;box-sizing:border-box;border-radius:{{t.rLg}};border:1px dashed {{t.lineStrong}};background:{{t.bg}};padding:16px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;">
+          <svg width="132" height="60" viewBox="0 0 132 60" aria-hidden="true">
+            <circle cx="30" cy="30" r="24" fill="{{t.surface2}}"></circle>
+            <circle cx="66" cy="30" r="24" fill="{{t.lineStrong}}"></circle>
+            <circle cx="102" cy="30" r="24" fill="{{t.accent}}"></circle>
+            <path d="M96 30h12M102 24v12" stroke="{{t.onAccent}}" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+          </svg>
+          <h2 style="margin:4px 0 0;font-family:{{t.fontDisplay}};font-size:20px;font-weight:700;letter-spacing:{{t.track.name}};">No one here yet</h2>
+          <p style="margin:0;max-width:240px;color:{{t.muted}};font-size:13px;">Add your first person with a name and a zip. We will fill in the city, map point and local time.</p>
+          <button type="button" style="margin-top:4px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px 0 12px;border-radius:{{t.rMd}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:14px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            Add your first person
+          </button>
+        </div>
+      </section>
+
+      <!-- Toast / Undo in context -->
+      <section aria-label="Undo toast after removing" style="display:flex;flex-direction:column;gap:6px;min-height:0;">
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{t.muted}};letter-spacing:.04em;">Toast / Undo — after Remove, no confirm dialog</p>
+        <div style="position:relative;flex:1 1 auto;min-height:0;box-sizing:border-box;border-radius:{{t.rLg}};border:1px solid {{t.line}};background:{{t.bg}};padding:12px;overflow:hidden;display:flex;flex-direction:column;gap:12px;">
+          <div style="box-sizing:border-box;background:{{t.surface}};border:1px solid {{t.line}};border-radius:{{t.rLg}};box-shadow:{{t.shadow}};padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span aria-hidden="true" style="width:48px;height:48px;border-radius:{{t.rFull}};background:{{avSamBg}};color:{{avSamFg}};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;">SC</span>
+              <div style="flex:1 1 auto;min-width:0;"><p style="margin:0;font-family:{{t.fontDisplay}};font-weight:700;font-size:16px;letter-spacing:{{t.track.name}};">Sam Castillo</p><p style="margin:0;font-size:13px;color:{{t.muted}};">Austin · UTC−5</p></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div><p style="margin:0;font-family:{{t.fontDisplay}};font-size:28px;font-weight:700;letter-spacing:{{t.track.clock}};line-height:1.1;font-variant-numeric:tabular-nums;">{{chiTime}}</p><p style="margin:4px 0 0;font-size:13px;color:{{t.muted}};">{{chiPeriod}} · Central</p></div>
+              <!-- SkyChip -->
+              <svg width="72" height="36" viewBox="0 0 72 36" role="img" aria-label="{{chi.aria}}" style="flex:0 0 auto;">
+                <rect x="0" y="0" width="72" height="36" rx="12" fill="{{chi.skyBg}}"></rect>
+                <sc-if value="{{chi.isSun}}" hint-placeholder-val="{{ true }}">
+                  <path d="{{chi.rays}}" fill="none" stroke="{{chi.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                  <circle cx="36" cy="{{chi.sunY}}" r="{{chi.sunR}}" fill="{{chi.disc}}"></circle>
+                </sc-if>
+                <sc-if value="{{chi.isNight}}" hint-placeholder-val="{{ false }}">
+                  <circle cx="14" cy="9" r="1.3" fill="{{chi.star}}"></circle>
+                  <circle cx="52" cy="8" r="1.5" fill="{{chi.star}}"></circle>
+                  <circle cx="60" cy="17" r="1.1" fill="{{chi.star}}"></circle>
+                  <circle cx="23" cy="21" r=".9" fill="{{chi.star}}"></circle>
+                  <circle cx="35" cy="14" r="6.5" fill="{{chi.disc}}"></circle>
+                  <circle cx="38.2" cy="11.6" r="5.6" fill="{{chi.skyBg}}"></circle>
+                </sc-if>
+                <sc-if value="{{chi.hasGround}}" hint-placeholder-val="{{ true }}">
+                  <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{chi.horizon}}"></path>
+                </sc-if>
+              </svg>
+            </div>
+          </div>
+          <div role="status" style="position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;gap:8px;background:{{t.inverse}};color:{{t.onInverse}};border-radius:{{t.rMd}};padding:8px 8px 8px 16px;box-shadow:{{t.shadow}};box-sizing:border-box;">
+            <span style="flex:1 1 auto;font-size:13px;font-weight:600;">Jonah Abernathy was removed.</span>
+            <button type="button" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:{{t.rSm}};border:0;background:{{t.accent}};color:{{t.onAccent}};font-weight:700;font-size:13px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg>
+              Undo
+            </button>
+            <button type="button" aria-label="Dismiss" style="width:44px;height:44px;border-radius:{{t.rSm}};border:0;background:transparent;color:{{t.onInverse}};display:inline-flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"accent":{"editor":"color","default":"#F27D26"},"font":{"editor":"enum","default":"Plus Jakarta Sans","options":["Plus Jakarta Sans","Figtree","DM Sans","Nunito","Bricolage Grotesque + Figtree"]},"$preview":{"width":1440,"height":1000}}'>
+function hueOf(name) { let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 360; return h; }
+function avatarColors(name, dark) {
+  const h = hueOf(name || 'Users');
+  return dark ? { bg: 'hsl(' + h + ' 28% 26%)', fg: 'hsl(' + h + ' 65% 84%)' } : { bg: 'hsl(' + h + ' 58% 90%)', fg: 'hsl(' + h + ' 55% 29%)' };
+}
+function hexToRgb(hex) {
+  let h = (hex || '').replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h || 'F27D26', 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function luminance(hex) {
+  const [r, g, b] = hexToRgb(hex).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function hueSatOf(hex) {
+  const [r, g, b] = hexToRgb(hex).map(v => v / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  let h = 0; if (d) { if (max === r) h = ((g - b) / d) % 6; else if (max === g) h = (b - r) / d + 2; else h = (r - g) / d + 4; h = Math.round(h * 60); if (h < 0) h += 360; }
+  const l = (max + min) / 2; const s = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+  return { h, s: Math.round(s * 100) };
+}
+function rgba(hex, a) { const c = hexToRgb(hex); return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
+function localClock(off, now) {
+  const d = new Date(now.getTime() + off * 1000);
+  const h = d.getUTCHours(), m = d.getUTCMinutes();
+  return { h, m, text: (h % 12 || 12) + ':' + String(m).padStart(2, '0') + ' ' + (h < 12 ? 'AM' : 'PM') };
+}
+// SkyChip geometry (72×36 viewBox) — identical to R2-Main
+function raysPath(cx, cy, r1, r2, angles) {
+  return angles.map(a => {
+    const c = Math.cos(a * Math.PI / 180), s = Math.sin(a * Math.PI / 180);
+    return 'M' + (cx + r1 * c).toFixed(1) + ' ' + (cy + r1 * s).toFixed(1) + 'L' + (cx + r2 * c).toFixed(1) + ' ' + (cy + r2 * s).toFixed(1);
+  }).join('');
+}
+const SKY_GEOM = {
+  morning: { sunY: 20, sunR: 7, rays: raysPath(36, 20, 10, 14, [-150, -120, -90, -60, -30]), ground: true },
+  afternoon: { sunY: 18, sunR: 7, rays: raysPath(36, 18, 10, 14, [0, 45, 90, 135, 180, 225, 270, 315]), ground: false },
+  evening: { sunY: 27, sunR: 8, rays: raysPath(36, 27, 11, 14, [-125, -90, -55]), ground: true },
+  night: { sunY: 0, sunR: 0, rays: '', ground: true }
+};
+function skyChip(period, T, city) {
+  const key = period.toLowerCase(), pal = T.sky[key], g = SKY_GEOM[key];
+  return { period, isNight: key === 'night', isSun: key !== 'night', hasGround: g.ground,
+    skyBg: pal.bg, disc: pal.disc, horizon: pal.hz, star: T.sky.star, sunY: g.sunY, sunR: g.sunR, rays: g.rays,
+    skyAria: city ? period + ' in ' + city : period, aria: city ? period + ' in ' + city : period };
+}
+function sky(h, m, T, city) {
+  const t = h + m / 60;
+  const isNight = t >= 21 || t < 5;
+  const period = isNight ? 'Night' : t < 12 ? 'Morning' : t < 17 ? 'Afternoon' : 'Evening';
+  return skyChip(period, T, city);
+}
+// Typeface options (font tweak) — identical to R2-Main
+const FONTS = {
+  'Plus Jakarta Sans': { body: "'Plus Jakarta Sans', system-ui, sans-serif", display: "'Plus Jakarta Sans', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'Figtree': { body: "'Figtree', system-ui, sans-serif", display: "'Figtree', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'DM Sans': { body: "'DM Sans', system-ui, sans-serif", display: "'DM Sans', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'Nunito': { body: "'Nunito', system-ui, sans-serif", display: "'Nunito', system-ui, sans-serif", track: { head: '-.01em', name: '0', clock: '-.01em' } },
+  'Bricolage Grotesque + Figtree': { body: "'Figtree', system-ui, sans-serif", display: "'Bricolage Grotesque', 'Figtree', system-ui, sans-serif", track: { head: '-.03em', name: '-.02em', clock: '-.03em' } }
+};
+// ONE token object — identical to R2-Main
+function tokens(dark, accent, font) {
+  const hs = hueSatOf(accent);
+  const f = FONTS[font] || FONTS['Plus Jakarta Sans'];
+  const color = dark ? {
+    bg: '#16181B', surface: '#1F2226', surface2: '#272B30', ink: '#F2F1EC', muted: '#B3B0A8', line: '#30353B', lineStrong: '#4A5058',
+    ok: '#9FD9A8', okSoft: '#1F3326', error: '#FF8F86', errorSoft: '#3F2320', notice: '#F7E1CC', noticeSoft: '#3B3220',
+    inverse: '#F2F1EC', onInverse: '#1F1D1A', land: '#30353B', coast: '#4A5058', grid: '#30353B', skel: '#2A2E34', skelHi: '#353A41',
+    shadow: '0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6)'
+  } : {
+    bg: '#F4F5F1', surface: '#FFFFFF', surface2: '#ECEDE8', ink: '#1F1D1A', muted: '#5C5853', line: '#E4E3DC', lineStrong: '#C9C7BE',
+    ok: '#1F6B3A', okSoft: '#E4F3E8', error: '#B42318', errorSoft: '#FDE8E6', notice: '#6E3A0A', noticeSoft: '#FFF1DC',
+    inverse: '#1F1D1A', onInverse: '#F2F1EC', land: '#E4E3DC', coast: '#C9C7BE', grid: '#D9DBD3', skel: '#ECECE6', skelHi: '#F7F7F3',
+    shadow: '0 1px 2px rgba(30,28,24,.05), 0 10px 28px -14px rgba(30,28,24,.16)'
+  };
+  return Object.assign(color, {
+    accent, onAccent: luminance(accent) > 0.3 ? '#1F1D1A' : '#FFFFFF',
+    accentInk: dark ? 'hsl(' + hs.h + ' ' + Math.min(95, hs.s + 10) + '% 72%)' : 'hsl(' + hs.h + ' ' + hs.s + '% 30%)',
+    accentSoft: dark ? 'hsl(' + hs.h + ' 30% 20%)' : 'hsl(' + hs.h + ' 80% 94%)',
+    bandFill: rgba(accent, dark ? 0.09 : 0.08),
+    rSm: '8px', rMd: '12px', rLg: '20px', rFull: '999px',
+    space: [4, 8, 12, 16, 20, 24, 32, 40, 48],
+    type: { xs: 12, sm: 13, md: 14, base: 15, lg: 16, xl: 20, h1: 26, clock: 28 },
+    fontBody: f.body, fontDisplay: f.display, track: f.track,
+    sky: dark ? {
+      morning: { bg: '#262B3F', disc: '#F2A43A', hz: '#4A3C22' }, afternoon: { bg: '#20364E', disc: '#F6B21B', hz: '#2C4560' },
+      evening: { bg: '#42271E', disc: '#F28352', hz: '#5E382A' }, night: { bg: '#1A2038', disc: '#EEF1F8', hz: '#262E4C' }, star: '#9FB0E0'
+    } : {
+      morning: { bg: '#ECEEF8', disc: '#C9640A', hz: '#E8D3A8' }, afternoon: { bg: '#D6EAFC', disc: '#BE5F06', hz: '#BFDCF6' },
+      evening: { bg: '#F8D5C6', disc: '#B5401A', hz: '#E3A58C' }, night: { bg: '#2B3350', disc: '#EEF1F8', hz: '#3A4466' }, star: '#C9D1EC'
+    },
+    skelFill: 'linear-gradient(90deg, ' + color.skel + ' 0%, ' + color.skelHi + ' 50%, ' + color.skel + ' 100%)'
+  });
+}
+class Component extends DCLogic {
+  componentDidMount() { this.t = setInterval(() => this.forceUpdate(), 30000); }
+  componentWillUnmount() { clearInterval(this.t); }
+  renderVals() {
+    const dark = !!(this.props.dark);
+    const accent = this.props.accent || '#F27D26';
+    const T = tokens(dark, accent, this.props.font);
+    const now = new Date();
+    const av = n => avatarColors(n, dark);
+    const chips = ['Morning', 'Afternoon', 'Evening', 'Night'].map(p => skyChip(p, T, null));
+    const maya = av('Maya Okafor'), priya = av('Priya Raman'), tomas = av('Tomás Lindqvist'), noor = av('Noor Haddad'), lena = av('Lena Hoffmann'),
+      daniel = av('Daniel Reyes'), amara = av('Amara Osei'), sam = av('Sam Castillo');
+    const bosC = localClock(-14400, now), sfC = localClock(-25200, now), chiC = localClock(-18000, now);
+    const bos = sky(bosC.h, bosC.m, T, 'Boston'), sf = sky(sfC.h, sfC.m, T, 'San Francisco'), chi = sky(chiC.h, chiC.m, T, 'Austin');
+    return {
+      t: T, chips,
+      themeLine: dark ? 'Dark theme · toggle the dark tweak for light' : 'Light theme · toggle the dark tweak for dark',
+      bosTime: bosC.text, bosPeriod: bos.period, bos,
+      sfTime: sfC.text, sfPeriod: sf.period, sf,
+      chiTime: chiC.text, chiPeriod: chi.period, chi,
+      avMayaBg: maya.bg, avMayaFg: maya.fg, avPriyaBg: priya.bg, avPriyaFg: priya.fg, avTomasBg: tomas.bg, avTomasFg: tomas.fg,
+      avNoorBg: noor.bg, avNoorFg: noor.fg, avLenaBg: lena.bg, avLenaFg: lena.fg, avDanielBg: daniel.bg, avDanielFg: daniel.fg,
+      avAmaraBg: amara.bg, avAmaraFg: amara.fg, avSamBg: sam.bg, avSamFg: sam.fg
+    };
+  }
+}
+</script>
+</body>
+</html>

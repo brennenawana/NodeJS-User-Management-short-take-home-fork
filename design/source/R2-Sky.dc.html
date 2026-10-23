@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>R2 · SkyChip study</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#9A4208}a:hover{color:#6E2E04}
+</style>
+</helmet>
+<div style="width:1440px;height:480px;box-sizing:border-box;overflow:hidden;background:{{t.bg}};color:{{t.ink}};font-family:{{t.fontBody}};font-size:14px;line-height:1.45;padding:24px;display:flex;flex-direction:column;gap:12px;">
+
+  <!-- Sheet title -->
+  <div style="display:flex;align-items:center;gap:12px;flex:0 0 auto;height:24px;">
+    <span style="display:inline-flex;align-items:center;gap:8px;font-family:{{t.fontDisplay}};font-weight:800;font-size:15px;letter-spacing:{{t.track.name}};">
+      <span style="width:24px;height:24px;border-radius:{{t.rSm}};background:{{t.accent}};display:inline-flex;align-items:center;justify-content:center;">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="{{t.onAccent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="5.5" r="2.5"></circle><circle cx="11" cy="6.5" r="2"></circle><path d="M1.5 13.5c.6-2.3 2.2-3.5 4-3.5s3.4 1.2 4 3.5"></path><path d="M10 13.5c.4-1.6 1.6-2.6 3-2.6 .7 0 1.2.2 1.6.5"></path></svg>
+      </span>
+      Users
+    </span>
+    <span style="font-size:13px;color:{{t.muted}};">R2 · SkyChip study — four states at 3×, then at 72×36 and the compact 48×24, light and dark</span>
+    <span style="margin-left:auto;font-size:13px;color:{{t.muted}};">{{themeLine}}</span>
+  </div>
+
+  <!-- Light row -->
+  <section aria-label="SkyChip, light theme" style="flex:1 1 0;min-height:0;box-sizing:border-box;border-radius:{{tl.rLg}};border:1px solid {{tl.line}};background:{{tl.surface}};color:{{tl.ink}};padding:16px 20px;display:flex;align-items:center;gap:24px;">
+    <p style="margin:0;flex:0 0 56px;font-size:12px;font-weight:600;color:{{tl.muted}};letter-spacing:.04em;">Light</p>
+    <sc-for list="{{lightChips}}" as="c" hint-placeholder-count="4">
+      <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:flex-end;gap:12px;">
+          <svg width="216" height="108" viewBox="0 0 72 36" role="img" aria-label="{{c.aria}}" style="flex:0 0 auto;">
+            <rect x="0" y="0" width="72" height="36" rx="12" fill="{{c.skyBg}}"></rect>
+            <sc-if value="{{c.isSun}}" hint-placeholder-val="{{ true }}">
+              <path d="{{c.rays}}" fill="none" stroke="{{c.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+              <circle cx="36" cy="{{c.sunY}}" r="{{c.sunR}}" fill="{{c.disc}}"></circle>
+            </sc-if>
+            <sc-if value="{{c.isNight}}" hint-placeholder-val="{{ false }}">
+              <circle cx="14" cy="9" r="1.3" fill="{{c.star}}"></circle>
+              <circle cx="52" cy="8" r="1.5" fill="{{c.star}}"></circle>
+              <circle cx="60" cy="17" r="1.1" fill="{{c.star}}"></circle>
+              <circle cx="23" cy="21" r=".9" fill="{{c.star}}"></circle>
+              <circle cx="35" cy="14" r="6.5" fill="{{c.disc}}"></circle>
+              <circle cx="38.2" cy="11.6" r="5.6" fill="{{c.skyBg}}"></circle>
+            </sc-if>
+            <sc-if value="{{c.hasGround}}" hint-placeholder-val="{{ true }}">
+              <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{c.horizon}}"></path>
+            </sc-if>
+          </svg>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;">
+            <svg width="72" height="36" viewBox="0 0 72 36" role="img" aria-label="{{c.aria}}, actual size">
+              <rect x="0" y="0" width="72" height="36" rx="12" fill="{{c.skyBg}}"></rect>
+              <sc-if value="{{c.isSun}}" hint-placeholder-val="{{ true }}">
+                <path d="{{c.rays}}" fill="none" stroke="{{c.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                <circle cx="36" cy="{{c.sunY}}" r="{{c.sunR}}" fill="{{c.disc}}"></circle>
+              </sc-if>
+              <sc-if value="{{c.isNight}}" hint-placeholder-val="{{ false }}">
+                <circle cx="14" cy="9" r="1.3" fill="{{c.star}}"></circle>
+                <circle cx="52" cy="8" r="1.5" fill="{{c.star}}"></circle>
+                <circle cx="60" cy="17" r="1.1" fill="{{c.star}}"></circle>
+                <circle cx="23" cy="21" r=".9" fill="{{c.star}}"></circle>
+                <circle cx="35" cy="14" r="6.5" fill="{{c.disc}}"></circle>
+                <circle cx="38.2" cy="11.6" r="5.6" fill="{{c.skyBg}}"></circle>
+              </sc-if>
+              <sc-if value="{{c.hasGround}}" hint-placeholder-val="{{ true }}">
+                <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{c.horizon}}"></path>
+              </sc-if>
+            </svg>
+            <svg width="48" height="24" viewBox="0 0 72 36" role="img" aria-label="{{c.aria}}, compact size">
+              <rect x="0" y="0" width="72" height="36" rx="12" fill="{{c.skyBg}}"></rect>
+              <sc-if value="{{c.isSun}}" hint-placeholder-val="{{ true }}">
+                <path d="{{c.rays}}" fill="none" stroke="{{c.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                <circle cx="36" cy="{{c.sunY}}" r="{{c.sunR}}" fill="{{c.disc}}"></circle>
+              </sc-if>
+              <sc-if value="{{c.isNight}}" hint-placeholder-val="{{ false }}">
+                <circle cx="14" cy="9" r="1.3" fill="{{c.star}}"></circle>
+                <circle cx="52" cy="8" r="1.5" fill="{{c.star}}"></circle>
+                <circle cx="60" cy="17" r="1.1" fill="{{c.star}}"></circle>
+                <circle cx="23" cy="21" r=".9" fill="{{c.star}}"></circle>
+                <circle cx="35" cy="14" r="6.5" fill="{{c.disc}}"></circle>
+                <circle cx="38.2" cy="11.6" r="5.6" fill="{{c.skyBg}}"></circle>
+              </sc-if>
+              <sc-if value="{{c.hasGround}}" hint-placeholder-val="{{ true }}">
+                <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{c.horizon}}"></path>
+              </sc-if>
+            </svg>
+          </div>
+        </div>
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{tl.ink}};letter-spacing:.04em;">SkyChip / {{c.period}}</p>
+        <p style="margin:0;font-size:12px;color:{{tl.muted}};">{{c.hours}} · {{c.describe}}</p>
+      </div>
+    </sc-for>
+  </section>
+
+  <!-- Dark row -->
+  <section aria-label="SkyChip, dark theme" style="flex:1 1 0;min-height:0;box-sizing:border-box;border-radius:{{td.rLg}};border:1px solid {{td.line}};background:{{td.surface}};color:{{td.ink}};padding:16px 20px;display:flex;align-items:center;gap:24px;">
+    <p style="margin:0;flex:0 0 56px;font-size:12px;font-weight:600;color:{{td.muted}};letter-spacing:.04em;">Dark</p>
+    <sc-for list="{{darkChips}}" as="c" hint-placeholder-count="4">
+      <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:flex-end;gap:12px;">
+          <svg width="216" height="108" viewBox="0 0 72 36" role="img" aria-label="{{c.aria}}" style="flex:0 0 auto;">
+            <rect x="0" y="0" width="72" height="36" rx="12" fill="{{c.skyBg}}"></rect>
+            <sc-if value="{{c.isSun}}" hint-placeholder-val="{{ true }}">
+              <path d="{{c.rays}}" fill="none" stroke="{{c.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+              <circle cx="36" cy="{{c.sunY}}" r="{{c.sunR}}" fill="{{c.disc}}"></circle>
+            </sc-if>
+            <sc-if value="{{c.isNight}}" hint-placeholder-val="{{ false }}">
+              <circle cx="14" cy="9" r="1.3" fill="{{c.star}}"></circle>
+              <circle cx="52" cy="8" r="1.5" fill="{{c.star}}"></circle>
+              <circle cx="60" cy="17" r="1.1" fill="{{c.star}}"></circle>
+              <circle cx="23" cy="21" r=".9" fill="{{c.star}}"></circle>
+              <circle cx="35" cy="14" r="6.5" fill="{{c.disc}}"></circle>
+              <circle cx="38.2" cy="11.6" r="5.6" fill="{{c.skyBg}}"></circle>
+            </sc-if>
+            <sc-if value="{{c.hasGround}}" hint-placeholder-val="{{ true }}">
+              <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{c.horizon}}"></path>
+            </sc-if>
+          </svg>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;">
+            <svg width="72" height="36" viewBox="0 0 72 36" role="img" aria-label="{{c.aria}}, actual size">
+              <rect x="0" y="0" width="72" height="36" rx="12" fill="{{c.skyBg}}"></rect>
+              <sc-if value="{{c.isSun}}" hint-placeholder-val="{{ true }}">
+                <path d="{{c.rays}}" fill="none" stroke="{{c.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                <circle cx="36" cy="{{c.sunY}}" r="{{c.sunR}}" fill="{{c.disc}}"></circle>
+              </sc-if>
+              <sc-if value="{{c.isNight}}" hint-placeholder-val="{{ false }}">
+                <circle cx="14" cy="9" r="1.3" fill="{{c.star}}"></circle>
+                <circle cx="52" cy="8" r="1.5" fill="{{c.star}}"></circle>
+                <circle cx="60" cy="17" r="1.1" fill="{{c.star}}"></circle>
+                <circle cx="23" cy="21" r=".9" fill="{{c.star}}"></circle>
+                <circle cx="35" cy="14" r="6.5" fill="{{c.disc}}"></circle>
+                <circle cx="38.2" cy="11.6" r="5.6" fill="{{c.skyBg}}"></circle>
+              </sc-if>
+              <sc-if value="{{c.hasGround}}" hint-placeholder-val="{{ true }}">
+                <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{c.horizon}}"></path>
+              </sc-if>
+            </svg>
+            <svg width="48" height="24" viewBox="0 0 72 36" role="img" aria-label="{{c.aria}}, compact size">
+              <rect x="0" y="0" width="72" height="36" rx="12" fill="{{c.skyBg}}"></rect>
+              <sc-if value="{{c.isSun}}" hint-placeholder-val="{{ true }}">
+                <path d="{{c.rays}}" fill="none" stroke="{{c.disc}}" stroke-width="2.4" stroke-linecap="round"></path>
+                <circle cx="36" cy="{{c.sunY}}" r="{{c.sunR}}" fill="{{c.disc}}"></circle>
+              </sc-if>
+              <sc-if value="{{c.isNight}}" hint-placeholder-val="{{ false }}">
+                <circle cx="14" cy="9" r="1.3" fill="{{c.star}}"></circle>
+                <circle cx="52" cy="8" r="1.5" fill="{{c.star}}"></circle>
+                <circle cx="60" cy="17" r="1.1" fill="{{c.star}}"></circle>
+                <circle cx="23" cy="21" r=".9" fill="{{c.star}}"></circle>
+                <circle cx="35" cy="14" r="6.5" fill="{{c.disc}}"></circle>
+                <circle cx="38.2" cy="11.6" r="5.6" fill="{{c.skyBg}}"></circle>
+              </sc-if>
+              <sc-if value="{{c.hasGround}}" hint-placeholder-val="{{ true }}">
+                <path d="M.4 27H71.6A12 12 0 0 1 60 36H12A12 12 0 0 1 .4 27Z" fill="{{c.horizon}}"></path>
+              </sc-if>
+            </svg>
+          </div>
+        </div>
+        <p style="margin:0;font-size:12px;font-weight:600;color:{{td.ink}};letter-spacing:.04em;">SkyChip / {{c.period}}</p>
+        <p style="margin:0;font-size:12px;color:{{td.muted}};">{{c.hours}} · {{c.describe}}</p>
+      </div>
+    </sc-for>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"accent":{"editor":"color","default":"#F27D26"},"$preview":{"width":1440,"height":480}}'>
+function hexToRgb(hex) {
+  let h = (hex || '').replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h || 'F27D26', 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function luminance(hex) {
+  const [r, g, b] = hexToRgb(hex).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function hueSatOf(hex) {
+  const [r, g, b] = hexToRgb(hex).map(v => v / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  let h = 0; if (d) { if (max === r) h = ((g - b) / d) % 6; else if (max === g) h = (b - r) / d + 2; else h = (r - g) / d + 4; h = Math.round(h * 60); if (h < 0) h += 360; }
+  const l = (max + min) / 2; const s = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+  return { h, s: Math.round(s * 100) };
+}
+function rgba(hex, a) { const c = hexToRgb(hex); return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
+// SkyChip geometry (72×36 viewBox) — identical to R2-Main
+function raysPath(cx, cy, r1, r2, angles) {
+  return angles.map(a => {
+    const c = Math.cos(a * Math.PI / 180), s = Math.sin(a * Math.PI / 180);
+    return 'M' + (cx + r1 * c).toFixed(1) + ' ' + (cy + r1 * s).toFixed(1) + 'L' + (cx + r2 * c).toFixed(1) + ' ' + (cy + r2 * s).toFixed(1);
+  }).join('');
+}
+const SKY_GEOM = {
+  morning: { sunY: 20, sunR: 7, rays: raysPath(36, 20, 10, 14, [-150, -120, -90, -60, -30]), ground: true },
+  afternoon: { sunY: 18, sunR: 7, rays: raysPath(36, 18, 10, 14, [0, 45, 90, 135, 180, 225, 270, 315]), ground: false },
+  evening: { sunY: 27, sunR: 8, rays: raysPath(36, 27, 11, 14, [-125, -90, -55]), ground: true },
+  night: { sunY: 0, sunR: 0, rays: '', ground: true }
+};
+function skyChip(period, T, city) {
+  const key = period.toLowerCase(), pal = T.sky[key], g = SKY_GEOM[key];
+  return { period, isNight: key === 'night', isSun: key !== 'night', hasGround: g.ground,
+    skyBg: pal.bg, disc: pal.disc, horizon: pal.hz, star: T.sky.star, sunY: g.sunY, sunR: g.sunR, rays: g.rays,
+    skyAria: city ? period + ' in ' + city : period, aria: city ? period + ' in ' + city : period };
+}
+const SKY_NOTES = {
+  Morning: { hours: '5:00 to 11:59', describe: 'sun resting on the horizon, five rays above' },
+  Afternoon: { hours: '12:00 to 16:59', describe: 'full sun high up, eight rays all round' },
+  Evening: { hours: '17:00 to 20:59', describe: 'half sun sunk into the horizon, three short rays' },
+  Night: { hours: '21:00 to 4:59', describe: 'crescent moon and four stars' }
+};
+// Typeface options — identical to R2-Main
+const FONTS = {
+  'Plus Jakarta Sans': { body: "'Plus Jakarta Sans', system-ui, sans-serif", display: "'Plus Jakarta Sans', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'Figtree': { body: "'Figtree', system-ui, sans-serif", display: "'Figtree', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'DM Sans': { body: "'DM Sans', system-ui, sans-serif", display: "'DM Sans', system-ui, sans-serif", track: { head: '-.02em', name: '-.01em', clock: '-.02em' } },
+  'Nunito': { body: "'Nunito', system-ui, sans-serif", display: "'Nunito', system-ui, sans-serif", track: { head: '-.01em', name: '0', clock: '-.01em' } },
+  'Bricolage Grotesque + Figtree': { body: "'Figtree', system-ui, sans-serif", display: "'Bricolage Grotesque', 'Figtree', system-ui, sans-serif", track: { head: '-.03em', name: '-.02em', clock: '-.03em' } }
+};
+// ONE token object — identical to R2-Main
+function tokens(dark, accent, font) {
+  const hs = hueSatOf(accent);
+  const f = FONTS[font] || FONTS['Plus Jakarta Sans'];
+  const color = dark ? {
+    bg: '#16181B', surface: '#1F2226', surface2: '#272B30', ink: '#F2F1EC', muted: '#B3B0A8', line: '#30353B', lineStrong: '#4A5058',
+    ok: '#9FD9A8', okSoft: '#1F3326', error: '#FF8F86', errorSoft: '#3F2320', notice: '#F7E1CC', noticeSoft: '#3B3220',
+    inverse: '#F2F1EC', onInverse: '#1F1D1A', land: '#30353B', coast: '#4A5058', grid: '#30353B', skel: '#2A2E34', skelHi: '#353A41',
+    shadow: '0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6)'
+  } : {
+    bg: '#F4F5F1', surface: '#FFFFFF', surface2: '#ECEDE8', ink: '#1F1D1A', muted: '#5C5853', line: '#E4E3DC', lineStrong: '#C9C7BE',
+    ok: '#1F6B3A', okSoft: '#E4F3E8', error: '#B42318', errorSoft: '#FDE8E6', notice: '#6E3A0A', noticeSoft: '#FFF1DC',
+    inverse: '#1F1D1A', onInverse: '#F2F1EC', land: '#E4E3DC', coast: '#C9C7BE', grid: '#D9DBD3', skel: '#ECECE6', skelHi: '#F7F7F3',
+    shadow: '0 1px 2px rgba(30,28,24,.05), 0 10px 28px -14px rgba(30,28,24,.16)'
+  };
+  return Object.assign(color, {
+    accent, onAccent: luminance(accent) > 0.3 ? '#1F1D1A' : '#FFFFFF',
+    accentInk: dark ? 'hsl(' + hs.h + ' ' + Math.min(95, hs.s + 10) + '% 72%)' : 'hsl(' + hs.h + ' ' + hs.s + '% 30%)',
+    accentSoft: dark ? 'hsl(' + hs.h + ' 30% 20%)' : 'hsl(' + hs.h + ' 80% 94%)',
+    bandFill: rgba(accent, dark ? 0.09 : 0.08),
+    rSm: '8px', rMd: '12px', rLg: '20px', rFull: '999px',
+    space: [4, 8, 12, 16, 20, 24, 32, 40, 48],
+    type: { xs: 12, sm: 13, md: 14, base: 15, lg: 16, xl: 20, h1: 26, clock: 28 },
+    fontBody: f.body, fontDisplay: f.display, track: f.track,
+    sky: dark ? {
+      morning: { bg: '#262B3F', disc: '#F2A43A', hz: '#4A3C22' }, afternoon: { bg: '#20364E', disc: '#F6B21B', hz: '#2C4560' },
+      evening: { bg: '#42271E', disc: '#F28352', hz: '#5E382A' }, night: { bg: '#1A2038', disc: '#EEF1F8', hz: '#262E4C' }, star: '#9FB0E0'
+    } : {
+      morning: { bg: '#ECEEF8', disc: '#C9640A', hz: '#E8D3A8' }, afternoon: { bg: '#D6EAFC', disc: '#BE5F06', hz: '#BFDCF6' },
+      evening: { bg: '#F8D5C6', disc: '#B5401A', hz: '#E3A58C' }, night: { bg: '#2B3350', disc: '#EEF1F8', hz: '#3A4466' }, star: '#C9D1EC'
+    },
+    skelFill: 'linear-gradient(90deg, ' + color.skel + ' 0%, ' + color.skelHi + ' 50%, ' + color.skel + ' 100%)'
+  });
+}
+class Component extends DCLogic {
+  renderVals() {
+    const dark = !!(this.props.dark);
+    const accent = this.props.accent || '#F27D26';
+    const T = tokens(dark, accent, 'Plus Jakarta Sans');
+    const TL = tokens(false, accent, 'Plus Jakarta Sans');
+    const TD = tokens(true, accent, 'Plus Jakarta Sans');
+    const periods = ['Morning', 'Afternoon', 'Evening', 'Night'];
+    const build = (tok, theme) => periods.map(p => Object.assign(skyChip(p, tok, null), SKY_NOTES[p], { aria: p + ', ' + theme + ' theme' }));
+    return {
+      t: T, tl: TL, td: TD,
+      themeLine: dark ? 'Board chrome: dark' : 'Board chrome: light',
+      lightChips: build(TL, 'light'),
+      darkChips: build(TD, 'dark')
+    };
+  }
+}
+</script>
+</body>
+</html>
