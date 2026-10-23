@@ -30,3 +30,17 @@ test("phone layout: floating add, strip first, one column", async ({ page }) => 
   const card = page.getByRole("listitem").filter({ hasText: "Sam Castillo" });
   expect(Math.round((await card.boundingBox())!.width)).toBe(390 - 32);
 });
+
+test.describe("small phone (320px)", () => {
+  test.use({ viewport: { width: 320, height: 568 } });
+
+  test("header fits without sideways scrolling", async ({ page }) => {
+    await page.goto("/");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
+    // The view toggle drops to icons but keeps its names for assistive tech.
+    const grid = page.getByRole("group", { name: "View" }).getByRole("button", { name: "Grid" });
+    await expect(grid).toBeVisible();
+    expect(Math.round((await grid.boundingBox())!.width)).toBe(44);
+    await expect(page.getByRole("banner").getByRole("button", { name: "Add a person" })).toBeHidden();
+  });
+});
