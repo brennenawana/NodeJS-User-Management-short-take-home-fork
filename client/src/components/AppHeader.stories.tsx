@@ -10,6 +10,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Figma: AppHeader, Device. Mobile is the same component below 640px, so the story just sets a phone viewport.
+// Figma: AppHeader, Device. Mobile is the same component below 640px: pick a phone size
+// from the viewport menu. (Setting the viewport here would lock that menu for the story.)
 export const Desktop: Story = {};
-export const Mobile: Story = { globals: { viewport: { value: "mobile2" } } };
+export const Mobile: Story = {};
