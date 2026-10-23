@@ -2,7 +2,15 @@
 
 Instructions for coding agents (Claude Code, Codex, Cursor, Copilot, Gemini CLI and others). Tool-specific files only point here.
 
-Read `README.md` first for what the project is and how to run it. This file adds what is specific to agents.
+Read `README.md` first. It covers what the project is, how to run it, how the code is laid out and the design workflow, and all of it applies to you. This file adds what is specific to agents.
+
+## Working rules
+
+- Follow the layout in the README. Never let a vendor client, URL or response shape leak into `server/src/core/`.
+- Ship tests with every change and run `yarn test` before committing.
+- Keep the README's commands current when scripts change.
+- Never commit secrets.
+- When the code and the Figma file disagree, flag it instead of guessing.
 
 ## Commits
 
