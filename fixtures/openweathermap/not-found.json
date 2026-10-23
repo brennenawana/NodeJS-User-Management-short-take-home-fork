@@ -1,0 +1,7 @@
+{
+  "status": 404,
+  "body": {
+    "cod": "404",
+    "message": "city not found"
+  }
+}
