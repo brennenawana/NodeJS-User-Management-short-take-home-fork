@@ -10,7 +10,7 @@ export function ViewToggle({ active, onChange }: { active: View; onChange: (view
       {(["grid", "map"] as const).map((view) => (
         <button key={view} type="button" className={styles.option} aria-pressed={active === view} onClick={() => onChange(view)}>
           <Icon name={view} size={16} />
-          {view === "grid" ? "Grid" : "Map"}
+          <span className={styles.label}>{view === "grid" ? "Grid" : "Map"}</span>
         </button>
       ))}
     </div>
