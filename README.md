@@ -5,8 +5,18 @@
 ```sh
 yarn install
 cp .env.example .env   # optional: the defaults run offline
-yarn dev               # API on http://localhost:8080, restarts on change
+yarn seed              # optional: adds the sample team
+yarn dev               # API on :8080 and the app on http://localhost:5173
 ```
+
+| Script | |
+|---|---|
+| `yarn dev` | API and client with reload; Vite proxies `/api` to the API |
+| `yarn start` | API only |
+| `yarn build` | production build of the client into `client/dist` |
+| `yarn seed` | adds the eight sample people through the configured provider |
+| `yarn test` | server and client suites |
+| `yarn typecheck` | both workspaces |
 
 ## Server
 
@@ -32,6 +42,18 @@ A user is `id, name, zip, city, lat, lon, utcOffsetSeconds, locationUpdatedAt`. 
 
 Errors come back as `{ error: { code, message, field? } }`, and the messages are written for people.
 
+## Client
+
+A Vite, React and TypeScript app in `client/`.
+
+- `client/src/components/`: one file per Figma component (`AppHeader`, `TimezoneStrip`, `ZoneCell`, `PersonCard`, `AddSheet`, `Avatar`, `SkyChip`, `Button`, `TextField`, `ViewToggle`, `Toast`, `EmptyState`). Props mirror the Figma properties, so `<PersonCard state="pendingLocation">` is the PersonCard / PendingLocation variant.
+- Styles use only the tokens in `design/tokens.css`: light in `:root`, dark in `[data-theme="dark"]`, type as `font: var(--text-md-semibold)`.
+- `client/src/lib/time.ts`: clocks are UTC plus the stored offset, and labels read "Boston · UTC−4".
+- `client/src/api.ts`: the only place that talks to the server.
+- The header wordmark and the page title come from `product.json`.
+
+The map view isn't built yet; the toggle says so.
+
 ## Location providers
 
 `LOCATION_PROVIDER` picks how a zip becomes a city, coordinates and a UTC offset.
@@ -51,7 +73,7 @@ To add a provider, create `server/src/providers/location/<name>/index.ts` export
 ## Tests
 
 ```sh
-yarn test        # server: node:test
+yarn test        # server (node:test) and client (Vitest, Testing Library, MSW)
 yarn typecheck
 yarn workspace user-management-server test:live   # hits the real providers whose keys are in .env
 ```
