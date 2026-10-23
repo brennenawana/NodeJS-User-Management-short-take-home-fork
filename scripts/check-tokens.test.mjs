@@ -19,11 +19,12 @@ function block(selector) {
 const light = block(":root");
 const dark = block('[data-theme="dark"]');
 const prop = (codeSyntax) => codeSyntax.match(/^var\(--([a-z0-9-]+)\)$/)?.[1];
-const cssValue = (value, type) =>
-  typeof value === "object" ? value.codeSyntax : type === "FLOAT" ? `${value}px` : value;
+const UNITS = { Motion: "ms" };
+const cssValue = (value, type, collection) =>
+  typeof value === "object" ? value.codeSyntax : type === "FLOAT" ? `${value}${UNITS[collection] ?? "px"}` : value;
 const same = (a, b) => a?.toLowerCase() === b?.toLowerCase();
 
-const cssCollections = ["Primitives", "Color", "Spacing", "Radius"];
+const cssCollections = ["Primitives", "Color", "Spacing", "Radius", "Motion"];
 
 for (const name of cssCollections) {
   test(`${name} variables match tokens.css`, () => {
@@ -33,8 +34,8 @@ for (const name of cssCollections) {
       assert.ok(p, `${name}/${v.name} has a var(--…) code syntax`);
       for (const mode of modes) {
         const sheet = mode === "Dark" ? dark : light;
-        assert.ok(same(sheet[p], cssValue(v.values[mode], v.type)),
-          `--${p} (${mode}) is ${sheet[p]} in tokens.css but ${cssValue(v.values[mode], v.type)} in Figma`);
+        const want = cssValue(v.values[mode], v.type, name);
+        assert.ok(same(sheet[p], want), `--${p} (${mode}) is ${sheet[p]} in tokens.css but ${want} in Figma`);
       }
     }
   });
@@ -43,7 +44,7 @@ for (const name of cssCollections) {
 test("tokens.css has no variable-backed properties that Figma doesn't", () => {
   const known = new Set(cssCollections.flatMap((n) => figma.collections[n].variables.map((v) => prop(v.codeSyntax))));
   const orphans = [...Object.keys(light), ...Object.keys(dark)]
-    .filter((k) => /^(palette|color|space|radius)-/.test(k) && !known.has(k));
+    .filter((k) => /^(palette|color|space|radius|motion)-/.test(k) && !known.has(k));
   assert.deepEqual(orphans, []);
 });
 
