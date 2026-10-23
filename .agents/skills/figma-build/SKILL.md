@@ -25,7 +25,7 @@ Work on the Figma file without rebuilding what is already there and without drif
 2. Make changes in retry-safe batches, one page per script, and never run two scripts at the same time.
 3. Return every created or changed node ID, and record the stable ones in `state.json`.
 4. Take one screenshot per finished page. Fix clipped, overlapping or low-contrast text before moving on.
-5. If variables changed, regenerate `design/tokens.css` so its names still equal each variable's code syntax.
+5. If variables or text styles changed, re-export them to `design/tokens.json` (same shape: collections with each variable's code syntax and per-mode values, aliases as `{ alias, codeSyntax }`, then text styles) and update `design/tokens.css` to match. `yarn check:tokens` fails until the two agree.
 6. Commit `state.json`, `tokens.css` and any helper changes, following the commit rules in `AGENTS.md`.
 
 ## Rules

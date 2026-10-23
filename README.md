@@ -1,5 +1,7 @@
 # User Management
 
+A small app for a distributed team: a card for each person with their local time, and a strip that groups everyone by UTC offset. Adding someone takes a name and a US zip code; the city, coordinates and offset are looked up for you.
+
 ## Getting started
 
 ```sh
@@ -73,10 +75,15 @@ To add a provider, create `server/src/providers/location/<name>/index.ts` export
 ## Tests
 
 ```sh
-yarn test        # server (node:test) and client (Vitest, Testing Library, MSW)
+yarn test           # token drift check, server (node:test) and client (Vitest, Testing Library, MSW)
 yarn typecheck
+yarn e2e            # Playwright: add, edit and remove against the real API and a production build
 yarn workspace user-management-server test:live   # hits the real providers whose keys are in .env
 ```
+
+The e2e run starts its own API with the `fixture` provider and in-memory storage, so it needs no key and leaves `data/` alone. Run `yarn workspace user-management-e2e playwright install chromium` once first.
+
+CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both unit suites, the client build and the e2e test on every push and pull request.
 
 ## Design
 
@@ -85,5 +92,6 @@ The design lives in Figma and the code follows it.
 - **Figma file:** https://www.figma.com/design/Tu8Kz1qqdVWAczefkHzlpE. Its pages are Cover, Getting started, Foundations, Components, Screens and Prototype. Getting started explains the file and how to propose changes.
 - **`design/source/`:** the HTML design sources.
 - **`design/tokens.css`:** generated from the Figma variables. Every property name equals the variable's code syntax in Figma, so Dev Mode and the code agree. Change the variable in Figma first, then this file in the same change.
+- **`design/tokens.json`:** the Figma variables and text styles as exported. `yarn check:tokens` fails if `tokens.css` disagrees with it, or if the Product collection disagrees with `product.json`.
 - **`design/figma/state.json`:** the ledger of Figma page, component and frame IDs, decisions and lessons.
 - **Components match.** React components use the Figma component names, and their props mirror the Figma component properties (`<PersonCard state="pendingLocation">`).
