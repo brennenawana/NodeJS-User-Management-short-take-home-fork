@@ -4,17 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
     "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "test:live": "LIVE=1 node --env-file-if-exists=../.env --import tsx --test src/providers/location/live.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "express": "^5.1.0",
-    "zod": "^3.25.0"
+    "zod": "^3.25.0",
+    "tsx": "^4.19.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.0.0",
-    "tsx": "^4.19.0",
     "typescript": "^5.8.0"
   }
 }
