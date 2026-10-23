@@ -24,9 +24,11 @@ const preview: Preview = {
   },
   initialGlobals: { theme: "light" },
   decorators: [
-    (Story, { globals }) => {
+    (Story, { globals, parameters }) => {
       document.documentElement.dataset.theme = globals.theme;
-      return <div style={{ padding: "var(--space-24)", background: "var(--color-bg)", minHeight: "100vh" }}><Story /></div>;
+      // Full-width pieces (the header) set `edgeToEdge` so they meet the viewport like they do in the app.
+      const padding = parameters.edgeToEdge ? 0 : "var(--space-24)";
+      return <div style={{ padding, background: "var(--color-bg)", minHeight: "100vh" }}><Story /></div>;
     },
   ],
   parameters: { layout: "fullscreen", controls: { expanded: true } },
