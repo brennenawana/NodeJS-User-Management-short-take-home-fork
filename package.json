@@ -17,7 +17,8 @@
     "check:tokens": "node --test scripts/check-tokens.test.mjs",
     "e2e": "yarn workspace user-management-e2e test",
     "storybook": "yarn workspace user-management-client storybook",
-    "build-storybook": "yarn workspace user-management-client build-storybook"
+    "build-storybook": "yarn workspace user-management-client build-storybook",
+    "screenshots": "SCREENSHOTS=1 yarn workspace user-management-e2e playwright test tests/screenshots.spec.ts"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
