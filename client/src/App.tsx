@@ -1,10 +1,11 @@
 import { useCallback, useState } from "react";
-import { isLocated, type User, type ZipPreview } from "./api";
+import { needsAttention, type User, type ZipPreview } from "./api";
 import { AddSheet } from "./components/AddSheet";
 import { AppHeader } from "./components/AppHeader";
 import { Button } from "./components/Button";
 import { EmptyState } from "./components/EmptyState";
 import { MapView } from "./components/MapView";
+import { NeedsAttention } from "./components/NeedsAttention";
 import { PersonCard, type PersonCardState } from "./components/PersonCard";
 import { TimezoneStrip } from "./components/TimezoneStrip";
 import { Toast } from "./components/Toast";
@@ -17,12 +18,17 @@ import styles from "./App.module.css";
 
 const plural = (n: number) => (n === 1 ? "1 person" : `${n} people`);
 
+const FLAG_STATE: Record<User["locationStatus"], PersonCardState> = {
+  located: "default", pending: "pendingLocation", cantLocate: "cantLocate", invalidZip: "invalidZip",
+};
+
 export function App() {
   const { theme, toggle } = useTheme();
   const now = useNow();
   const people = useUsers();
   const [query, setQuery] = useState("");
   const [zone, setZone] = useState<number | null>(null);
+  const [attentionFilter, setAttentionFilter] = useState(false);
   const [view, setView] = useState<View>("grid");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -31,17 +37,20 @@ export function App() {
   const onPreview = useCallback((hit: ZipPreview | null) => setPreview(hit), []);
 
   const all = people.users ?? [];
+  const flagged = all.filter(needsAttention);
+  const attentionOnly = attentionFilter && flagged.length > 0;
   const q = query.trim().toLowerCase();
   const shown = all.filter((u) =>
     (!q || u.name.toLowerCase().includes(q) || (u.city ?? "").toLowerCase().includes(q)) &&
-    (zone === null || u.utcOffsetSeconds === zone));
-  const filtered = q !== "" || zone !== null;
+    (zone === null || u.utcOffsetSeconds === zone) &&
+    (!attentionOnly || needsAttention(u)));
+  const filtered = q !== "" || zone !== null || attentionOnly;
 
   const cardState = (u: User): PersonCardState =>
-    editingId === u.id ? "editing" : expandedId === u.id ? "expanded" : isLocated(u) ? "default" : "pendingLocation";
+    editingId === u.id ? "editing" : expandedId === u.id ? "expanded" : FLAG_STATE[u.locationStatus];
 
   const openSheet = () => setSheetOpen(true);
-  const clearFilters = () => { setQuery(""); setZone(null); };
+  const clearFilters = () => { setQuery(""); setZone(null); setAttentionFilter(false); };
 
   return (
     <>
@@ -51,6 +60,10 @@ export function App() {
           <h1 className={styles.h1}>People</h1>
           {people.users && (
             <p className={styles.count}>{plural(all.length)}{filtered && shown.length !== all.length && ` · ${shown.length} shown`}</p>
+          )}
+          {flagged.length > 0 && (
+            <NeedsAttention state={attentionOnly ? "active" : "default"} onClick={() => setAttentionFilter(!attentionOnly)}
+              label={`${flagged.length === 1 ? "1 person needs" : `${flagged.length} people need`} attention`} />
           )}
           {zone !== null && (
             <Button variant="secondary" className={styles.chip} icon="close" label={`Showing ${offsetLabel(zone)} only`} onClick={() => setZone(null)} />
@@ -93,7 +106,7 @@ export function App() {
               body="Add your first person with a name and a zip. We will fill in the city, map point and local time." />
           )
         ) : shown.length === 0 ? (
-          <EmptyState showIllustration={false} title={q ? `No one matches “${query.trim()}”` : `No one in ${offsetLabel(zone!)}`}
+          <EmptyState showIllustration={false} title={q ? `No one matches “${query.trim()}”` : zone !== null ? `No one in ${offsetLabel(zone)}` : "No one needs attention"}
             body="Try a shorter name, a city like Boston, or clear the filters." actionLabel="Clear search and filters" actionIcon="close" onAction={clearFilters} />
         ) : (
           <ul className={styles.grid} aria-label="People">

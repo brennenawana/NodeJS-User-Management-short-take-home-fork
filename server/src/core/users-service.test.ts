@@ -1,26 +1,32 @@
 import { beforeEach, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { createUsersService } from "./users-service.js";
-import { ProviderUnavailable, UserNotFound, ZipNotFound } from "./errors.js";
-import { BOSTON, DENVER, fakeProvider, fakeRepo, fixedClock, sequentialIds } from "./fakes.js";
+import { InvalidZip, ProviderUnavailable, UserNotFound, ZipNotFound } from "./errors.js";
+import { BOSTON, DENVER, fakeDirectory, fakeProvider, fakeRepo, fixedClock, sequentialIds } from "./fakes.js";
 
 const T0 = "2026-10-19T16:50:00.000Z";
 const T1 = "2026-10-23T09:00:00.000Z";
 
+// 12345 is a real zip whose lookup hits an outage; 00501 is real but the provider
+// can't place it; 99999 isn't a US zip at all.
+const REAL = ["02108", "80202", "12345", "00501"];
+
 describe("users service", () => {
   let lookups: ReturnType<typeof fakeProvider>;
+  let directory: ReturnType<typeof fakeDirectory>;
   let clock: ReturnType<typeof fixedClock>;
   let service: ReturnType<typeof createUsersService>;
 
   beforeEach(() => {
-    lookups = fakeProvider({ "02108": BOSTON, "80202": DENVER, "99999": "down" });
+    lookups = fakeProvider({ "02108": BOSTON, "80202": DENVER, "12345": "down" });
+    directory = fakeDirectory(REAL);
     clock = fixedClock(T0);
-    service = createUsersService({ repo: fakeRepo(), locationProvider: lookups.provider, clock, newId: sequentialIds() });
+    service = createUsersService({ repo: fakeRepo(), locationProvider: lookups.provider, zipDirectory: directory, clock, newId: sequentialIds() });
   });
 
   test("create looks up the zip and stores the location with its timestamp", async () => {
     const user = await service.create({ name: "Lena Hoffmann", zip: "02108" });
-    assert.deepEqual(user, { id: "u1", name: "Lena Hoffmann", zip: "02108", ...BOSTON, locationUpdatedAt: T0 });
+    assert.deepEqual(user, { id: "u1", name: "Lena Hoffmann", zip: "02108", ...BOSTON, locationUpdatedAt: T0, locationStatus: "located" });
     assert.deepEqual(await service.get("u1"), user);
   });
 
@@ -29,17 +35,22 @@ describe("users service", () => {
     assert.equal(user.name, "Lena");
   });
 
-  test("create still saves when the zip is unknown, with the location pending", async () => {
-    const user = await service.create({ name: "Noor Haddad", zip: "00000" });
-    assert.equal(user.city, null);
-    assert.equal(user.utcOffsetSeconds, null);
-    assert.equal(user.locationUpdatedAt, null);
-    assert.equal((await service.list()).length, 1);
+  test("create refuses a zip that isn't a real US zip, without calling the provider", async () => {
+    await assert.rejects(service.create({ name: "Noor", zip: "99999" }), (e: unknown) => e instanceof InvalidZip && e.zip === "99999");
+    assert.deepEqual(lookups.calls, []);
+    assert.equal((await service.list()).length, 0);
   });
 
-  test("create still saves when the provider is down", async () => {
-    const user = await service.create({ name: "Noor Haddad", zip: "99999" });
+  test("a real zip the provider can't place is saved and flagged", async () => {
+    const user = await service.create({ name: "Noor Haddad", zip: "00501" });
+    assert.equal(user.locationStatus, "cantLocate");
     assert.equal(user.city, null);
+  });
+
+  test("a provider outage saves the user as pending, to retry later", async () => {
+    const user = await service.create({ name: "Noor Haddad", zip: "12345" });
+    assert.equal(user.locationStatus, "pending");
+    assert.equal(user.utcOffsetSeconds, null);
   });
 
   test("a patch that keeps the zip does not look it up again", async () => {
@@ -56,13 +67,20 @@ describe("users service", () => {
     clock.set(T1);
     const updated = await service.update(created.id, { zip: "80202" });
     assert.deepEqual(lookups.calls, ["02108", "80202"]);
-    assert.deepEqual(updated, { id: created.id, name: "Lena", zip: "80202", ...DENVER, locationUpdatedAt: T1 });
+    assert.deepEqual(updated, { id: created.id, name: "Lena", zip: "80202", ...DENVER, locationUpdatedAt: T1, locationStatus: "located" });
   });
 
-  test("a new zip that can't be found leaves the location pending, not stale", async () => {
+  test("a patch to an invalid zip is refused and the record is untouched", async () => {
     const created = await service.create({ name: "Lena", zip: "02108" });
-    const updated = await service.update(created.id, { zip: "00000" });
-    assert.equal(updated.zip, "00000");
+    await assert.rejects(service.update(created.id, { zip: "99999" }), InvalidZip);
+    assert.deepEqual(await service.get(created.id), created);
+  });
+
+  test("a patch to a zip the provider can't place flags the user instead of keeping a stale location", async () => {
+    const created = await service.create({ name: "Lena", zip: "02108" });
+    const updated = await service.update(created.id, { zip: "00501" });
+    assert.equal(updated.zip, "00501");
+    assert.equal(updated.locationStatus, "cantLocate");
     assert.equal(updated.city, null);
   });
 
@@ -75,24 +93,43 @@ describe("users service", () => {
     assert.equal(refreshed.locationUpdatedAt, T1);
   });
 
-  test("refresh fills in a pending location once the zip resolves", async () => {
-    const created = await service.create({ name: "Noor", zip: "99999" });
-    lookups.table["99999"] = DENVER;
+  test("refresh fills in a pending location once the provider is back", async () => {
+    const created = await service.create({ name: "Noor", zip: "12345" });
+    lookups.table["12345"] = DENVER;
     const refreshed = await service.refreshLocation(created.id);
+    assert.equal(refreshed.locationStatus, "located");
     assert.equal(refreshed.city, "Denver");
   });
 
-  test("a failed refresh reports why and keeps the record as it was", async () => {
+  test("refresh flags a zip that is no longer a real zip", async () => {
+    const created = await service.create({ name: "Lena", zip: "02108" });
+    directory.zips.delete("02108");
+    const refreshed = await service.refreshLocation(created.id);
+    assert.equal(refreshed.locationStatus, "invalidZip");
+    assert.equal(refreshed.city, null);
+    assert.deepEqual(lookups.calls, ["02108"], "no lookup for a zip we know is gone");
+    assert.deepEqual(await service.get(created.id), refreshed);
+  });
+
+  test("refresh flags a zip the provider can no longer place", async () => {
+    const created = await service.create({ name: "Lena", zip: "02108" });
+    delete lookups.table["02108"];
+    const refreshed = await service.refreshLocation(created.id);
+    assert.equal(refreshed.locationStatus, "cantLocate");
+  });
+
+  test("a refresh during an outage reports it and keeps the record as it was", async () => {
     const created = await service.create({ name: "Lena", zip: "02108" });
     lookups.table["02108"] = "down";
     await assert.rejects(service.refreshLocation(created.id), ProviderUnavailable);
     assert.deepEqual(await service.get(created.id), created);
   });
 
-  test("lookupZip passes provider errors through", async () => {
+  test("lookupZip refuses invalid zips and passes provider errors through", async () => {
     assert.deepEqual(await service.lookupZip("02108"), BOSTON);
-    await assert.rejects(service.lookupZip("00000"), ZipNotFound);
-    await assert.rejects(service.lookupZip("99999"), ProviderUnavailable);
+    await assert.rejects(service.lookupZip("99999"), InvalidZip);
+    await assert.rejects(service.lookupZip("00501"), ZipNotFound);
+    await assert.rejects(service.lookupZip("12345"), ProviderUnavailable);
   });
 
   test("list is sorted by name", async () => {

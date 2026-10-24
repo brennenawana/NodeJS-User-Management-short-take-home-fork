@@ -6,7 +6,11 @@ export interface Located {
   lon: number;
   utcOffsetSeconds: number;
   locationUpdatedAt: string;
+  locationStatus: "located";
 }
+
+/** Why there's no location: an outage (retried), a zip the provider can't place, or a zip that isn't real. */
+export type UnlocatedStatus = "pending" | "cantLocate" | "invalidZip";
 
 export interface Pending {
   city: null;
@@ -14,6 +18,7 @@ export interface Pending {
   lon: null;
   utcOffsetSeconds: null;
   locationUpdatedAt: null;
+  locationStatus: UnlocatedStatus;
 }
 
 export type User = { id: string; name: string; zip: string } & (Located | Pending);
@@ -26,8 +31,13 @@ export interface ZipPreview {
   utcOffsetSeconds: number;
 }
 
+/** Flagged users need a person to fix their zip. */
+export function needsAttention(user: User): boolean {
+  return user.locationStatus === "cantLocate" || user.locationStatus === "invalidZip";
+}
+
 export function isLocated(user: User): user is User & Located {
-  return user.utcOffsetSeconds !== null;
+  return user.locationStatus === "located";
 }
 
 export class ApiError extends Error {

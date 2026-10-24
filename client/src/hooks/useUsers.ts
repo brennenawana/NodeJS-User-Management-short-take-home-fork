@@ -49,13 +49,14 @@ export function useUsers() {
     });
   }, []);
 
-  // The card promises "We will retry the lookup", so pending locations are retried quietly.
+  // The card promises "We will retry the lookup" for outages, so those are retried quietly.
+  // Flagged zips aren't: retrying a zip the provider can't place won't help.
   const usersRef = useRef(users);
   usersRef.current = users;
   useEffect(() => {
     const timer = setInterval(() => {
       for (const user of usersRef.current ?? []) {
-        if (user.utcOffsetSeconds !== null) continue;
+        if (user.locationStatus !== "pending") continue;
         api.refreshLocation(user.id).then(put, () => undefined);
       }
     }, RETRY_PENDING_MS);

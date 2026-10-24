@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { AddSheet } from "./AddSheet";
-import { located, pending, resetApi } from "../test/server";
+import { CANT_LOCATE_ZIP, located, OUTAGE_ZIP, pending, resetApi } from "../test/server";
 
 const NOW = new Date("2026-10-19T16:50:00Z");
 
@@ -61,24 +61,34 @@ describe("AddSheet", () => {
     expect(onSave).toHaveBeenCalledWith({ name: "Lena Hoffmann", zip: "02108" });
   });
 
-  test("an unknown zip can be saved anyway", async () => {
-    const { user, sheet, hint, save, onSave } = setup();
+  test("a zip that isn't a real US zip is refused straight away, without a lookup", async () => {
+    const { user, sheet, hint, save } = setup();
     await user.type(screen.getByLabelText("Name"), "Noor Haddad");
     await user.type(screen.getByLabelText("Zip code"), "99999");
-    await waitFor(() => expect(hint()).toHaveTextContent("We could not find 99999. Double-check it, or save anyway and we will retry."));
     expect(sheet()).toHaveAttribute("data-state", "invalidZip");
-    expect(screen.getByText("99999 · location pending")).toBeInTheDocument();
-    expect(save()).toHaveAccessibleName("Save anyway");
-    await user.click(save());
-    expect(onSave).toHaveBeenCalledWith({ name: "Noor Haddad", zip: "99999" });
+    expect(hint()).toHaveTextContent("We couldn't find 99999. Check the zip and try again.");
+    expect(save()).toBeDisabled();
+    expect(save()).toHaveAccessibleName("Add person");
   });
 
-  test("a failed lookup explains and still allows saving", async () => {
+  test("a real zip the provider can't place can still be saved, and says it'll be flagged", async () => {
+    const { user, sheet, hint, save, onSave } = setup();
+    await user.type(screen.getByLabelText("Name"), "Noor Haddad");
+    await user.type(screen.getByLabelText("Zip code"), CANT_LOCATE_ZIP);
+    await waitFor(() => expect(sheet()).toHaveAttribute("data-state", "lookupFailed"));
+    expect(hint()).toHaveTextContent(`We can't place ${CANT_LOCATE_ZIP} on the map. You can still save; their card will be flagged.`);
+    expect(screen.getByText(`${CANT_LOCATE_ZIP} · can’t locate`)).toBeInTheDocument();
+    expect(save()).toHaveAccessibleName("Save anyway");
+    await user.click(save());
+    expect(onSave).toHaveBeenCalledWith({ name: "Noor Haddad", zip: CANT_LOCATE_ZIP });
+  });
+
+  test("an outage explains and still allows saving", async () => {
     const { user, sheet, hint, save } = setup();
     await user.type(screen.getByLabelText("Name"), "Noor");
-    await user.type(screen.getByLabelText("Zip code"), "00001");
+    await user.type(screen.getByLabelText("Zip code"), OUTAGE_ZIP);
     await waitFor(() => expect(sheet()).toHaveAttribute("data-state", "lookupFailed"));
-    expect(hint()).toHaveTextContent("We could not look up 00001 right now. You can still save and we will retry.");
+    expect(hint()).toHaveTextContent(`We could not look up ${OUTAGE_ZIP} right now. You can still save and we will retry.`);
     expect(screen.getByText("We will keep retrying the lookup after you save.")).toBeInTheDocument();
     expect(save()).toBeEnabled();
   });

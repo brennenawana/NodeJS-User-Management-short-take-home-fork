@@ -4,7 +4,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import product from "../../product.json";
 import { UNDO_MS } from "./hooks/useUsers";
 import { renderApp } from "./test/render";
-import { calls, located, pending, stored } from "./test/server";
+import { calls, CANT_LOCATE_ZIP, located, OUTAGE_ZIP, pending, stored } from "./test/server";
 
 const team = () => [
   located("Lena Hoffmann", "02108", "lena"),
@@ -157,9 +157,59 @@ describe("App", () => {
   });
 
   test("a failed retry shows why", async () => {
-    const user = await renderApp([pending("Noor Haddad", "00001", "noor")]);
+    const user = await renderApp([pending("Noor Haddad", OUTAGE_ZIP, "noor")]);
     await user.click(screen.getByRole("button", { name: "Try now" }));
     expect(await screen.findByRole("status")).toHaveTextContent("We could not look up that zip right now.");
+  });
+
+  test("people with a zip problem are flagged, and Fix zip opens the edit form", async () => {
+    const user = await renderApp([
+      ...team(),
+      pending("Noor Haddad", "99999", "noor", "invalidZip"),
+      pending("Sam Castillo", CANT_LOCATE_ZIP, "sam", "cantLocate"),
+    ]);
+    expect(card("Noor Haddad")).toHaveAttribute("data-state", "invalidZip");
+    expect(within(card("Noor Haddad")).getByRole("alert")).toHaveTextContent("We couldn’t find zip 99999. Fix it to see their local time.");
+    expect(card("Sam Castillo")).toHaveAttribute("data-state", "cantLocate");
+    expect(within(card("Sam Castillo")).getByText(`${CANT_LOCATE_ZIP} · can’t locate`)).toBeInTheDocument();
+
+    await user.click(within(card("Noor Haddad")).getByRole("button", { name: "Fix zip" }));
+    expect(card("Noor Haddad")).toHaveAttribute("data-state", "editing");
+    expect(within(card("Noor Haddad")).getByLabelText("Zip code")).toHaveValue("99999");
+  });
+
+  test("the attention count filters the grid to flagged people", async () => {
+    const user = await renderApp([...team(), pending("Noor Haddad", "99999", "noor", "invalidZip"), pending("Jo Park", OUTAGE_ZIP, "jo")]);
+    const chip = screen.getByRole("button", { name: "1 person needs attention" });
+    await user.click(chip);
+    expect(chip).toHaveAttribute("aria-pressed", "true");
+    expect(within(screen.getByRole("list", { name: "People" })).getAllByRole("listitem")).toHaveLength(1);
+    expect(screen.getByText("6 people · 1 shown")).toBeInTheDocument();
+    await user.click(chip);
+    expect(within(screen.getByRole("list", { name: "People" })).getAllByRole("listitem")).toHaveLength(6);
+  });
+
+  test("fixing an invalid zip clears the flag", async () => {
+    const user = await renderApp([...team(), pending("Noor Haddad", "99999", "noor", "invalidZip")]);
+    await user.click(within(card("Noor Haddad")).getByRole("button", { name: "Fix zip" }));
+    const zip = within(card("Noor Haddad")).getByLabelText("Zip code");
+    await user.clear(zip);
+    await user.type(zip, "02108");
+    await user.click(within(card("Noor Haddad")).getByRole("button", { name: "Save changes" }));
+    await waitFor(() => expect(card("Noor Haddad")).toHaveAttribute("data-state", "expanded"));
+    expect(screen.queryByRole("button", { name: /needs attention/ })).not.toBeInTheDocument();
+  });
+
+  test("the edit form refuses a zip that isn't real without calling the api", async () => {
+    const user = await renderApp(team());
+    await user.click(within(card("Lena Hoffmann")).getByRole("button", { name: "More actions for Lena Hoffmann" }));
+    await user.click(screen.getByRole("menuitem", { name: "Edit details" }));
+    const zip = within(card("Lena Hoffmann")).getByLabelText("Zip code");
+    await user.clear(zip);
+    await user.type(zip, "99999");
+    await user.click(within(card("Lena Hoffmann")).getByRole("button", { name: "Save changes" }));
+    expect(within(card("Lena Hoffmann")).getByRole("alert")).toHaveTextContent("We couldn't find 99999. Check the zip and try again.");
+    expect(calls.filter((c) => c.method === "PATCH")).toHaveLength(0);
   });
 
   test("the theme toggle switches data-theme and remembers it", async () => {

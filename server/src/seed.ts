@@ -5,6 +5,7 @@ import { createUsersService } from "./core/users-service.js";
 import { loadConfig } from "./config.js";
 import { locationProviders } from "./providers/location/index.js";
 import { storages } from "./storage/index.js";
+import { loadUsZips } from "./zips/us.js";
 
 // Adds the sample team through the normal service path.
 const envFile = new URL("../../.env", import.meta.url);
@@ -19,6 +20,7 @@ const config = loadConfig(process.env);
 const service = createUsersService({
   repo: storages[config.storage](process.env),
   locationProvider: locationProviders[config.locationProvider].fromEnv(process.env),
+  zipDirectory: loadUsZips(),
   clock: systemClock,
   newId: randomUUID,
 });

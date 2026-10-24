@@ -17,8 +17,8 @@ function sheetState(input: ZipInput, lookup: ZipLookup): AddSheetState {
   if (input.kind === "idle") return "empty";
   if (input.kind !== "complete") return "invalidZip";
   if (lookup.status === "found") return "resolved";
-  if (lookup.status === "unknown") return "invalidZip";
-  if (lookup.status === "failed") return "lookupFailed";
+  // Real zips that still can't be placed (provider says no, or is down) can be saved anyway.
+  if (lookup.status === "unknown" || lookup.status === "failed") return "lookupFailed";
   return "lookingUp";
 }
 
@@ -85,9 +85,11 @@ export function AddSheet({ now, onSave, onClose, onPreview, defaultName = "", de
   const hintIcon = HINT_ICON[state];
   const pvPlace = hit ? `${hit.city} · ${offsetLabel(hit.utcOffsetSeconds)}`
     : state === "lookingUp" ? lookupCopy.pending(complete)
+    : lookup.status === "unknown" ? `${complete} · can’t locate`
     : saveAnyway ? `${complete} · location pending`
     : "City appears here";
   const waitText = state === "lookingUp" ? "Local time and sky appear in a moment."
+    : lookup.status === "unknown" ? "Their card will be flagged so the zip can be fixed later."
     : saveAnyway ? "We will keep retrying the lookup after you save."
     : "Local time and sky appear once we know the zip.";
 

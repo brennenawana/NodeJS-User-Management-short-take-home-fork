@@ -3,8 +3,11 @@ import type { LocationProvider } from "../../../core/ports.js";
 import type { Location } from "../../../core/user.js";
 import { ZIPS } from "./zips.js";
 
-/** Zip that simulates an outage, so the "lookup failed" path can be exercised offline. */
-export const OUTAGE_ZIP = "00001";
+/**
+ * A real zip (Schenectady, NY) that simulates an outage, so the "lookup failed" path
+ * can be exercised offline. Real zips missing from the table come back as not found.
+ */
+export const OUTAGE_ZIP = "12345";
 
 /** Offline provider backed by a small table. Used by tests, e2e and anyone without an API key. */
 export function createFixtureProvider(table: Record<string, Location> = ZIPS, { down = false } = {}): LocationProvider {

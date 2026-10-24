@@ -17,27 +17,36 @@ export const locationSchema = z.object({
 
 export type Location = z.infer<typeof locationSchema>;
 
+/**
+ * Why a user does or doesn't have a location:
+ * - located: the provider placed the zip.
+ * - pending: the provider was unreachable; the client retries.
+ * - cantLocate: the zip is real but the provider can't place it. Retrying won't help.
+ * - invalidZip: the zip isn't (or is no longer) a real US zip.
+ */
+export const UNLOCATED_STATUSES = ["pending", "cantLocate", "invalidZip"] as const;
+export type UnlocatedStatus = (typeof UNLOCATED_STATUSES)[number];
+export type LocationStatus = "located" | UnlocatedStatus;
+
 const locatedFields = locationSchema.extend({
   locationUpdatedAt: z.string().datetime(),
+  locationStatus: z.literal("located"),
 });
 
-const pendingFields = z.object({
+const unlocatedFields = z.object({
   city: z.null(),
   lat: z.null(),
   lon: z.null(),
   utcOffsetSeconds: z.null(),
   locationUpdatedAt: z.null(),
+  locationStatus: z.enum(UNLOCATED_STATUSES),
 });
 
-export type LocationFields = z.infer<typeof locatedFields> | z.infer<typeof pendingFields>;
+export type LocationFields = z.infer<typeof locatedFields> | z.infer<typeof unlocatedFields>;
 
-export const PENDING_LOCATION: LocationFields = {
-  city: null,
-  lat: null,
-  lon: null,
-  utcOffsetSeconds: null,
-  locationUpdatedAt: null,
-};
+export function unlocated(locationStatus: UnlocatedStatus): LocationFields {
+  return { city: null, lat: null, lon: null, utcOffsetSeconds: null, locationUpdatedAt: null, locationStatus };
+}
 
 const baseUser = z.object({
   id: z.string().min(1),
@@ -45,8 +54,15 @@ const baseUser = z.object({
   zip: zipSchema,
 });
 
-// A stored user either has a full location or none at all ("pending location").
-export const userSchema = z.union([baseUser.merge(locatedFields), baseUser.merge(pendingFields)]);
+// Records saved before locationStatus existed get it from whether they have a location.
+function withStatus(raw: unknown) {
+  if (!raw || typeof raw !== "object" || "locationStatus" in raw) return raw;
+  const located = (raw as { utcOffsetSeconds?: unknown }).utcOffsetSeconds != null;
+  return { ...raw, locationStatus: located ? "located" : "pending" };
+}
+
+// A stored user either has a full location or none at all, with the reason why.
+export const userSchema = z.preprocess(withStatus, z.union([baseUser.merge(locatedFields), baseUser.merge(unlocatedFields)]));
 
 export type User = z.infer<typeof userSchema>;
 

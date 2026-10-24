@@ -29,11 +29,23 @@ A TypeScript Express API in `server/`.
 - `server/src/storage/<name>/`: `UsersRepo` implementations (`memory`, `json-file`). Each one passes `storage/repo-contract.ts`.
 - `server/src/http/`: routes, request validation and error responses.
 - `server/src/providers/location/<name>/`: `LocationProvider` implementations, listed in `providers/location/index.ts`.
-- `server/src/app.ts`: `buildApp({ repo, locationProvider, clock })` wires it together.
+- `server/src/zips/`: the `ZipDirectory` that knows which US zips are real, read from `zips/us.json`.
+- `server/src/app.ts`: `buildApp({ repo, locationProvider, zipDirectory, clock })` wires it together.
 - `server/src/main.ts`: reads `.env` through `config.ts` and picks the concrete storage and provider. It's the only file that does.
 - `product.json`: the product name. Code imports it, and a test fails if the README title or a package name drifts from it.
 
-A user is `id, name, zip, city, lat, lon, utcOffsetSeconds, locationUpdatedAt`. A timezone is a UTC offset in seconds, captured when the location was looked up. If the lookup fails, the user is still saved with the location fields set to `null` until a refresh succeeds. Editing only looks the zip up again when it changes.
+A user is `id, name, zip, city, lat, lon, utcOffsetSeconds, locationUpdatedAt, locationStatus`. A timezone is a UTC offset in seconds, captured when the location was looked up. Editing only looks the zip up again when it changes.
+
+Zips are checked twice. `zips/us.json` (every real US zip from GeoNames, as a 12.5 KB bitmap that the client bundles too) says whether a zip exists; the location provider says where it is. `locationStatus` records the outcome:
+
+| `locationStatus` | When | What happens |
+|---|---|---|
+| `located` | the provider placed the zip | city, coordinates and offset are filled in |
+| `pending` | the provider was unreachable | saved anyway; the client retries every minute |
+| `cantLocate` | the zip is real but the provider can't place it | saved and flagged on the card; retrying won't help |
+| `invalidZip` | a later lookup finds the zip is no longer real | flagged on the card |
+
+A zip that isn't real is refused outright, by the form and by the API (`400 invalid_zip`). Flagged people show a "Fix zip" banner, and a "needs attention" count above the grid filters to them. To rebuild the zip list, see `zips/README.md`. It contains data from GeoNames (www.geonames.org), licensed CC BY 4.0.
 
 | Method | Path | |
 |---|---|---|
@@ -49,7 +61,7 @@ Errors come back as `{ error: { code, message, field? } }`, and the messages are
 
 A Vite, React and TypeScript app in `client/`.
 
-- `client/src/components/`: one file per Figma component (`AppHeader`, `TimezoneStrip`, `ZoneCell`, `PersonCard`, `AddSheet`, `Avatar`, `SkyChip`, `Button`, `TextField`, `ViewToggle`, `Toast`, `EmptyState`). Props mirror the Figma properties, so `<PersonCard state="pendingLocation">` is the PersonCard / PendingLocation variant.
+- `client/src/components/`: one file per Figma component (`AppHeader`, `TimezoneStrip`, `ZoneCell`, `PersonCard`, `AddSheet`, `Avatar`, `SkyChip`, `Button`, `TextField`, `ViewToggle`, `Toast`, `EmptyState`, `NeedsAttention`). Props mirror the Figma properties, so `<PersonCard state="pendingLocation">` is the PersonCard / PendingLocation variant.
 - Styles use only the tokens in `design/tokens.css`: light in `:root`, dark in `[data-theme="dark"]`, type as `font: var(--text-md-semibold)`.
 - `client/src/lib/time.ts`: clocks are UTC plus the stored offset, and labels read "Boston · UTC−4".
 - `client/src/lib/map.ts`: the projection for the map view. Pins open the person's card, filtered-out pins dim, and the zip being added shows as a dashed pin.
@@ -65,7 +77,7 @@ Below 640px the layout follows the Mobile / Grid frame: search on its own row, t
 
 | Name | Needs | Notes |
 |---|---|---|
-| `fixture` (default) | nothing | Offline table of sample zips. `00001` simulates an outage. |
+| `fixture` (default) | nothing | Offline table of sample zips. `12345` simulates an outage; other real zips come back as not found. |
 | `openweathermap` | `OPENWEATHER_API_KEY` | One call to the current weather API; uses `name`, `coord` and `timezone`. |
 | `google` | `GOOGLE_MAPS_API_KEY` | Geocoding API, then the Time Zone API at the current time; the offset is `rawOffset + dstOffset`. |
 
