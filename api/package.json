@@ -1,0 +1,5 @@
+{
+  "name": "user-management-api",
+  "private": true,
+  "type": "module"
+}
