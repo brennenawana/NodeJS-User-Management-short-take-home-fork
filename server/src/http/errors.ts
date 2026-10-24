@@ -1,5 +1,5 @@
 import type { ErrorRequestHandler, Response } from "express";
-import { ProviderUnavailable, UserNotFound, ZipNotFound } from "../core/errors.js";
+import { InvalidZip, ProviderUnavailable, UserNotFound, ZipNotFound } from "../core/errors.js";
 
 export class BadRequest extends Error {
   constructor(message: string, readonly field?: string) {
@@ -15,8 +15,11 @@ function send(res: Response, status: number, code: string, message: string, fiel
 export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   if (error instanceof BadRequest) return send(res, 400, "invalid", error.message, error.field);
   if (error instanceof UserNotFound) return send(res, 404, "user_not_found", "We couldn't find that person. They may have been removed.");
+  if (error instanceof InvalidZip) {
+    return send(res, 400, "invalid_zip", `We couldn't find ${error.zip}. Check the zip and try again.`, "zip");
+  }
   if (error instanceof ZipNotFound) {
-    return send(res, 404, "zip_not_found", `We could not find ${error.zip}. Double-check it, or save anyway and we will retry.`);
+    return send(res, 404, "zip_not_found", `We can't place ${error.zip} on the map. You can still save; their card will be flagged.`);
   }
   if (error instanceof ProviderUnavailable) {
     return send(res, 503, "provider_unavailable", "We could not look up that zip right now. You can still save and we will retry.");

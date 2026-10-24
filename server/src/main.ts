@@ -4,6 +4,7 @@ import { loadConfig } from "./config.js";
 import { product } from "./product.js";
 import { locationProviders } from "./providers/location/index.js";
 import { storages } from "./storage/index.js";
+import { loadUsZips } from "./zips/us.js";
 
 // The one place concrete implementations are chosen.
 const envFile = new URL("../../.env", import.meta.url);
@@ -13,6 +14,7 @@ const config = loadConfig(process.env);
 const app = buildApp({
   repo: storages[config.storage](process.env),
   locationProvider: locationProviders[config.locationProvider].fromEnv(process.env),
+  zipDirectory: loadUsZips(),
 });
 
 app.listen(config.port, () => {
