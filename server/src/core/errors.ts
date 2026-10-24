@@ -14,6 +14,14 @@ export class ProviderUnavailable extends Error {
   }
 }
 
+/** The zip isn't a real US zip, so there's nothing to look up. */
+export class InvalidZip extends Error {
+  constructor(readonly zip: string) {
+    super(`${zip} is not a US zip code`);
+    this.name = "InvalidZip";
+  }
+}
+
 export class UserNotFound extends Error {
   constructor(readonly id: string) {
     super(`No user with id ${id}`);

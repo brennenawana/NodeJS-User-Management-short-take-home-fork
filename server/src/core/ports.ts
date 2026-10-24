@@ -5,6 +5,11 @@ export interface LocationProvider {
   lookupZip(zip: string): Promise<Location>;
 }
 
+/** Knows which 5-digit zips are real, without a network call. */
+export interface ZipDirectory {
+  has(zip: string): boolean;
+}
+
 export interface UsersRepo {
   list(): Promise<User[]>;
   get(id: string): Promise<User | undefined>;

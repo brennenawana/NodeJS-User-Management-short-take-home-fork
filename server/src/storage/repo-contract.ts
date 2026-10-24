@@ -6,11 +6,11 @@ import type { User } from "../core/user.js";
 const lena: User = {
   id: "a", name: "Lena Hoffmann", zip: "02108",
   city: "Boston", lat: 42.3576, lon: -71.0684, utcOffsetSeconds: -14400,
-  locationUpdatedAt: "2026-10-19T16:50:00.000Z",
+  locationUpdatedAt: "2026-10-19T16:50:00.000Z", locationStatus: "located",
 };
 const noor: User = {
   id: "b", name: "Noor Haddad", zip: "00000",
-  city: null, lat: null, lon: null, utcOffsetSeconds: null, locationUpdatedAt: null,
+  city: null, lat: null, lon: null, utcOffsetSeconds: null, locationUpdatedAt: null, locationStatus: "pending",
 };
 
 /** Every UsersRepo implementation runs this suite. */
