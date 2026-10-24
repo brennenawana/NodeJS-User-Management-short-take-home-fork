@@ -65,7 +65,7 @@ Below 640px the layout follows the Mobile / Grid frame: search on its own row, t
 
 | Name | Needs | Notes |
 |---|---|---|
-| `fixture` (default) | nothing | Offline table of sample zips. `00001` simulates an outage. |
+| `fixture` (default) | nothing | Offline table of sample zips. `12345` simulates an outage; other real zips come back as not found. |
 | `openweathermap` | `OPENWEATHER_API_KEY` | One call to the current weather API; uses `name`, `coord` and `timezone`. |
 | `google` | `GOOGLE_MAPS_API_KEY` | Geocoding API, then the Time Zone API at the current time; the offset is `rawOffset + dstOffset`. |
 
