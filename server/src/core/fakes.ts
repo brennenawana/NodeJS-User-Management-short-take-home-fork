@@ -1,5 +1,5 @@
 import { ProviderUnavailable, ZipNotFound } from "./errors.js";
-import type { Clock, LocationProvider, UsersRepo } from "./ports.js";
+import type { Clock, LocationProvider, UsersRepo, ZipDirectory } from "./ports.js";
 import type { Location, User } from "./user.js";
 
 export const BOSTON: Location = { city: "Boston", lat: 42.3576, lon: -71.0684, utcOffsetSeconds: -14400 };
@@ -39,4 +39,10 @@ export function fakeRepo(): UsersRepo {
 export function sequentialIds() {
   let n = 0;
   return () => `u${++n}`;
+}
+
+/** A directory of real zips, for tests. */
+export function fakeDirectory(zips: string[]): ZipDirectory & { zips: Set<string> } {
+  const set = new Set(zips);
+  return { zips: set, has: (zip) => set.has(zip) };
 }
