@@ -2,6 +2,8 @@
 
 A small app for a distributed team: a card for each person with their local time, and a strip that groups everyone by UTC offset. Adding someone takes a name and a US zip code; the city, coordinates and offset are looked up for you.
 
+**Live:** https://user-management-plum-six.vercel.app (the real API on Vercel, with Upstash Redis and OpenWeatherMap)
+
 ![The grid in light mode, with the timezone strip and one card expanded](docs/screenshot-desktop.png)
 
 <p>
@@ -117,9 +119,9 @@ CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both 
 `vercel.json` deploys the client build as static files and the Express API as one serverless function (`api/index.ts`) on the same domain.
 
 1. Import the GitHub repo at vercel.com/new. The defaults in `vercel.json` cover the build.
-2. Add **Upstash for Redis** from the Vercel Marketplace (the free plan is enough) and connect it to the project. It sets `KV_REST_API_URL` and `KV_REST_API_TOKEN`.
+2. Add **Upstash for Redis** from the project's Storage tab (the free plan is enough), then press **Connect** with the variable prefix `KV`. That sets `KV_REST_API_URL` and `KV_REST_API_TOKEN`.
 3. Set `STORAGE=upstash-redis`, plus `LOCATION_PROVIDER=openweathermap` and `OPENWEATHER_API_KEY`, or leave the provider as `fixture` to run without a key.
-4. Deploy.
+4. Deploy, or redeploy if the project already exists, since variables only reach new deployments.
 
 ## Design
 
