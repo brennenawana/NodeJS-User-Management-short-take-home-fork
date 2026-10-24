@@ -2,6 +2,15 @@
 
 A small app for a distributed team: a card for each person with their local time, and a strip that groups everyone by UTC offset. Adding someone takes a name and a US zip code; the city, coordinates and offset are looked up for you.
 
+![The grid in light mode, with the timezone strip and one card expanded](docs/screenshot-desktop.png)
+
+<p>
+  <img src="docs/screenshot-map-dark.png" width="72%" alt="The map view in dark mode, with a pin selected">
+  <img src="docs/screenshot-phone.png" width="24%" alt="The phone layout">
+</p>
+
+`yarn screenshots` regenerates these from the running app, with the clock frozen at the time used in the Figma file.
+
 ## Getting started
 
 ```sh
@@ -31,7 +40,8 @@ A TypeScript Express API in `server/`.
 - `server/src/providers/location/<name>/`: `LocationProvider` implementations, listed in `providers/location/index.ts`.
 - `server/src/zips/`: the `ZipDirectory` that knows which US zips are real, read from `zips/us.json`.
 - `server/src/app.ts`: `buildApp({ repo, locationProvider, zipDirectory, clock })` wires it together.
-- `server/src/main.ts`: reads `.env` through `config.ts` and picks the concrete storage and provider. It's the only file that does.
+- `server/src/compose.ts`: picks the concrete storage and provider from the environment. It's the only file that does.
+- `server/src/main.ts`: loads `.env` and starts the server. `api/index.ts` is the same app as a Vercel function.
 - `product.json`: the product name. Code imports it, and a test fails if the README title or a package name drifts from it.
 
 A user is `id, name, zip, city, lat, lon, utcOffsetSeconds, locationUpdatedAt, locationStatus`. A timezone is a UTC offset in seconds, captured when the location was looked up. Editing only looks the zip up again when it changes.
@@ -85,7 +95,7 @@ Each provider validates what it gets back and reports failures as one of two err
 
 To add a provider, create `server/src/providers/location/<name>/index.ts` exporting `fromEnv(env)`, add it to `providers/location/index.ts`, run the conformance suite against it, and list its variables in `.env.example`.
 
-`STORAGE` picks `json-file` (default, `DATA_FILE`) or `memory`.
+`STORAGE` picks `json-file` (default, `DATA_FILE`), `memory`, or `upstash-redis` (a Redis hash over Upstash's REST API, for serverless hosts where the filesystem doesn't persist). All three pass `storage/repo-contract.ts`.
 
 ## Tests
 
@@ -101,6 +111,15 @@ yarn workspace user-management-server test:live   # hits the real providers whos
 The e2e run starts its own API with the `fixture` provider and in-memory storage, so it needs no key and leaves `data/` alone. Run `yarn workspace user-management-e2e playwright install chromium` once first.
 
 CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both unit suites, the client and Storybook builds, and the e2e tests on every push and pull request.
+
+## Deploy
+
+`vercel.json` deploys the client build as static files and the Express API as one serverless function (`api/index.ts`) on the same domain.
+
+1. Import the GitHub repo at vercel.com/new. The defaults in `vercel.json` cover the build.
+2. Add **Upstash for Redis** from the Vercel Marketplace (the free plan is enough) and connect it to the project. It sets `KV_REST_API_URL` and `KV_REST_API_TOKEN`.
+3. Set `STORAGE=upstash-redis`, plus `LOCATION_PROVIDER=openweathermap` and `OPENWEATHER_API_KEY`, or leave the provider as `fixture` to run without a key.
+4. Deploy.
 
 ## Design
 
