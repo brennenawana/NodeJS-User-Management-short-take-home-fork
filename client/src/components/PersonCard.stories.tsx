@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { cardActions, FIGMA_NOW, noor, team } from "../test/story-data";
+import { cardActions, FIGMA_NOW, noor, noorInvalid, samCantLocate, team } from "../test/story-data";
 import { PersonCard, type PersonCardState } from "./PersonCard";
 
 const meta = {
@@ -20,4 +20,6 @@ export const Default = card("default");
 export const Expanded = card("expanded");
 export const Editing = card("editing");
 export const PendingLocation = card("pendingLocation", noor);
+export const InvalidZip = card("invalidZip", noorInvalid);
+export const CantLocate = card("cantLocate", samCantLocate);
 export const Skeleton: Story = { render: () => <PersonCard state="skeleton" /> };
