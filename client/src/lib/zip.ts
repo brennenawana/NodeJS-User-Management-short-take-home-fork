@@ -1,6 +1,8 @@
-export type ZipInput = { kind: "idle" | "bad" | "short"; text: string } | { kind: "complete"; zip: string };
+import { isRealZip } from "./zipDirectory";
 
-/** Checks what someone has typed so far, before any lookup. Copy comes from the design. */
+export type ZipInput = { kind: "idle" | "bad" | "short" | "notReal"; text: string } | { kind: "complete"; zip: string };
+
+/** Checks what someone has typed so far, before any lookup: format first, then the US zip list. */
 export function checkZipInput(raw: string): ZipInput {
   const zip = raw.trim();
   if (!zip) return { kind: "idle", text: "Enter a 5-digit US zip code." };
@@ -9,11 +11,15 @@ export function checkZipInput(raw: string): ZipInput {
     const short = ["", "one", "two", "three", "four"][5 - zip.length];
     return { kind: "short", text: `Zip codes are 5 digits — ${zip} is ${short} short.` };
   }
-  return { kind: "complete", zip: zip.slice(0, 5) };
+  if (!isRealZip(zip)) return { kind: "notReal", text: notRealCopy(zip) };
+  return { kind: "complete", zip };
 }
+
+export const notRealCopy = (zip: string) => `We couldn't find ${zip}. Check the zip and try again.`;
 
 export const lookupCopy = {
   pending: (zip: string) => `Looking up ${zip}…`,
-  unknown: (zip: string) => `We could not find ${zip}. Double-check it, or save anyway and we will retry.`,
+  /** A real zip the location provider can't place. */
+  unknown: (zip: string) => `We can't place ${zip} on the map. You can still save; their card will be flagged.`,
   failed: (zip: string) => `We could not look up ${zip} right now. You can still save and we will retry.`,
 };

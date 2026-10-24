@@ -7,4 +7,5 @@ test("zip input copy follows the design", () => {
   expect(checkZipInput("021")).toEqual({ kind: "short", text: "Zip codes are 5 digits — 021 is two short." });
   expect(checkZipInput("0210")).toEqual({ kind: "short", text: "Zip codes are 5 digits — 0210 is one short." });
   expect(checkZipInput("02108")).toEqual({ kind: "complete", zip: "02108" });
+  expect(checkZipInput("99999")).toEqual({ kind: "notReal", text: "We couldn't find 99999. Check the zip and try again." });
 });
