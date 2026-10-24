@@ -43,6 +43,8 @@
   background: var(--color-notice-soft); color: var(--color-notice); font: var(--text-sm);
 }
 .pending span { flex: 1 1 auto; min-width: 0; }
+.invalid { background: var(--color-error-soft); color: var(--color-error); }
+.invalid button { color: var(--color-error); }
 .pending button { color: var(--color-notice); font: var(--text-sm-bold); }
 .detail { animation: reveal var(--motion-base) var(--motion-ease-out) backwards; display: flex; flex-wrap: wrap; gap: var(--space-16) var(--space-32); align-items: flex-start; padding-top: var(--space-16); border-top: 1px solid var(--color-line); }
 .facts { margin: 0; flex: 1 1 420px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, max-content)); gap: var(--space-12) var(--space-32); }

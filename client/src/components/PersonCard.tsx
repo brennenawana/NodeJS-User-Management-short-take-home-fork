@@ -10,7 +10,7 @@ import { SkyChip } from "./SkyChip";
 import { TextField } from "./TextField";
 import styles from "./PersonCard.module.css";
 
-export type PersonCardState = "default" | "expanded" | "editing" | "pendingLocation" | "skeleton";
+export type PersonCardState = "default" | "expanded" | "editing" | "pendingLocation" | "invalidZip" | "cantLocate" | "skeleton";
 
 export interface PersonCardActions {
   onToggle: () => void;
@@ -26,13 +26,15 @@ type Props =
   | ({ state: Exclude<PersonCardState, "skeleton">; user: User; now: Date; index?: number } & PersonCardActions);
 
 /**
- * Figma: PersonCard. `state` is the Figma "State" variant. A pending location
- * can also be expanded or edited, so those states still show the pending banner.
+ * Figma: PersonCard. `state` is the Figma "State" variant. A card without a location
+ * can also be expanded or edited, so the banner follows the user's locationStatus.
  */
 export function PersonCard(props: Props) {
   if (props.state === "skeleton") return <SkeletonCard />;
   return <Card {...props} />;
 }
+
+const PLACE_NOTE = { pending: "location pending", cantLocate: "can’t locate", invalidZip: "zip not found" } as const;
 
 function SkeletonCard() {
   return (
@@ -57,7 +59,7 @@ function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onS
   const expanded = state === "expanded" || state === "editing";
   const located = isLocated(user);
   const hint = located ? zoneHint(user.utcOffsetSeconds) : "";
-  const place = located ? `${user.city} · ${offsetLabel(user.utcOffsetSeconds)}` : `${user.zip} · location pending`;
+  const place = located ? `${user.city} · ${offsetLabel(user.utcOffsetSeconds)}` : `${user.zip} · ${PLACE_NOTE[user.locationStatus]}`;
   const clock = located ? localClock(user.utcOffsetSeconds, now) : null;
   const sky = clock ? skyTime(clock) : null;
 
@@ -99,11 +101,25 @@ function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onS
         </div>
       )}
 
-      {!located && (
+      {user.locationStatus === "pending" && (
         <div className={styles.pending}>
           <Icon name="clock" size={16} />
           <span>Location pending. We will retry the lookup.</span>
           <Button variant="ghost" label="Try now" onClick={onRefresh} />
+        </div>
+      )}
+      {user.locationStatus === "invalidZip" && (
+        <div className={`${styles.pending} ${styles.invalid}`} role="alert">
+          <Icon name="alert" size={16} />
+          <span>We couldn’t find zip {user.zip}. Fix it to see their local time.</span>
+          {state !== "editing" && <Button variant="ghost" label="Fix zip" onClick={onEdit} />}
+        </div>
+      )}
+      {user.locationStatus === "cantLocate" && (
+        <div className={styles.pending}>
+          <Icon name="warning" size={16} />
+          <span>We can’t place {user.zip} on the map. Check the zip, or leave it.</span>
+          {state !== "editing" && <Button variant="ghost" label="Fix zip" onClick={onEdit} />}
         </div>
       )}
 
