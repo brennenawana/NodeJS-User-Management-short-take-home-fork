@@ -132,6 +132,41 @@ describe("users service", () => {
     await assert.rejects(service.lookupZip("12345"), ProviderUnavailable);
   });
 
+  describe("list re-checks offsets older than a day", () => {
+    const DAY_LATER = "2026-10-20T16:51:00.000Z";
+
+    test("an offset from more than a day ago is looked up again before listing", async () => {
+      await service.create({ name: "Lena", zip: "02108" });
+      lookups.table["02108"] = { ...BOSTON, utcOffsetSeconds: -18000 }; // daylight saving ended
+      clock.set(DAY_LATER);
+      const [lena] = await service.list();
+      assert.equal(lena?.utcOffsetSeconds, -18000);
+      assert.equal(lena?.locationUpdatedAt, DAY_LATER);
+      assert.equal((await service.get(lena!.id))?.utcOffsetSeconds, -18000, "and it's saved");
+    });
+
+    test("a fresh offset isn't looked up again", async () => {
+      await service.create({ name: "Lena", zip: "02108" });
+      clock.set("2026-10-20T09:00:00.000Z");
+      await service.list();
+      assert.deepEqual(lookups.calls, ["02108"]);
+    });
+
+    test("an outage keeps the old offset and the list still loads", async () => {
+      const created = await service.create({ name: "Lena", zip: "02108" });
+      lookups.table["02108"] = "down";
+      clock.set(DAY_LATER);
+      assert.deepEqual(await service.list(), [created]);
+    });
+
+    test("people without a location are left to their own retry rules", async () => {
+      await service.create({ name: "Noor", zip: "00501" });
+      clock.set(DAY_LATER);
+      await service.list();
+      assert.deepEqual(lookups.calls, ["00501"]);
+    });
+  });
+
   test("list is sorted by name", async () => {
     await service.create({ name: "Sam", zip: "02108" });
     await service.create({ name: "maya", zip: "02108" });
