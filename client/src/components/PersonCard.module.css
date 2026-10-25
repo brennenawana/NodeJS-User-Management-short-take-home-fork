@@ -59,7 +59,7 @@
 .fields { display: flex; flex-wrap: wrap; gap: var(--space-12); }
 .fields > :first-child { flex: 1 1 220px; }
 .fields > :last-child { flex: 0 1 160px; min-width: 130px; }
-.fields input { height: 44px; background: var(--color-surface); }
+.fields input { min-height: 44px; background: var(--color-surface); }
 .zipNote { animation: reveal var(--motion-base) var(--motion-ease-out) backwards;
  margin: 0; display: flex; align-items: flex-start; gap: var(--space-8); padding: var(--space-12); border-radius: var(--radius-md); background: var(--color-notice-soft); color: var(--color-notice); font: var(--text-md); }
 .formError { margin: 0; color: var(--color-error); font: var(--text-md); }
