@@ -1,13 +1,18 @@
 import { expect, test, type Page } from "@playwright/test";
 import { STORYBOOK_URL } from "../playwright.config";
 
-// Every Storybook story, at a small phone and a desktop width: nothing may spill
+// Every Storybook story, from a small phone to desktop and with larger text: nothing may spill
 // out of its box. Scroll containers and ellipsis truncation are allowed; those
 // are deliberate. jsdom has no layout, so this lives here rather than in Vitest.
 
 type Entry = { id: string; type: string; title: string; name: string };
 
-const WIDTHS = [320, 768, 1280];
+// Width, plus the root font size: 150% is what someone who sets their browser's
+// default text to 24px gets, now that type is in rem.
+const PASSES = [
+  { width: 320, text: 100 }, { width: 768, text: 100 }, { width: 1280, text: 100 },
+  { width: 390, text: 150 }, { width: 1280, text: 150 },
+];
 
 async function storyIds(page: Page) {
   const index = await (await page.request.get(`${STORYBOOK_URL}/index.json`)).json();
@@ -44,13 +49,14 @@ function findOverflow() {
   return offenders;
 }
 
-for (const width of WIDTHS) {
-  test(`no story overflows at ${width}px`, async ({ page }) => {
+for (const { width, text } of PASSES) {
+  test(`no story overflows at ${width}px${text === 100 ? "" : `, ${text}% text`}`, async ({ page }) => {
     test.setTimeout(120_000);
     await page.setViewportSize({ width, height: 900 });
     const problems: string[] = [];
     for (const story of await storyIds(page)) {
       await page.goto(`${STORYBOOK_URL}/iframe.html?id=${story.id}&viewMode=story`);
+      if (text !== 100) await page.addStyleTag({ content: `html { font-size: ${text}%; }` });
       await page.locator("#storybook-root > *").first().waitFor();
       // Not networkidle: the LookingUp story's lookup never answers, on purpose.
       await page.evaluate(() => document.fonts.ready);
