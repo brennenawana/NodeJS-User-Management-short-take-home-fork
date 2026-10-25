@@ -94,7 +94,7 @@ export function AddSheet({ now, onSave, onClose, onPreview, defaultName = "", de
     : "Local time and sky appear once we know the zip.";
 
   return (
-    <section ref={ref} aria-labelledby={`${id}-title`} className={[styles.sheet, styles[state]].filter(Boolean).join(" ")} data-state={state}>
+    <section ref={ref} onKeyDown={(e) => e.key === "Escape" && onClose()} aria-labelledby={`${id}-title`} className={[styles.sheet, styles[state]].filter(Boolean).join(" ")} data-state={state}>
       <form className={styles.form} onSubmit={submit} noValidate>
         <div className={styles.top}>
           <div>

@@ -1,8 +1,8 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ComponentProps } from "react";
 import { Icon, type IconName } from "./Icon";
 import styles from "./Button.module.css";
 
-type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
+type Props = Omit<ComponentProps<"button">, "children"> & {
   /** Figma: Variant */
   variant?: "primary" | "secondary" | "ghost" | "danger";
   /** Figma: State. "disabled" also disables the button. */
