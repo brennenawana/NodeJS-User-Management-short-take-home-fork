@@ -110,6 +110,8 @@ yarn workspace user-management-server test:live   # hits the real providers whos
 
 `e2e/tests/stories.spec.ts` also opens every Storybook story at 320, 768 and 1280px, and again with 150% text, and fails if anything spills out of its box; jsdom has no layout, so that can't live in Vitest.
 
+`e2e/tests/a11y.spec.ts` runs axe, colour contrast included, on each screen in both themes, and `e2e/tests/keyboard.spec.ts` adds, edits and removes someone with the keyboard alone. Vitest runs axe on every story too.
+
 The e2e run starts its own API with the `fixture` provider and in-memory storage, so it needs no key and leaves `data/` alone. Run `yarn workspace user-management-e2e playwright install chromium` once first.
 
 CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both unit suites, the client and Storybook builds, and the e2e tests on every push and pull request.
