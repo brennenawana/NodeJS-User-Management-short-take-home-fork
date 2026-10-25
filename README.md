@@ -74,7 +74,7 @@ Errors come back as `{ error: { code, message, field? } }`, and the messages are
 A Vite, React and TypeScript app in `client/`.
 
 - `client/src/components/`: one file per Figma component (`AppHeader`, `TimezoneStrip`, `ZoneCell`, `PersonCard`, `AddSheet`, `Avatar`, `SkyChip`, `Button`, `TextField`, `ViewToggle`, `Toast`, `EmptyState`, `NeedsAttention`). Props mirror the Figma properties, so `<PersonCard state="pendingLocation">` is the PersonCard / PendingLocation variant.
-- Styles use only the tokens in `design/tokens.css`: light in `:root`, dark in `[data-theme="dark"]`, type as `font: var(--text-md-semibold)`.
+- Styles use only the tokens in `design/tokens.css`: light in `:root`, dark in `[data-theme="dark"]`, type as `font: var(--text-md-semibold)`. Type is in rem, so it follows the reader's browser font size, and motion turns off under `prefers-reduced-motion`.
 - `client/src/lib/time.ts`: clocks are UTC plus the stored offset, and labels read "Boston · UTC−4".
 - `client/src/lib/map.ts`: the projection for the map view. Pins open the person's card, filtered-out pins dim, and the zip being added shows as a dashed pin.
 - `client/src/api.ts`: the only place that talks to the server.
@@ -108,7 +108,7 @@ yarn e2e            # Playwright: add, edit and remove against the real API and 
 yarn workspace user-management-server test:live   # hits the real providers whose keys are in .env
 ```
 
-`e2e/tests/stories.spec.ts` also opens every Storybook story at 320, 768 and 1280px and fails if anything spills out of its box; jsdom has no layout, so that can't live in Vitest.
+`e2e/tests/stories.spec.ts` also opens every Storybook story at 320, 768 and 1280px, and again with 150% text, and fails if anything spills out of its box; jsdom has no layout, so that can't live in Vitest.
 
 The e2e run starts its own API with the `fixture` provider and in-memory storage, so it needs no key and leaves `data/` alone. Run `yarn workspace user-management-e2e playwright install chromium` once first.
 
