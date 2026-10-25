@@ -57,11 +57,13 @@ test("the Product collection matches product.json", () => {
 
 const WEIGHTS = { Regular: 400, SemiBold: 600, Bold: 700, ExtraBold: 800 };
 
-test("text styles match the --text-* shorthands", () => {
+test("text styles match the --text-* shorthands, in rem", () => {
   assert.match(light["font-family"], new RegExp(`^'${figma.textStyles[0].fontFamily}'`));
   for (const s of figma.textStyles) {
     const p = s.name.replace("/", "-").replaceAll(" ", "-");
-    const expected = `${WEIGHTS[s.fontStyle]} ${s.fontSize}px/${s.lineHeight.value}px var(--font-family)`;
+    // Figma works in px; the CSS uses rem (px / 16) so text follows the reader's browser font size.
+    const rem = (px) => `${px / 16}rem`;
+    const expected = `${WEIGHTS[s.fontStyle]} ${rem(s.fontSize)}/${rem(s.lineHeight.value)} var(--font-family)`;
     assert.equal(light[p], expected, `--${p}`);
     const tracking = s.letterSpacing.value / 100;
     if (tracking) assert.equal(light[`${p}-tracking`], `${tracking}em`, `--${p}-tracking`);
