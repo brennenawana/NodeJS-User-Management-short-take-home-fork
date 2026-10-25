@@ -21,7 +21,8 @@
 .active:hover { border-color: var(--color-accent); }
 .cell:focus-visible { outline: 2px solid var(--color-accent-ink); outline-offset: 2px; }
 .active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
-.top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-8); }
+/* Wraps so the hint drops under the offset when larger text doesn't fit the cell. */
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: var(--space-8); }
 .offset { font: var(--text-base-bold); }
 .sub { font: var(--text-sm); color: var(--color-muted); }
 .active .sub { color: var(--color-on-accent); }
