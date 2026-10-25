@@ -12,6 +12,7 @@ describe("http api", () => {
   let server: Server;
   let base: string;
   let lookups: ReturnType<typeof fakeProvider>;
+  let clock: ReturnType<typeof fixedClock>;
   let app: ReturnType<typeof buildApp> | undefined;
 
   const call = async (method: string, path: string, body?: unknown) => {
@@ -34,9 +35,10 @@ describe("http api", () => {
   beforeEach(() => {
     // 12345 is real but hits an outage, 00501 is real but can't be placed, 99999 isn't a zip.
     lookups = fakeProvider({ "02108": BOSTON, "80202": DENVER, "12345": "down" });
+    clock = fixedClock(T0);
     app = buildApp({
       repo: createMemoryRepo(), locationProvider: lookups.provider, zipDirectory: fakeDirectory(["02108", "80202", "12345", "00501"]),
-      clock: fixedClock(T0), newId: sequentialIds(),
+      clock, newId: sequentialIds(),
     });
   });
 
@@ -89,6 +91,15 @@ describe("http api", () => {
     const invalid = await call("PATCH", "/api/users/u1", { zip: "99999" });
     assert.equal(invalid.body.error.code, "invalid_zip");
     assert.equal((await call("GET", "/api/users/u1")).body.city, "Denver");
+  });
+
+  test("GET /api/users re-checks an offset looked up more than a day ago", async () => {
+    await call("POST", "/api/users", { name: "Lena", zip: "02108" });
+    lookups.table["02108"] = { ...BOSTON, utcOffsetSeconds: -18000 };
+    clock.set("2026-10-20T17:00:00.000Z");
+    const [lena] = (await call("GET", "/api/users")).body;
+    assert.equal(lena.utcOffsetSeconds, -18000);
+    assert.equal(lena.locationUpdatedAt, "2026-10-20T17:00:00.000Z");
   });
 
   test("DELETE removes, then 404s", async () => {

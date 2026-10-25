@@ -61,7 +61,7 @@ A zip that isn't real is refused outright, by the form and by the API (`400 inva
 
 | Method | Path | |
 |---|---|---|
-| `GET` | `/api/users` | everyone, sorted by name |
+| `GET` | `/api/users` | everyone, sorted by name; offsets looked up more than a day ago are checked again first |
 | `POST` | `/api/users` | `{ name, zip }` |
 | `GET` `PATCH` `DELETE` | `/api/users/:id` | `PATCH` takes `{ name?, zip? }` |
 | `POST` | `/api/users/:id/refresh-location` | look the current zip up again |
@@ -119,7 +119,7 @@ CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both 
 ## Decisions and trade-offs
 
 - **US only.** Zips are 5 digits, checked against the GeoNames list, and both providers are asked for US results. Widening it means a `country` field, per-country postal formats, and a world map instead of the US one; the time model already works anywhere.
-- **Time is a UTC offset, not a zone name.** OpenWeatherMap returns an offset in seconds, so that's what's stored, and clocks are UTC plus the offset. The cost: an offset captured in summer is an hour off after daylight saving ends. Each card says when its location was looked up and has a "Refresh location" action; refreshing stale offsets automatically around DST changes is the next step.
+- **Time is a UTC offset, not a zone name.** OpenWeatherMap returns an offset in seconds, so that's what's stored, and clocks are UTC plus the offset. The cost: an offset captured in summer is an hour off after daylight saving ends. So listing people re-checks any offset looked up more than a day ago (an outage keeps the old one), which puts a DST change right within a day. Each card also says when its location was looked up and has a "Refresh location" action.
 - **A zip is checked twice.** The bundled list says whether it exists, without a network call; the provider says where it is. Made-up zips are refused; real ones the provider can't place are saved and flagged rather than retried forever, and only outages are retried.
 - **Storage is one hash.** `json-file` locally, Upstash Redis on Vercel, where the filesystem doesn't persist. A list of people this size doesn't need a relational database yet.
 - **Undo delays the delete.** Removing someone hides them at once and sends the DELETE when the undo window closes (or when the page is left). Other open tabs don't see changes until they reload.
