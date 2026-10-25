@@ -20,6 +20,9 @@ export interface UsersServiceDeps {
 
 export type UsersService = ReturnType<typeof createUsersService>;
 
+/** Offsets change with daylight saving, so one looked up more than a day ago is checked again. */
+export const OFFSET_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
 export function createUsersService({ repo, locationProvider, zipDirectory, clock, newId }: UsersServiceDeps) {
   function mustBeReal(zip: string) {
     if (!zipDirectory.has(zip)) throw new InvalidZip(zip);
@@ -42,6 +45,27 @@ export function createUsersService({ repo, locationProvider, zipDirectory, clock
     }
   }
 
+  /** Looks the user's zip up again and saves the result. An outage throws and saves nothing. */
+  async function relocate(current: User): Promise<User> {
+    let location: LocationFields;
+    if (!zipDirectory.has(current.zip)) location = unlocated("invalidZip");
+    else {
+      try {
+        location = await resolve(current.zip);
+      } catch (error) {
+        if (!(error instanceof ZipNotFound)) throw error;
+        location = unlocated("cantLocate");
+      }
+    }
+    const user: User = { ...current, ...location };
+    await repo.update(user);
+    return user;
+  }
+
+  function isStale(user: User): boolean {
+    return user.locationStatus === "located" && clock.now().getTime() - Date.parse(user.locationUpdatedAt) > OFFSET_MAX_AGE_MS;
+  }
+
   async function mustGet(id: string): Promise<User> {
     const user = await repo.get(id);
     if (!user) throw new UserNotFound(id);
@@ -49,8 +73,10 @@ export function createUsersService({ repo, locationProvider, zipDirectory, clock
   }
 
   return {
+    /** Everyone, sorted by name, with offsets older than a day re-checked first (an outage keeps the old one). */
     async list(): Promise<User[]> {
-      const users = await repo.list();
+      const users = await Promise.all((await repo.list()).map((user) =>
+        isStale(user) ? relocate(user).catch((error) => (error instanceof ProviderUnavailable ? user : Promise.reject(error))) : user));
       return users.sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
     },
 
@@ -79,20 +105,7 @@ export function createUsersService({ repo, locationProvider, zipDirectory, clock
 
     /** Looks the current zip up again. An outage throws and leaves the record alone; anything else is saved. */
     async refreshLocation(id: string): Promise<User> {
-      const current = await mustGet(id);
-      let location: LocationFields;
-      if (!zipDirectory.has(current.zip)) location = unlocated("invalidZip");
-      else {
-        try {
-          location = await resolve(current.zip);
-        } catch (error) {
-          if (!(error instanceof ZipNotFound)) throw error;
-          location = unlocated("cantLocate");
-        }
-      }
-      const user: User = { ...current, ...location };
-      await repo.update(user);
-      return user;
+      return relocate(await mustGet(id));
     },
 
     async remove(id: string): Promise<void> {
