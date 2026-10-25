@@ -116,6 +116,16 @@ The e2e run starts its own API with the `fixture` provider and in-memory storage
 
 CI (`.github/workflows/ci.yml`) runs the typecheck, the token drift check, both unit suites, the client and Storybook builds, and the e2e tests on every push and pull request.
 
+## Decisions and trade-offs
+
+- **US only.** Zips are 5 digits, checked against the GeoNames list, and both providers are asked for US results. Widening it means a `country` field, per-country postal formats, and a world map instead of the US one; the time model already works anywhere.
+- **Time is a UTC offset, not a zone name.** OpenWeatherMap returns an offset in seconds, so that's what's stored, and clocks are UTC plus the offset. The cost: an offset captured in summer is an hour off after daylight saving ends. Each card says when its location was looked up and has a "Refresh location" action; refreshing stale offsets automatically around DST changes is the next step.
+- **A zip is checked twice.** The bundled list says whether it exists, without a network call; the provider says where it is. Made-up zips are refused; real ones the provider can't place are saved and flagged rather than retried forever, and only outages are retried.
+- **Storage is one hash.** `json-file` locally, Upstash Redis on Vercel, where the filesystem doesn't persist. A list of people this size doesn't need a relational database yet.
+- **Undo delays the delete.** Removing someone hides them at once and sends the DELETE when the undo window closes (or when the page is left). Other open tabs don't see changes until they reload.
+- **No accounts.** Anyone with the link can add, edit and remove people, including on the live deployment.
+- **Scope.** The original requirements ask for CRUD, the OpenWeatherMap lookup and a simple React front end. Everything past that (the design system and Figma file, the map, extra providers, Storybook, motion) was added on purpose, and it's the first thing to cut on a tighter deadline.
+
 ## Deploy
 
 `vercel.json` deploys the client build as static files and the Express API as one serverless function (`api/index.ts`) on the same domain.
