@@ -9,11 +9,14 @@
   border: 1px solid transparent;
   font: var(--text-md-bold);
   cursor: pointer;
-  white-space: nowrap;
+  /* Long labels wrap rather than spill out of narrow containers when text is large. */
+  max-width: 100%;
+  text-align: center;
   transition: background-color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease), opacity var(--motion-fast) var(--motion-ease);
 }
 .lg { min-height: 48px; padding: 0 var(--space-20); font: var(--text-base-bold); }
 .iconOnly { width: 44px; padding: 0; }
+.button svg { flex: 0 0 auto; }
 .primary { background: var(--color-accent); color: var(--color-on-accent); }
 .secondary { background: transparent; border-color: var(--color-line); color: var(--color-ink); font: var(--text-md-semibold); }
 .ghost { background: transparent; color: var(--color-muted); font: var(--text-md-semibold); }
