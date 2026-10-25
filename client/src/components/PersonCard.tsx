@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { ApiError, isLocated, type User } from "../api";
 import { useZipLookup } from "../hooks/useZipLookup";
 import { localClock, offsetLabel, shortDate, SKY_LABEL, skyTime, zoneHint } from "../lib/time";
@@ -56,6 +56,8 @@ function SkeletonCard() {
 
 function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onSave, onRemove, onRefresh }: Extract<Props, { user: User }>) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
   const expanded = state === "expanded" || state === "editing";
   const located = isLocated(user);
   const hint = located ? zoneHint(user.utcOffsetSeconds) : "";
@@ -65,7 +67,13 @@ function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onS
 
   useEffect(() => {
     if (!menuOpen) return;
-    const close = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    // Opening moves focus into the menu; Escape closes it and hands focus back to the button.
+    menu.current?.querySelector("button")?.focus();
+    const close = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setMenuOpen(false);
+      menuButton.current?.focus();
+    };
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, [menuOpen]);
@@ -81,11 +89,11 @@ function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onS
             <span className={styles.place}>{place}</span>
           </span>
         </button>
-        <Button variant="ghost" icon="more" aria-label={`More actions for ${user.name}`} aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)} />
+        <Button ref={menuButton} variant="ghost" icon="more" aria-label={`More actions for ${user.name}`} aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)} />
       </div>
 
       {menuOpen && (
-        <div role="menu" aria-label={`Actions for ${user.name}`} className={styles.menu}>
+        <div ref={menu} role="menu" aria-label={`Actions for ${user.name}`} className={styles.menu}>
           <Button variant="secondary" role="menuitem" icon="edit" label="Edit details" onClick={() => { setMenuOpen(false); onEdit(); }} />
           <Button variant="danger" role="menuitem" icon="trash" label="Remove" onClick={() => { setMenuOpen(false); onRemove(); }} />
         </div>
@@ -179,7 +187,7 @@ function EditForm({ user, onSave, onCancel }: { user: User; onSave: PersonCardAc
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
       <div className={styles.fields}>
-        <TextField id={`edit-name-${user.id}`} label="Name" value={name} autoComplete="off"
+        <TextField id={`edit-name-${user.id}`} label="Name" value={name} autoComplete="off" autoFocus
           state={error?.field === "name" ? "error" : "default"} onChange={(e) => { setName(e.target.value); setError(null); }} />
         <TextField id={`edit-zip-${user.id}`} label="Zip code" value={zip} inputMode="numeric" maxLength={5}
           state={error?.field === "zip" ? "error" : "default"}

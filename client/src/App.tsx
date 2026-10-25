@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { needsAttention, type User, type ZipPreview } from "./api";
 import { AddSheet } from "./components/AddSheet";
 import { AppHeader } from "./components/AppHeader";
@@ -49,7 +49,17 @@ export function App() {
   const cardState = (u: User): PersonCardState =>
     editingId === u.id ? "editing" : expandedId === u.id ? "expanded" : FLAG_STATE[u.locationStatus];
 
-  const openSheet = () => setSheetOpen(true);
+  // Closing the sheet hands focus back to whichever Add button opened it.
+  const opener = useRef<HTMLElement | null>(null);
+  const openSheet = () => {
+    opener.current = document.activeElement as HTMLElement | null;
+    setSheetOpen(true);
+  };
+  const closeSheet = () => {
+    setSheetOpen(false);
+    requestAnimationFrame(() => opener.current?.focus());
+  };
+  const focusCard = (id: string) => requestAnimationFrame(() => document.querySelector<HTMLElement>(`#person-${id} button`)?.focus());
   const clearFilters = () => { setQuery(""); setZone(null); setAttentionFilter(false); };
 
   return (
@@ -74,12 +84,13 @@ export function App() {
         <TimezoneStrip users={all} now={now} active={zone} onPick={setZone} />
 
         {sheetOpen && (
-          <AddSheet now={now} onClose={() => setSheetOpen(false)} onPreview={onPreview}
+          <AddSheet now={now} onClose={closeSheet} onPreview={onPreview}
             onSave={async (input) => {
               const user = await people.add(input);
               setSheetOpen(false);
               clearFilters();
               setExpandedId(user.id);
+              focusCard(user.id);
               return user;
             }} />
         )}
