@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type MouseEvent } from "react";
 import { ApiError, isLocated, type User } from "../api";
 import { useZipLookup } from "../hooks/useZipLookup";
 import { localClock, offsetLabel, shortDate, SKY_LABEL, skyTime, zoneHint } from "../lib/time";
@@ -74,12 +74,29 @@ function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onS
       setMenuOpen(false);
       menuButton.current?.focus();
     };
+    // A press anywhere outside the menu and its button closes it, including on another card.
+    const away = (e: PointerEvent) => {
+      const target = e.target as Node;
+      if (!menu.current?.contains(target) && !menuButton.current?.contains(target)) setMenuOpen(false);
+    };
     window.addEventListener("keydown", close);
-    return () => window.removeEventListener("keydown", close);
+    document.addEventListener("pointerdown", away);
+    return () => {
+      window.removeEventListener("keydown", close);
+      document.removeEventListener("pointerdown", away);
+    };
   }, [menuOpen]);
 
+  // The whole collapsed card opens it, not just the name. Its own controls, and text
+  // being selected, keep their behaviour; the name button stays the keyboard control.
+  const openFromCard = (e: MouseEvent<HTMLLIElement>) => {
+    if (expanded || window.getSelection()?.toString()) return;
+    if ((e.target as Element).closest("button, a, input, textarea, select, label, form, [role=menu]")) return;
+    onToggle();
+  };
+
   return (
-    <li id={`person-${user.id}`} className={`${styles.card} ${expanded ? styles.expanded : ""}`} data-state={state}
+    <li id={`person-${user.id}`} className={`${styles.card} ${expanded ? styles.expanded : ""}`} data-state={state} onClick={openFromCard}
       style={{ "--enter-index": Math.min(index, 8) } as CSSProperties}>
       <div className={styles.head}>
         <button type="button" className={styles.identity} aria-expanded={expanded} onClick={onToggle}>
