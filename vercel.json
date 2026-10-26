@@ -4,6 +4,13 @@
   "installCommand": "yarn install --frozen-lockfile",
   "buildCommand": "yarn build && yarn build-storybook && cp -r client/storybook-static client/dist/storybook",
   "outputDirectory": "client/dist",
+  "redirects": [
+    {
+      "source": "/storybook",
+      "destination": "/storybook/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
