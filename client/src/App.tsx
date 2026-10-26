@@ -7,12 +7,14 @@ import { EmptyState } from "./components/EmptyState";
 import { MapView } from "./components/MapView";
 import { NeedsAttention } from "./components/NeedsAttention";
 import { PersonCard, type PersonCardState } from "./components/PersonCard";
+import { PersonTable } from "./components/PersonTable";
 import { TimezoneStrip } from "./components/TimezoneStrip";
 import { Toast } from "./components/Toast";
 import type { View } from "./components/ViewToggle";
 import { useNow } from "./hooks/useNow";
 import { useTheme } from "./hooks/useTheme";
 import { useUsers } from "./hooks/useUsers";
+import { viewerOffsetSeconds } from "./lib/relative";
 import { offsetLabel } from "./lib/time";
 import styles from "./App.module.css";
 
@@ -25,6 +27,7 @@ const FLAG_STATE: Record<User["locationStatus"], PersonCardState> = {
 export function App() {
   const { theme, toggle } = useTheme();
   const now = useNow();
+  const viewerOffset = viewerOffsetSeconds(now);
   const people = useUsers();
   const [query, setQuery] = useState("");
   const [zone, setZone] = useState<number | null>(null);
@@ -132,6 +135,11 @@ export function App() {
         ) : shown.length === 0 ? (
           <EmptyState showIllustration={false} title={q ? `No one matches “${query.trim()}”` : zone !== null ? `No one in ${offsetLabel(zone)}` : "No one needs attention"}
             body="Try a shorter name, a city like Boston, or clear the filters." actionLabel="Clear search and filters" actionIcon="close" onAction={clearFilters} />
+        ) : view === "list" ? (
+          // Edit goes back to the grid with that card open for editing; its form takes focus.
+          <PersonTable users={shown} now={now} viewerOffset={viewerOffset}
+            onEdit={(id) => { setView("grid"); setExpandedId(id); setEditingId(id); }}
+            onRemove={(u) => { people.remove(u); if (expandedId === u.id) setExpandedId(null); setEditingId(null); }} />
         ) : (
           <ul className={styles.grid} aria-label="People">
             {shown.map((u, i) => (
