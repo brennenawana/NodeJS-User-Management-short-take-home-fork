@@ -26,6 +26,7 @@ server/   Express API in TypeScript
   src/providers/   zip lookup plugins (sample, openweathermap, google)
   src/storage/     storage plugins (json-file, memory, upstash-redis)
   src/compose.ts   picks plugins from the environment
+  test/            test helpers and recorded API responses
 client/   React app; components and props match the Figma file
 design/   tokens.css generated from Figma, plus the design sources
 e2e/      Playwright tests
