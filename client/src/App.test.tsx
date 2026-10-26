@@ -212,6 +212,43 @@ describe("App", () => {
     expect(calls.filter((c) => c.method === "PATCH")).toHaveLength(0);
   });
 
+  test("clicking anywhere on a collapsed card opens it", async () => {
+    const user = await renderApp(team());
+    await user.click(within(card("Lena Hoffmann")).getByRole("img", { name: / in Boston$/ }));
+    expect(card("Lena Hoffmann")).toHaveAttribute("data-state", "expanded");
+    // Clicking the expanded card's details doesn't close it again.
+    await user.click(within(card("Lena Hoffmann")).getByText("Zip"));
+    expect(card("Lena Hoffmann")).toHaveAttribute("data-state", "expanded");
+  });
+
+  test("clicking outside the expanded card collapses it, and another card takes over", async () => {
+    const user = await renderApp(team());
+    await user.click(identity("Lena Hoffmann"));
+    await user.click(screen.getByRole("heading", { name: "People" }));
+    expect(card("Lena Hoffmann")).toHaveAttribute("data-state", "default");
+
+    await user.click(identity("Lena Hoffmann"));
+    await user.click(within(card("Maya Okafor")).getByText("New York · UTC−4"));
+    expect(card("Lena Hoffmann")).toHaveAttribute("data-state", "default");
+    expect(card("Maya Okafor")).toHaveAttribute("data-state", "expanded");
+  });
+
+  test("a card being edited stays open when you click outside it", async () => {
+    const user = await renderApp(team());
+    await user.click(identity("Lena Hoffmann"));
+    await user.click(within(card("Lena Hoffmann")).getByRole("button", { name: "Edit" }));
+    await user.click(screen.getByRole("heading", { name: "People" }));
+    expect(card("Lena Hoffmann")).toHaveAttribute("data-state", "editing");
+  });
+
+  test("the actions menu closes when you click away, including on another card", async () => {
+    const user = await renderApp(team());
+    await user.click(screen.getByRole("button", { name: "More actions for Lena Hoffmann" }));
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+    await user.click(within(card("Maya Okafor")).getByText("New York · UTC−4"));
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
   test("the theme toggle switches data-theme and remembers it", async () => {
     const user = await renderApp(team());
     expect(document.documentElement.dataset.theme).toBe("light");

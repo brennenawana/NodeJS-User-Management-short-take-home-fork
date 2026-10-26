@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { needsAttention, type User, type ZipPreview } from "./api";
 import { AddSheet } from "./components/AddSheet";
 import { AppHeader } from "./components/AppHeader";
@@ -59,6 +59,19 @@ export function App() {
     setSheetOpen(false);
     requestAnimationFrame(() => opener.current?.focus());
   };
+  // A press outside the expanded card collapses it. Not while it's being edited (that
+  // would throw away typing), and not from the toast, a menu or the map, which decide for themselves.
+  useEffect(() => {
+    if (!expandedId || editingId) return;
+    const away = (e: PointerEvent) => {
+      const target = e.target as Element;
+      if (target.closest(`#person-${CSS.escape(expandedId)}, [role="status"], [role="menu"], [aria-label="Map of people"]`)) return;
+      setExpandedId(null);
+    };
+    document.addEventListener("pointerdown", away);
+    return () => document.removeEventListener("pointerdown", away);
+  }, [expandedId, editingId]);
+
   const focusCard = (id: string) => requestAnimationFrame(() => document.querySelector<HTMLElement>(`#person-${id} button`)?.focus());
   const clearFilters = () => { setQuery(""); setZone(null); setAttentionFilter(false); };
 
