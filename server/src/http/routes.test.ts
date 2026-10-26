@@ -4,7 +4,7 @@ import type { AddressInfo } from "node:net";
 import type { Server } from "node:http";
 import { buildApp } from "../app.js";
 import { createMemoryRepo } from "../storage/memory/index.js";
-import { BOSTON, DENVER, fakeDirectory, fakeProvider, fixedClock, sequentialIds } from "../core/fakes.js";
+import { BOSTON, DENVER, fakeDirectory, fakeProvider, fixedClock, sequentialIds } from "../../test/fakes.js";
 
 const T0 = "2026-10-19T16:50:00.000Z";
 

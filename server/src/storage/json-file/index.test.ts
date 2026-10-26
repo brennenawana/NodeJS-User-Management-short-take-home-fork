@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createJsonFileRepo, CorruptDataFile } from "./index.js";
-import { repoContract } from "../repo-contract.js";
+import { repoContract } from "../../../test/repo-contract.js";
 
 const tempFile = async () => join(await mkdtemp(join(tmpdir(), "users-")), "nested", "users.json");
 

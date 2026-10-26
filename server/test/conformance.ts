@@ -1,8 +1,8 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
-import { ProviderUnavailable, ZipNotFound } from "../../core/errors.js";
-import type { LocationProvider } from "../../core/ports.js";
-import { locationSchema } from "../../core/user.js";
+import { ProviderUnavailable, ZipNotFound } from "../src/core/errors.js";
+import type { LocationProvider } from "../src/core/ports.js";
+import { locationSchema } from "../src/core/user.js";
 
 export interface ConformanceHarness {
   /** A provider that answers normally. Must resolve 02108 to Boston and not know 00000. */

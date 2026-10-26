@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createUpstashRepo, fromEnv } from "./index.js";
-import { repoContract } from "../repo-contract.js";
+import { repoContract } from "../../../test/repo-contract.js";
 
 /** Answers the four hash commands the repo uses, the way Upstash's REST API does. */
 function fakeUpstash() {
