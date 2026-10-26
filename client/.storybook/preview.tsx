@@ -5,7 +5,8 @@ import "../src/styles.css";
 
 // Stories that look zips up talk to the same fake API the tests use.
 const worker = setupWorker(...handlers);
-const ready = worker.start({ onUnhandledRequest: "bypass", quiet: true }).then(async () => {
+// Relative, so it also works when Storybook is served from a subpath (/storybook on Vercel).
+const ready = worker.start({ onUnhandledRequest: "bypass", quiet: true, serviceWorker: { url: "./mockServiceWorker.js" } }).then(async () => {
   // On a first visit the worker activates after the page loads; wait until it controls this page.
   if (navigator.serviceWorker.controller) return;
   await new Promise((resolve) => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true }));
