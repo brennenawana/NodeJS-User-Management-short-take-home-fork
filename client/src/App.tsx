@@ -13,6 +13,7 @@ import type { View } from "./components/ViewToggle";
 import { useNow } from "./hooks/useNow";
 import { useTheme } from "./hooks/useTheme";
 import { useUsers } from "./hooks/useUsers";
+import { viewerOffsetSeconds } from "./lib/relative";
 import { offsetLabel } from "./lib/time";
 import styles from "./App.module.css";
 
@@ -25,6 +26,7 @@ const FLAG_STATE: Record<User["locationStatus"], PersonCardState> = {
 export function App() {
   const { theme, toggle } = useTheme();
   const now = useNow();
+  const viewerOffset = viewerOffsetSeconds(now);
   const people = useUsers();
   const [query, setQuery] = useState("");
   const [zone, setZone] = useState<number | null>(null);
@@ -135,7 +137,7 @@ export function App() {
         ) : (
           <ul className={styles.grid} aria-label="People">
             {shown.map((u, i) => (
-              <PersonCard key={u.id} user={u} now={now} index={i} state={cardState(u)}
+              <PersonCard key={u.id} user={u} now={now} viewerOffset={viewerOffset} index={i} state={cardState(u)}
                 onToggle={() => { setExpandedId(expandedId === u.id ? null : u.id); setEditingId(null); }}
                 onEdit={() => { setExpandedId(u.id); setEditingId(u.id); }}
                 onCancelEdit={() => setEditingId(null)}
