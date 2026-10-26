@@ -1,13 +1,13 @@
 // Packs the GeoNames US postal codes into a bitmap: one bit per possible 5-digit
-// zip (00000-99999), 12.5 KB in all, base64 in zips/us.json.
+// zip (00000-99999), 12.5 KB in all, base64 in us.json next to this script.
 //
 //   curl -LO https://download.geonames.org/export/zip/US.zip && unzip US.zip US.txt
-//   node scripts/build-zip-directory.mjs US.txt
+//   node shared/zips/build.mjs US.txt
 import { readFileSync, writeFileSync } from "node:fs";
 
 const input = process.argv[2];
 if (!input) {
-  console.error("usage: node scripts/build-zip-directory.mjs path/to/US.txt");
+  console.error("usage: node shared/zips/build.mjs path/to/US.txt");
   process.exit(1);
 }
 
@@ -29,5 +29,5 @@ const out = {
   count,
   bitmap: Buffer.from(bits).toString("base64"),
 };
-writeFileSync(new URL("../zips/us.json", import.meta.url), JSON.stringify(out, null, 2) + "\n");
-console.log(`${count} zips -> zips/us.json (${out.bitmap.length} base64 chars)`);
+writeFileSync(new URL("us.json", import.meta.url), JSON.stringify(out, null, 2) + "\n");
+console.log(`${count} zips -> shared/zips/us.json (${out.bitmap.length} base64 chars)`);

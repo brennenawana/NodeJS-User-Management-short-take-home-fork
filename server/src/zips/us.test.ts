@@ -17,7 +17,7 @@ test("rejects zips that don't exist and anything not 5 digits", () => {
 });
 
 test("the bitmap holds as many zips as the file says", () => {
-  const { count, bitmap } = JSON.parse(readFileSync(new URL("../../../zips/us.json", import.meta.url), "utf8"));
+  const { count, bitmap } = JSON.parse(readFileSync(new URL("../../../shared/zips/us.json", import.meta.url), "utf8"));
   let set = 0;
   for (const byte of Buffer.from(bitmap, "base64")) for (let b = byte; b; b &= b - 1) set++;
   assert.equal(set, count);

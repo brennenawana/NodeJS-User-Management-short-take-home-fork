@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import type { Fetch } from "./http.js";
 
-export const fixturesDir = new URL("../../../../fixtures/", import.meta.url);
+export const fixturesDir = new URL("../../../fixtures/", import.meta.url);
 
 /** Reads a saved `{ status, body }` response from the repo's fixtures folder. */
 export function recorded(path: string): { status: number; body: unknown } {

@@ -6,7 +6,7 @@ Read `README.md` first. It covers what the project is, how to run it, how the co
 
 ## Working rules
 
-- Follow the layout in the README. Never let a vendor client, URL or response shape leak into `server/src/core/`; a new service gets a port there and an implementation in its own folder, and `server/src/main.ts` stays the only place that picks one.
+- Follow the layout in the README. Never let a vendor client, URL or response shape leak into `server/src/core/`; a new service gets a port there and an implementation in its own folder, and `server/src/compose.ts` stays the only place that picks one.
 - Style with the tokens in `design/tokens.css` only, and name components and props after the Figma file.
 - Ship tests with every change and run `yarn test` (plus `yarn e2e` for UI flows) before committing.
 - Keep the README's commands current when scripts change.
