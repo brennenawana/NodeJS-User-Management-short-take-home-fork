@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type M
 import { ApiError, isLocated, type User } from "../api";
 import { useZipLookup } from "../hooks/useZipLookup";
 import { relativeLabel } from "../lib/relative";
-import { localClock, offsetLabel, shortDate, SKY_LABEL, skyTime, zoneHint } from "../lib/time";
+import { localClock, offsetLabel, placeLine, shortDate, SKY_LABEL, skyTime, zoneHint } from "../lib/time";
 import { checkZipInput } from "../lib/zip";
 import { Avatar } from "./Avatar";
 import { Button } from "./Button";
@@ -37,8 +37,6 @@ export function PersonCard(props: Props) {
   return <Card {...props} />;
 }
 
-const PLACE_NOTE = { pending: "location pending", cantLocate: "can’t locate", invalidZip: "zip not found" } as const;
-
 function SkeletonCard() {
   return (
     <li className={`${styles.card} ${styles.skeleton}`} aria-hidden="true" data-state="skeleton">
@@ -64,7 +62,7 @@ function Card({ state, user, now, index = 0, viewerOffset, onToggle, onEdit, onC
   const expanded = state === "expanded" || state === "editing";
   const located = isLocated(user);
   const hint = located ? zoneHint(user.utcOffsetSeconds) : "";
-  const place = located ? `${user.city} · ${offsetLabel(user.utcOffsetSeconds)}` : `${user.zip} · ${PLACE_NOTE[user.locationStatus]}`;
+  const place = placeLine(user);
   const clock = located ? localClock(user.utcOffsetSeconds, now) : null;
   const sky = clock ? skyTime(clock) : null;
 

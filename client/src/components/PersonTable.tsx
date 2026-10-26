@@ -1,14 +1,12 @@
 import { isLocated, needsAttention, type UnlocatedStatus, type User } from "../api";
 import { relativeLabel } from "../lib/relative";
-import { localClock, offsetLabel, SKY_LABEL, skyTime } from "../lib/time";
+import { localClock, placeLine, SKY_LABEL, skyTime } from "../lib/time";
 import { Avatar } from "./Avatar";
 import { Button } from "./Button";
 import { Icon, type IconName } from "./Icon";
 import styles from "./PersonTable.module.css";
 
 // The same words PersonCard puts on its place line for someone without a location.
-const PLACE_NOTE: Record<UnlocatedStatus, string> = { pending: "location pending", cantLocate: "can’t locate", invalidZip: "zip not found" };
-
 const STATUS: Record<UnlocatedStatus, { text: string; icon: IconName; tone: "notice" | "error" }> = {
   pending: { text: "Location pending", icon: "clock", tone: "notice" },
   cantLocate: { text: "Can’t locate", icon: "warning", tone: "notice" },
@@ -54,7 +52,7 @@ export function PersonTable({ users, now, viewerOffset, onEdit, onRemove }: Prop
 
 function Row({ user, now, viewerOffset, onEdit, onRemove }: Omit<Props, "users"> & { user: User }) {
   const located = isLocated(user);
-  const place = located ? `${user.city} · ${offsetLabel(user.utcOffsetSeconds)}` : `${user.zip} · ${PLACE_NOTE[user.locationStatus]}`;
+  const place = placeLine(user);
   const clock = located ? localClock(user.utcOffsetSeconds, now) : null;
   const status = located ? null : STATUS[user.locationStatus];
 
