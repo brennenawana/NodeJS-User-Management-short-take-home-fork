@@ -9,8 +9,8 @@
 }
 .option:hover:not([aria-pressed="true"]) { color: var(--color-ink); }
 .option[aria-pressed="true"] { background: var(--color-surface); color: var(--color-ink); box-shadow: var(--shadow-segment); }
-/* Small phones: icons only; the label stays for screen readers. */
-@media (max-width: 379px) {
+/* Figma: AppHeader / Device=Mobile. Phones show icons only; the labels stay for screen readers. */
+@media (max-width: 640px) {
   .option { min-width: 44px; padding: 0; justify-content: center; }
   .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
