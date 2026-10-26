@@ -11,8 +11,10 @@ export default meta;
 type Story = StoryObj;
 
 const lena = team[0]!;
+/** San Francisco (UTC−7 in October), so the "Relative" line doesn't depend on the machine's zone. */
+const VIEWER_OFFSET = -25200;
 const card = (state: Exclude<PersonCardState, "skeleton">, user = lena): Story => ({
-  render: () => <PersonCard state={state} user={user} now={FIGMA_NOW} {...cardActions} />,
+  render: () => <PersonCard state={state} user={user} now={FIGMA_NOW} viewerOffset={VIEWER_OFFSET} {...cardActions} />,
 });
 
 // Figma: PersonCard, State

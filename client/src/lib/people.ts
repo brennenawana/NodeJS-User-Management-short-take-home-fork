@@ -1,3 +1,6 @@
+import { isLocated, type User } from "../api";
+import { secondsAhead } from "./relative";
+
 export function hueOf(name: string): number {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 360;
@@ -19,4 +22,12 @@ export function initialsOf(name: string): string {
 
 export function firstName(name: string): string {
   return name.trim().split(/\s+/)[0] ?? name;
+}
+
+const byName = (a: User, b: User) => a.name.localeCompare(b.name, "en", { sensitivity: "base" });
+
+/** Furthest behind the viewer first, ties by name; people without a location last, by name. */
+export function byTime(users: User[], viewer: number): User[] {
+  const at = (u: User) => (isLocated(u) ? secondsAhead(u.utcOffsetSeconds, viewer) : Infinity);
+  return [...users].sort((a, b) => at(a) - at(b) || byName(a, b));
 }

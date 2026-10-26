@@ -7,12 +7,15 @@ import { EmptyState } from "./components/EmptyState";
 import { MapView } from "./components/MapView";
 import { NeedsAttention } from "./components/NeedsAttention";
 import { PersonCard, type PersonCardState } from "./components/PersonCard";
+import { SortToggle, type Sort } from "./components/SortToggle";
 import { TimezoneStrip } from "./components/TimezoneStrip";
 import { Toast } from "./components/Toast";
 import type { View } from "./components/ViewToggle";
 import { useNow } from "./hooks/useNow";
 import { useTheme } from "./hooks/useTheme";
 import { useUsers } from "./hooks/useUsers";
+import { byTime } from "./lib/people";
+import { viewerOffsetSeconds } from "./lib/relative";
 import { offsetLabel } from "./lib/time";
 import styles from "./App.module.css";
 
@@ -30,6 +33,9 @@ export function App() {
   const [zone, setZone] = useState<number | null>(null);
   const [attentionFilter, setAttentionFilter] = useState(false);
   const [view, setView] = useState<View>("grid");
+  // Relative to you: the viewer's own offset, and people in name or clock order.
+  const viewerOffset = viewerOffsetSeconds(now);
+  const [sort, setSort] = useState<Sort>("name");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -40,10 +46,12 @@ export function App() {
   const flagged = all.filter(needsAttention);
   const attentionOnly = attentionFilter && flagged.length > 0;
   const q = query.trim().toLowerCase();
-  const shown = all.filter((u) =>
+  const matching = all.filter((u) =>
     (!q || u.name.toLowerCase().includes(q) || (u.city ?? "").toLowerCase().includes(q)) &&
     (zone === null || u.utcOffsetSeconds === zone) &&
     (!attentionOnly || needsAttention(u)));
+  // `all` already comes sorted by name.
+  const shown = sort === "time" ? byTime(matching, viewerOffset) : matching;
   const filtered = q !== "" || zone !== null || attentionOnly;
 
   const cardState = (u: User): PersonCardState =>
@@ -84,6 +92,7 @@ export function App() {
           {people.users && (
             <p className={styles.count}>{plural(all.length)}{filtered && shown.length !== all.length && ` · ${shown.length} shown`}</p>
           )}
+          {all.length > 0 && <SortToggle active={sort} onChange={setSort} />}
           {flagged.length > 0 && (
             <NeedsAttention state={attentionOnly ? "active" : "default"} onClick={() => setAttentionFilter(!attentionOnly)}
               label={`${flagged.length === 1 ? "1 person needs" : `${flagged.length} people need`} attention`} />
@@ -94,7 +103,7 @@ export function App() {
           <p className={styles.ticks}>Times update every minute</p>
         </div>
 
-        <TimezoneStrip users={all} now={now} active={zone} onPick={setZone} />
+        <TimezoneStrip users={all} now={now} viewerOffset={viewerOffset} active={zone} onPick={setZone} />
 
         {sheetOpen && (
           <AddSheet now={now} onClose={closeSheet} onPreview={onPreview}
@@ -135,7 +144,7 @@ export function App() {
         ) : (
           <ul className={styles.grid} aria-label="People">
             {shown.map((u, i) => (
-              <PersonCard key={u.id} user={u} now={now} index={i} state={cardState(u)}
+              <PersonCard key={u.id} user={u} now={now} viewerOffset={viewerOffset} index={i} state={cardState(u)}
                 onToggle={() => { setExpandedId(expandedId === u.id ? null : u.id); setEditingId(null); }}
                 onEdit={() => { setExpandedId(u.id); setEditingId(u.id); }}
                 onCancelEdit={() => setEditingId(null)}
