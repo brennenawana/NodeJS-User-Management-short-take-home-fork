@@ -12,7 +12,7 @@ test("add, edit and remove a person", async ({ page }) => {
   await expect(page).toHaveTitle(product.name);
   await expect(page.getByRole("heading", { name: "No one here yet" })).toBeVisible();
 
-  // Add: the zip resolves through the API and the fixture provider.
+  // Add: the zip resolves through the API and the sample provider.
   await page.getByRole("button", { name: "Add your first person" }).click();
   await page.getByLabel("Name").fill("Lena Hoffmann");
   await page.getByLabel("Zip code").fill("02108");
@@ -62,7 +62,7 @@ test("a made-up zip can't be saved; a real one we can't place is saved and flagg
   await expect(page.getByText("We couldn't find 99999. Check the zip and try again.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Add person" })).toBeDisabled();
 
-  // 00501 (Holtsville, NY) is a real zip the offline fixture provider doesn't know.
+  // 00501 (Holtsville, NY) is a real zip the offline sample provider doesn't know.
   await page.getByLabel("Zip code").fill("00501");
   await expect(page.getByText("We can't place 00501 on the map.")).toBeVisible();
   await page.getByRole("button", { name: "Save anyway" }).click();

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { appFromEnv } from "./compose.js";
 
 test("builds a working app from the environment alone", async () => {
-  const { app, config } = appFromEnv({ STORAGE: "memory", LOCATION_PROVIDER: "fixture" });
+  const { app, config } = appFromEnv({ STORAGE: "memory", LOCATION_PROVIDER: "sample" });
   assert.equal(config.storage, "memory");
   const server = app.listen(0);
   try {

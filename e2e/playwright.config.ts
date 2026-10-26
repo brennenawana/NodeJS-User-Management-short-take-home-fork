@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Runs the real API (fixture provider, in-memory storage) and a production build of the client.
+// Runs the real API (sample provider, in-memory storage) and a production build of the client.
 // No API key needed, and every run starts with an empty list.
 const API_PORT = 8091;
 const WEB_PORT = 5191;
@@ -23,7 +23,7 @@ export default defineConfig({
     {
       command: "yarn workspace user-management-server start",
       url: `http://localhost:${API_PORT}/`,
-      env: { API_PORT: String(API_PORT), LOCATION_PROVIDER: "fixture", STORAGE: "memory" },
+      env: { API_PORT: String(API_PORT), LOCATION_PROVIDER: "sample", STORAGE: "memory" },
       reuseExistingServer: false,
     },
     {

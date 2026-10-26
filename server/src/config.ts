@@ -6,7 +6,7 @@ const names = <T extends string>(o: Record<T, unknown>) => Object.keys(o) as [T,
 
 const configSchema = z.object({
   API_PORT: z.coerce.number().int().min(0).max(65535).default(8080),
-  LOCATION_PROVIDER: z.enum(names(locationProviders)).default("fixture"),
+  LOCATION_PROVIDER: z.enum(names(locationProviders)).default("sample"),
   STORAGE: z.enum(names(storages)).default("json-file"),
 });
 

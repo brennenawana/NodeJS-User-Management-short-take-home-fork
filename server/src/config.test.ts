@@ -2,8 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { loadConfig } from "./config.js";
 
-test("defaults to the offline fixture provider and a json file", () => {
-  assert.deepEqual(loadConfig({}), { port: 8080, locationProvider: "fixture", storage: "json-file" });
+test("defaults to the offline sample provider and a json file", () => {
+  assert.deepEqual(loadConfig({}), { port: 8080, locationProvider: "sample", storage: "json-file" });
 });
 
 test("reads every variable", () => {
