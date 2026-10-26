@@ -4,7 +4,7 @@ import type { User } from "./api";
 import { TimezoneStrip } from "./components/TimezoneStrip";
 import { localClock } from "./lib/time";
 import { renderApp } from "./test/render";
-import { located } from "./test/server";
+import { located, pending } from "./test/server";
 
 const team = () => [
   located("Lena Hoffmann", "02108", "lena"),
@@ -65,6 +65,29 @@ describe("relative to you", () => {
     await renderApp(team());
     expect(stripOffsets()).toEqual(["UTC−7", "UTC−5", "UTC−4", "UTC+5:30"]);
     expect(zoneCell("UTC−4")).toHaveTextContent("−9h 30m");
+  });
+
+  test("sorting by time puts whoever is furthest behind first, unlocated last, and A–Z goes back", async () => {
+    const user = await renderApp([...team(), pending("Noor Haddad", "99999", "noor", "invalidZip"), pending("Ada Lowe", "02108", "ada")]);
+    const names = () => within(screen.getByRole("list", { name: "People" })).getAllByRole("listitem").map((li) => li.querySelector(".name")?.textContent);
+    const sort = screen.getByRole("group", { name: "Sort people" });
+    const byName = within(sort).getByRole("button", { name: "A–Z" });
+    const byTime = within(sort).getByRole("button", { name: "By time" });
+    expect(byName).toHaveAttribute("aria-pressed", "true");
+    expect(names()).toEqual(["Ada Lowe", "Daniel Reyes", "Lena Hoffmann", "Maya Okafor", "Noor Haddad", "Priya Raman"]);
+
+    await user.click(byTime);
+    expect(byTime).toHaveAttribute("aria-pressed", "true");
+    expect(byName).toHaveAttribute("aria-pressed", "false");
+    expect(names()).toEqual(["Daniel Reyes", "Priya Raman", "Lena Hoffmann", "Maya Okafor", "Ada Lowe", "Noor Haddad"]);
+
+    // The sort holds while filtering.
+    await user.click(zoneCell("UTC−4"));
+    expect(names()).toEqual(["Lena Hoffmann", "Maya Okafor"]);
+    await user.click(zoneCell("UTC−4"));
+
+    await user.click(byName);
+    expect(names()).toEqual(["Ada Lowe", "Daniel Reyes", "Lena Hoffmann", "Maya Okafor", "Noor Haddad", "Priya Raman"]);
   });
 
   test("a shared offset without a zone name just says You", () => {
