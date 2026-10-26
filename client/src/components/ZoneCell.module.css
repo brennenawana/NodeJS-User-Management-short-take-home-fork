@@ -26,5 +26,10 @@
 .offset { font: var(--text-base-bold); }
 .sub { font: var(--text-sm); color: var(--color-muted); }
 .active .sub { color: var(--color-on-accent); }
+.relative { font: var(--text-sm); color: var(--color-accent-ink); }
+.active .relative { color: var(--color-on-accent); }
+/* The viewer's own offset: an outline to compare against, not a filter. */
+.you { border: 1.5px dashed var(--color-line-strong); background: transparent; box-shadow: none; cursor: default; }
+.you:hover { transform: none; border-color: var(--color-line-strong); }
 .time { font: var(--text-clock-sm); letter-spacing: var(--text-clock-sm-tracking); font-variant-numeric: tabular-nums; }
 .people { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
