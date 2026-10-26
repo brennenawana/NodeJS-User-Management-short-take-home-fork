@@ -13,7 +13,8 @@
   "cardFacts": "PersonCard Expanded/Editing show Location and Zip only. Coordinates and Record were dropped (properties deleted): people can't read lat/lon and the record id is internal. Coordinates still place map pins. AddSheet intro reads 'We look up their city and local time.'",
   "zipValidation": "A local GeoNames list says whether a zip is real; the location provider says where it is. Unknown zips can't be saved (AddSheet InvalidZip, save stays disabled). A real zip the provider can't place is saved and flagged PersonCard / CantLocate; a zip that stops being real on a later lookup is flagged PersonCard / InvalidZip. Only provider outages stay PendingLocation and retry. NeedsAttention counts flagged people and filters the grid to them.",
   "typeUnits": "Figma text styles are in px (Figma has no rem). tokens.css writes each as px / 16 in rem, so text follows the reader's browser font size; design/check-tokens.test.mjs checks the conversion. Spacing and radii stay px.",
-  "cardInteractions": "A collapsed PersonCard opens from anywhere on it (its own buttons keep their actions). A press outside the expanded card collapses it, except while editing; the actions menu closes on any press outside it. Remove keeps undo (hard delete after the toast closes) rather than a confirm dialog."
+  "cardInteractions": "A collapsed PersonCard opens from anywhere on it (its own buttons keep their actions). A press outside the expanded card collapses it, except while editing; the actions menu closes on any press outside it. Remove keeps undo (hard delete after the toast closes) rather than a confirm dialog.",
+  "teamTime": "Relative to you: PersonCard shows relativeLabel (\"3h ahead of you\") under the period line and ZoneCell shows relativeShort (\"+3h\") between time and people, both accent-ink. TimezoneStrip marks the viewer with a ZoneCell State=You cell when no group shares their offset. SortToggle (A–Z / By time) sits after the people count. List view: ViewToggle Grid, List, Map; a PersonTable panel with Person, Local time, Relative, Zip and Actions columns, where flagged people show their status in the Relative column. Desktop / List (next to Desktop / Grid; later screens moved right by 1540) uses the light reference time with the viewer at UTC−8 (8:50 AM), so the You cell comes first and everyone is 1–4h ahead."
  },
  "entities": {
   "pages": {
@@ -97,7 +98,8 @@
     "undo": "3:80",
     "info": "3:85",
     "warning": "3:90",
-    "people": "3:98"
+    "people": "3:98",
+    "list": "75:1776"
    },
    "Avatar": {
     "set": "3:106",
@@ -131,11 +133,25 @@
      "Offset": "Offset#5:0",
      "Hint": "Hint#5:3",
      "Time": "Time#5:6",
-     "People": "People#5:9"
-    }
+     "People": "People#5:9",
+     "Relative": "Relative#76:0",
+     "Show relative": "Show relative#76:3"
+    },
+    "variants": {
+     "State=Default": "5:6",
+     "State=Active": "5:12",
+     "State=You": "76:651"
+    },
+    "note": "relative line (76:649 Default, 76:650 Active) sits between time and people, text/sm accent-ink (on-accent when Active). State=You: dashed 1.5 line-strong border, no fill or shadow; hint \"You\" and people \"Your time\" are plain text, Offset/Time stay bound. Instances that existed before have Show relative off, so earlier screens look unchanged."
    },
    "ViewToggle": {
-    "set": "5:46"
+    "set": "5:46",
+    "variants": {
+     "Active=Grid": "5:20",
+     "Active=List": "75:1811",
+     "Active=Map": "5:33"
+    },
+    "note": "Segments in order Grid, List, Map in every variant (list segments 75:1787 in Grid, 75:1824 in List, 75:1798 in Map). Figma lists the variant options as Grid, Map, List. AppHeader Device=Mobile hides the toggle labels (icon-only) so three segments fit at 390px."
    },
    "Toast": {
     "component": "5:48",
@@ -153,9 +169,11 @@
      "Location": "Location#7:24",
      "Zip": "Zip#7:36",
      "Updated": "Updated#7:48",
-     "Sky": "Sky#7:54"
+     "Sky": "Sky#7:54",
+     "Relative": "Relative#76:13",
+     "Show relative": "Show relative#76:21"
     },
-    "note": "PendingLocation place text is unlinked (edit text directly)",
+    "note": "PendingLocation place text is unlinked (edit text directly); Relative line (text/sm accent-ink) under the period line in Default/Expanded/Editing, toggled by Show relative; instances that existed before have it off",
     "variants": [
      "Default",
      "Expanded",
@@ -168,6 +186,11 @@
     "zipFlags": {
      "InvalidZip": "61:519",
      "CantLocate": "61:540"
+    },
+    "relativeLines": {
+     "Default": "76:747",
+     "Expanded": "76:748",
+     "Editing": "76:749"
     }
    },
    "AddSheet": {
@@ -180,7 +203,12 @@
     "note": "hint/preview-place/waiting are per-variant plain text; name-field/zip-field/avatar/sky exposed nested instances"
    },
    "TimezoneStrip": {
-    "component": "10:145"
+    "component": "10:145",
+    "props": {
+     "Show you": "Show you#76:12"
+    },
+    "youCell": "76:666",
+    "note": "zone-you (ZoneCell State=You) is the first slot, hidden unless Show you is on; cells have Show relative off by default. Nested path IDs: I<strip>;76:666 (you), I<strip>;10:146/10:152/10:158/10:164 (UTC−7..−4)."
    },
    "AppHeader": {
     "set": "10:240",
@@ -213,7 +241,9 @@
     "AppHeader": "10:241",
     "EmptyState": "10:255",
     "MapPin": "31:513",
-    "NeedsAttention": "61:3564"
+    "NeedsAttention": "61:3564",
+    "SortToggle": "76:3906",
+    "PersonTable": "77:838"
    },
    "examples": {
     "tf": "13:269",
@@ -239,6 +269,36 @@
     "props": {
      "Label": "Label#61:16"
     }
+   },
+   "SortToggle": {
+    "set": "76:3905",
+    "section": "76:3906",
+    "variants": {
+     "Active=Name": "76:3865",
+     "Active=Time": "76:3887"
+    }
+   },
+   "PersonTable": {
+    "component": "77:648",
+    "section": "77:838",
+    "header": "77:590",
+    "row": {
+     "set": "77:647",
+     "variants": {
+      "State=Default": "77:601",
+      "State=Flagged": "77:623"
+     },
+     "props": {
+      "Name": "Name#77:0",
+      "Place": "Place#77:3",
+      "Time": "Time#77:6",
+      "Period": "Period#77:9",
+      "Relative": "Relative#77:12",
+      "Status": "Status#77:15",
+      "Zip": "Zip#77:18"
+     }
+    },
+    "note": "PersonTable holds the header plus 8 row instances (default team A–Z at the light reference time, viewer UTC−8, Tomás flagged Can’t locate). Avatar is an exposed nested instance; set hue fills with the resolved-colour paint fallback. Flagged place is plain text; status colour and icon for Location pending (notice, clock) and Zip not found (error, alert) are instance overrides. Actions are 44px icon-only ghost frames (Button has no icon-only variant)."
    }
   },
   "screens": {
@@ -247,7 +307,8 @@
    "Desktop / Map view": "34:1192",
    "Desktop / Empty": "17:457",
    "Desktop / Grid — Dark": "17:556",
-   "Mobile / Grid": "36:1211"
+   "Mobile / Grid": "36:1211",
+   "Desktop / List": "77:4100"
   },
   "prototype": {
    "frames": {
@@ -287,7 +348,9 @@
   "final-visual-pass",
   "fixes/mappin-28px+reanchor",
   "fixes/mobile-expanded-full-width-actions",
-  "fixes/tokens-css-type+shadow"
+  "fixes/tokens-css-type+shadow",
+  "components/team-time(viewtoggle-list,zonecell-relative+you,personcard-relative,sorttoggle,persontable)",
+  "screens/desktop-list"
  ],
  "lessons": [
   "TEXT props on component sets share ONE default across variants; state-specific copy must be plain text or instance overrides",
