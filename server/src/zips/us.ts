@@ -4,8 +4,8 @@ import { createBitmapDirectory } from "./bitmap.js";
 
 const file = z.object({ count: z.number().int().positive(), bitmap: z.string() });
 
-/** Every real US zip, from zips/us.json (GeoNames, CC BY 4.0). */
+/** Every real US zip, from shared/zips/us.json (GeoNames, CC BY 4.0). */
 export function loadUsZips() {
-  const { bitmap } = file.parse(JSON.parse(readFileSync(new URL("../../../zips/us.json", import.meta.url), "utf8")));
+  const { bitmap } = file.parse(JSON.parse(readFileSync(new URL("../../../shared/zips/us.json", import.meta.url), "utf8")));
   return createBitmapDirectory(bitmap);
 }

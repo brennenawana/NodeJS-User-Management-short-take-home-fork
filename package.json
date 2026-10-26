@@ -14,7 +14,7 @@
     "build": "yarn workspace user-management-client build",
     "test": "yarn check:tokens && yarn workspace user-management-server test && yarn workspace user-management-client test",
     "typecheck": "tsc --noEmit -p tsconfig.json && yarn workspace user-management-client typecheck",
-    "check:tokens": "node --test scripts/check-tokens.test.mjs",
+    "check:tokens": "node --test design/check-tokens.test.mjs",
     "e2e": "yarn workspace user-management-e2e test",
     "storybook": "yarn workspace user-management-client storybook",
     "build-storybook": "yarn workspace user-management-client build-storybook",

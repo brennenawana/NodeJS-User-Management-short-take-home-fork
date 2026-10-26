@@ -1,8 +1,8 @@
 // Calls the OpenWeatherMap current weather API for the sample zips and saves
-// the raw responses as fixtures. Run: node scripts/probe-openweathermap.mjs
+// the raw responses as fixtures. Run from the repo root: node server/scripts/probe-openweathermap.mjs
 import { writeFile, mkdir } from "node:fs/promises";
 
-process.loadEnvFile?.(".env");
+process.loadEnvFile?.(new URL("../../.env", import.meta.url));
 const key = process.env.OPENWEATHER_API_KEY;
 if (!key) {
   console.error("OPENWEATHER_API_KEY is not set (see .env.example)");

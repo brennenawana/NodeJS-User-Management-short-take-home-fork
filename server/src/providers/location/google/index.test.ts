@@ -5,7 +5,7 @@ import { locationProviderConformance } from "../conformance.js";
 import { recorded, respond, stubFetch, unreachable } from "../recorded.js";
 import { ProviderUnavailable } from "../../../core/errors.js";
 
-// Hand-written responses in the documented formats (see fixtures/google/README.md).
+// Hand-written responses in the documented formats (see server/fixtures/google/README.md).
 const documentedApi = () => stubFetch((url) => {
   if (url.pathname.endsWith("/timezone/json")) return respond(recorded("google/timezone-boston-edt.json"));
   const zip = url.searchParams.get("components")?.match(/postal_code:(\d+)/)?.[1];

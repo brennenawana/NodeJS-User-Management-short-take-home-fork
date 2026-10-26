@@ -1,6 +1,6 @@
 import type { ZipDirectory } from "../core/ports.js";
 
-/** Reads a bitmap with one bit per 5-digit zip, as built by scripts/build-zip-directory.mjs. */
+/** Reads a bitmap with one bit per 5-digit zip, as built by shared/zips/build.mjs. */
 export function createBitmapDirectory(base64: string): ZipDirectory {
   const bits = Buffer.from(base64, "base64");
   if (bits.length !== 100_000 / 8) throw new Error(`zip bitmap is ${bits.length} bytes, expected 12500`);

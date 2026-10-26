@@ -1,5 +1,5 @@
 // Fails when design/tokens.css drifts from the Figma export in design/tokens.json.
-// Run: node --test scripts/check-tokens.test.mjs
+// Run: node --test design/check-tokens.test.mjs (or yarn check:tokens)
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

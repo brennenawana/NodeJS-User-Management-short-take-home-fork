@@ -1,6 +1,6 @@
-import us from "../../../zips/us.json";
+import us from "../../../shared/zips/us.json";
 
-// The same GeoNames bitmap the server checks (zips/us.json, 12.5 KB), so the form
+// The same GeoNames bitmap the server checks (shared/zips/us.json, 12.5 KB), so the form
 // can reject a zip that doesn't exist without asking the API.
 const bits = Uint8Array.from(atob(us.bitmap), (c) => c.charCodeAt(0));
 

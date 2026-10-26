@@ -12,7 +12,7 @@
   ],
   "functions": {
     "api/index.ts": {
-      "includeFiles": "{zips/us.json,product.json}"
+      "includeFiles": "{shared/zips/us.json,product.json}"
     }
   }
 }

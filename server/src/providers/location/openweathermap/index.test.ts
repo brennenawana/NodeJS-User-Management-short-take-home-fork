@@ -5,7 +5,7 @@ import { locationProviderConformance } from "../conformance.js";
 import { recorded, respond, stubFetch, unreachable } from "../recorded.js";
 import { ProviderUnavailable, ZipNotFound } from "../../../core/errors.js";
 
-// Answers from the real responses captured by scripts/probe-openweathermap.mjs.
+// Answers from the real responses captured by server/scripts/probe-openweathermap.mjs.
 const recordedApi = stubFetch((url) => {
   const zip = url.searchParams.get("zip")!.split(",")[0];
   try {
