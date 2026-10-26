@@ -1,10 +1,10 @@
 import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import product from "../../product.json";
 import { UNDO_MS } from "./hooks/useUsers";
 import { renderApp } from "./test/render";
-import { calls, CANT_LOCATE_ZIP, located, OUTAGE_ZIP, pending, stored } from "./test/server";
+import { calls, CANT_LOCATE_ZIP, located, NOT_A_ZIP, OUTAGE_ZIP, pending, stored } from "./test/server";
 
 const team = () => [
   located("Lena Hoffmann", "02108", "lena"),
@@ -290,5 +290,101 @@ describe("App", () => {
     expect(await screen.findByTestId("preview-pin")).toHaveTextContent("Denver · UTC−6");
     await user.click(screen.getByRole("button", { name: "Cancel" }));
     expect(screen.queryByTestId("preview-pin")).not.toBeInTheDocument();
+  });
+});
+
+describe("List view", () => {
+  // A viewer on Pacific time (UTC−7), so the Relative column reads the same anywhere.
+  beforeEach(() => { vi.spyOn(Date.prototype, "getTimezoneOffset").mockReturnValue(420); });
+  afterEach(() => vi.restoreAllMocks());
+
+  const table = () => screen.getByRole("table", { name: "People" });
+  const rows = () => within(table()).getAllByRole("row").slice(1);
+  const row = (name: string) => within(table()).getByRole("rowheader", { name: new RegExp(`^${name}`) }).closest("tr")!;
+  const names = () => rows().map((r) => r.querySelector(".name")?.textContent);
+  const showList = (user: Awaited<ReturnType<typeof renderApp>>) =>
+    user.click(within(screen.getByRole("group", { name: "View" })).getByRole("button", { name: "List" }));
+
+  test("the view toggle offers grid, list and map, in that order", async () => {
+    await renderApp(team());
+    const options = within(screen.getByRole("group", { name: "View" })).getAllByRole("button");
+    expect(options.map((b) => b.textContent)).toEqual(["Grid", "List", "Map"]);
+    expect(options[0]).toHaveAttribute("aria-pressed", "true");
+  });
+
+  test("switching to List shows a table with a row per person instead of the cards", async () => {
+    const user = await renderApp(team());
+    await showList(user);
+    expect(within(screen.getByRole("group", { name: "View" })).getByRole("button", { name: "List" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.queryByRole("list", { name: "People" })).not.toBeInTheDocument();
+    expect(within(table()).getAllByRole("columnheader").map((th) => th.textContent)).toEqual(["Person", "Local time", "Relative", "Zip", "Actions"]);
+    expect(names()).toEqual(["Daniel Reyes", "Lena Hoffmann", "Maya Okafor", "Priya Raman"]);
+    const lena = row("Lena Hoffmann");
+    expect(within(lena).getByText("3h ahead of you")).toBeInTheDocument();
+    expect(within(lena).getByText("02108")).toBeInTheDocument();
+    expect(within(lena).getByText(/^\d{1,2}:\d{2} (AM|PM)$/)).toBeInTheDocument();
+    expect(within(row("Daniel Reyes")).getByText("Same time as you")).toBeInTheDocument();
+    expect(within(row("Priya Raman")).getByText("2h ahead of you")).toBeInTheDocument();
+  });
+
+  test("search, the zone filter and the attention filter all apply to the list", async () => {
+    const user = await renderApp([...team(), pending("Noor Haddad", NOT_A_ZIP, "noor", "invalidZip")]);
+    await showList(user);
+    expect(rows()).toHaveLength(5);
+
+    await user.type(screen.getByRole("searchbox", { name: "Search people" }), "chicago");
+    expect(names()).toEqual(["Priya Raman"]);
+    await user.clear(screen.getByRole("searchbox", { name: "Search people" }));
+
+    await user.click(within(screen.getByRole("group", { name: "Filter people by UTC offset" })).getByRole("button", { name: /UTC−4/ }));
+    expect(names()).toEqual(["Lena Hoffmann", "Maya Okafor"]);
+    await user.click(screen.getByRole("button", { name: "Showing UTC−4 only" }));
+
+    await user.click(screen.getByRole("button", { name: "1 person needs attention" }));
+    expect(names()).toEqual(["Noor Haddad"]);
+  });
+
+  test("people without a location show their status instead of a time", async () => {
+    const user = await renderApp([
+      located("Lena Hoffmann", "02108", "lena"),
+      pending("Jo Park", OUTAGE_ZIP, "jo"),
+      pending("Noor Haddad", NOT_A_ZIP, "noor", "invalidZip"),
+      pending("Sam Castillo", CANT_LOCATE_ZIP, "sam", "cantLocate"),
+    ]);
+    await showList(user);
+    expect(within(row("Jo Park")).getByText("Location pending")).toBeInTheDocument();
+    expect(within(row("Jo Park")).getByText("Unknown")).toBeInTheDocument();
+    expect(row("Jo Park")).toHaveAttribute("data-state", "default");
+    expect(within(row("Noor Haddad")).getByText("Zip not found")).toBeInTheDocument();
+    expect(row("Noor Haddad")).toHaveAttribute("data-state", "flagged");
+    expect(within(row("Sam Castillo")).getByText("Can’t locate")).toBeInTheDocument();
+    expect(row("Sam Castillo")).toHaveAttribute("data-state", "flagged");
+    expect(row("Lena Hoffmann")).toHaveAttribute("data-state", "default");
+  });
+
+  test("Edit goes back to the grid with that card open for editing", async () => {
+    const user = await renderApp(team());
+    await showList(user);
+    await user.click(screen.getByRole("button", { name: "Edit Maya Okafor" }));
+    expect(screen.queryByRole("table", { name: "People" })).not.toBeInTheDocument();
+    expect(within(screen.getByRole("group", { name: "View" })).getByRole("button", { name: "Grid" })).toHaveAttribute("aria-pressed", "true");
+    expect(card("Maya Okafor")).toHaveAttribute("data-state", "editing");
+    expect(within(card("Maya Okafor")).getByLabelText("Name")).toHaveFocus();
+  });
+
+  test("Remove takes the row out with the same undo toast as the grid", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await renderApp(team());
+    await showList(user);
+    await user.click(screen.getByRole("button", { name: "Remove Priya Raman" }));
+    expect(within(table()).queryByRole("rowheader", { name: /^Priya Raman/ })).not.toBeInTheDocument();
+    expect(rows()).toHaveLength(3);
+    expect(screen.getByRole("status")).toHaveTextContent("Priya Raman was removed.");
+
+    await user.click(screen.getByRole("button", { name: "Undo" }));
+    expect(row("Priya Raman")).toBeInTheDocument();
+    await act(() => vi.advanceTimersByTimeAsync(UNDO_MS + 100));
+    expect(calls.filter((c) => c.method === "DELETE")).toHaveLength(0);
   });
 });

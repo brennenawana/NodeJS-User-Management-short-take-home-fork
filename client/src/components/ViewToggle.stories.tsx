@@ -7,4 +7,5 @@ type Story = StoryObj<typeof meta>;
 
 // Figma: ViewToggle, Active
 export const Grid: Story = { args: { active: "grid" } };
+export const List: Story = { args: { active: "list" } };
 export const Map: Story = { args: { active: "map" } };
