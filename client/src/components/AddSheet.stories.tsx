@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, waitFor, within } from "storybook/test";
-import { located, OUTAGE_ZIP, SLOW_ZIP } from "../mocks/fake-api";
+import { CANT_LOCATE_ZIP, located, OUTAGE_ZIP, SLOW_ZIP } from "../mocks/fake-api";
 import { FIGMA_NOW } from "../mocks/story-data";
 import { AddSheet } from "./AddSheet";
 
@@ -27,4 +27,20 @@ export const Resolved: Story = {
   },
 };
 export const InvalidZip: Story = { args: { defaultName: "Noor Haddad", defaultZip: "021" }, play: state("invalidZip") };
-export const LookupFailed: Story = { args: { defaultName: "Noor Haddad", defaultZip: OUTAGE_ZIP }, play: state("lookupFailed") };
+// LookupFailed covers two causes with different copy: an outage (saved as pending and
+// retried) and a real zip the provider can't place (saved and flagged, never retried).
+export const LookupFailed: Story = {
+  args: { defaultName: "Noor Haddad", defaultZip: OUTAGE_ZIP },
+  play: async (ctx) => {
+    await state("lookupFailed")(ctx);
+    await expect(within(ctx.canvasElement).getByText(/You can still save and we will retry/)).toBeVisible();
+  },
+};
+export const LookupFailedCantPlace: Story = {
+  name: "Lookup Failed (Can't Place)",
+  args: { defaultName: "Noor Haddad", defaultZip: CANT_LOCATE_ZIP },
+  play: async (ctx) => {
+    await state("lookupFailed")(ctx);
+    await expect(within(ctx.canvasElement).getByText(/their card will be flagged/)).toBeVisible();
+  },
+};
