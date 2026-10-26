@@ -1,6 +1,6 @@
 import type { Location } from "../../../core/user.js";
 
-// The first eight match the responses recorded in server/fixtures/openweathermap.
+// The first eight match the responses recorded in server/test/fixtures/openweathermap.
 // The rest come from the design sources (R2-Main.dc.html) so the add sheet has
 // more than the sample team to resolve.
 export const ZIPS: Record<string, Location> = {

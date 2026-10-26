@@ -10,10 +10,10 @@ import { ZIPS } from "./zips.js";
 export const OUTAGE_ZIP = "12345";
 
 /** Offline provider backed by a small table. Used by tests, e2e and anyone without an API key. */
-export function createFixtureProvider(table: Record<string, Location> = ZIPS, { down = false } = {}): LocationProvider {
+export function createSampleProvider(table: Record<string, Location> = ZIPS, { down = false } = {}): LocationProvider {
   return {
     async lookupZip(zip) {
-      if (down || zip === OUTAGE_ZIP) throw new ProviderUnavailable("fixture outage");
+      if (down || zip === OUTAGE_ZIP) throw new ProviderUnavailable("sample outage");
       const hit = table[zip];
       if (!hit) throw new ZipNotFound(zip);
       return { ...hit };
@@ -22,5 +22,5 @@ export function createFixtureProvider(table: Record<string, Location> = ZIPS, { 
 }
 
 export function fromEnv(): LocationProvider {
-  return createFixtureProvider();
+  return createSampleProvider();
 }

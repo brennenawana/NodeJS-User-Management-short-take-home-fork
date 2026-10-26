@@ -2,7 +2,7 @@ import { beforeEach, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { createUsersService } from "./users-service.js";
 import { InvalidZip, ProviderUnavailable, UserNotFound, ZipNotFound } from "./errors.js";
-import { BOSTON, DENVER, fakeDirectory, fakeProvider, fakeRepo, fixedClock, sequentialIds } from "./fakes.js";
+import { BOSTON, DENVER, fakeDirectory, fakeProvider, fakeRepo, fixedClock, sequentialIds } from "../../test/fakes.js";
 
 const T0 = "2026-10-19T16:50:00.000Z";
 const T1 = "2026-10-23T09:00:00.000Z";

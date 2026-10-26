@@ -1,8 +1,8 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { createOpenWeatherMapProvider, fromEnv } from "./index.js";
-import { locationProviderConformance } from "../conformance.js";
-import { recorded, respond, stubFetch, unreachable } from "../recorded.js";
+import { locationProviderConformance } from "../../../../test/conformance.js";
+import { recorded, respond, stubFetch, unreachable } from "../../../../test/recorded.js";
 import { ProviderUnavailable, ZipNotFound } from "../../../core/errors.js";
 
 // Answers from the real responses captured by server/scripts/probe-openweathermap.mjs.

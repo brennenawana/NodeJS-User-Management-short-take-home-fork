@@ -11,7 +11,7 @@ if (!key) {
 
 const zips = ["10001", "94103", "60601", "98101", "80202", "33131", "02108", "78701"];
 const badZip = "00000";
-const outDir = new URL("../fixtures/openweathermap/", import.meta.url);
+const outDir = new URL("../test/fixtures/openweathermap/", import.meta.url);
 await mkdir(outDir, { recursive: true });
 
 async function probe(zip, file) {

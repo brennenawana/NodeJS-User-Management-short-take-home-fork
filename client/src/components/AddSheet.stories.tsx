@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, waitFor, within } from "storybook/test";
-import { located, OUTAGE_ZIP, SLOW_ZIP } from "../test/fake-api";
-import { FIGMA_NOW } from "../test/story-data";
+import { located, OUTAGE_ZIP, SLOW_ZIP } from "../mocks/fake-api";
+import { FIGMA_NOW } from "../mocks/story-data";
 import { AddSheet } from "./AddSheet";
 
 const meta = {

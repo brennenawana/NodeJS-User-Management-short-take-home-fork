@@ -3,7 +3,7 @@ import type { UnlocatedStatus, User, ZipPreview } from "../api";
 import { isRealZip } from "../lib/zipDirectory";
 
 // An in-memory stand-in for the API, close enough to server/src/http to drive the UI.
-// Tests run it through msw/node (server.ts); Storybook runs it in the browser.
+// Tests run it through msw/node (src/test/server.ts); Storybook runs it in the browser.
 
 export const ZIPS: Record<string, Omit<ZipPreview, "zip">> = {
   "02108": { city: "Boston", lat: 42.3576, lon: -71.0684, utcOffsetSeconds: -14400 },

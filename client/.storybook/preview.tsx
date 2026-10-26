@@ -1,6 +1,6 @@
 import type { Preview } from "@storybook/react-vite";
 import { setupWorker } from "msw/browser";
-import { handlers } from "../src/test/fake-api";
+import { handlers } from "../src/mocks/fake-api";
 import "../src/styles.css";
 
 // Stories that look zips up talk to the same fake API the tests use.

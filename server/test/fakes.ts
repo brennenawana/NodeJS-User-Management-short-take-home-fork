@@ -1,6 +1,6 @@
-import { ProviderUnavailable, ZipNotFound } from "./errors.js";
-import type { Clock, LocationProvider, UsersRepo, ZipDirectory } from "./ports.js";
-import type { Location, User } from "./user.js";
+import { ProviderUnavailable, ZipNotFound } from "../src/core/errors.js";
+import type { Clock, LocationProvider, UsersRepo, ZipDirectory } from "../src/core/ports.js";
+import type { Location, User } from "../src/core/user.js";
 
 export const BOSTON: Location = { city: "Boston", lat: 42.3576, lon: -71.0684, utcOffsetSeconds: -14400 };
 export const DENVER: Location = { city: "Denver", lat: 39.7491, lon: -104.9946, utcOffsetSeconds: -21600 };

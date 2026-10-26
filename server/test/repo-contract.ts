@@ -1,7 +1,7 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
-import type { UsersRepo } from "../core/ports.js";
-import type { User } from "../core/user.js";
+import type { UsersRepo } from "../src/core/ports.js";
+import type { User } from "../src/core/user.js";
 
 const lena: User = {
   id: "a", name: "Lena Hoffmann", zip: "02108",
