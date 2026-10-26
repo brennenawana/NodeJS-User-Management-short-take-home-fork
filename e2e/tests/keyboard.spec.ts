@@ -78,6 +78,21 @@ test("Escape closes the add sheet and returns focus to the Add button", async ({
   await expect(page.getByRole("banner").getByRole("button", { name: "Add a person" })).toBeFocused();
 });
 
+test("List view works from the keyboard, and Edit there opens the card in the grid", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("list", { name: "People" })).toBeVisible();
+  await tabTo(page, /^List$/);
+  await page.keyboard.press("Enter");
+  const table = page.getByRole("table", { name: "People" });
+  await expect(table.getByRole("rowheader", { name: /^Grace Whitfield/ })).toBeVisible();
+
+  await tabTo(page, /^Edit Grace Whitfield$/);
+  await page.keyboard.press("Enter");
+  await expect(table).toBeHidden();
+  await expect(page.getByLabel("Name")).toBeFocused();
+  await expect(page.getByRole("button", { name: "Grid" })).toHaveAttribute("aria-pressed", "true");
+});
+
 test("the timezone strip and theme toggle work from the keyboard", async ({ page }) => {
   await page.goto("/");
   await tabTo(page, /^Switch to (dark|light) theme$/);
