@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { FIGMA_NOW, team } from "../test/story-data";
+import { FIGMA_NOW, team } from "../mocks/story-data";
 import { TimezoneStrip } from "./TimezoneStrip";
 
 const meta = {

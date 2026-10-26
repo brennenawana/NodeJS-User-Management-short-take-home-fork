@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { cardActions, FIGMA_NOW, noor, noorInvalid, samCantLocate, team } from "../test/story-data";
+import { cardActions, FIGMA_NOW, noor, noorInvalid, samCantLocate, team } from "../mocks/story-data";
 import { PersonCard, type PersonCardState } from "./PersonCard";
 
 const meta = {
