@@ -1,0 +1,78 @@
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  container: person-table / inline-size;
+}
+.table { width: 100%; border-collapse: collapse; text-align: left; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.head th {
+  padding: var(--space-12) var(--space-16);
+  text-align: left;
+  border-bottom: 1px solid var(--color-line);
+  font: var(--text-xs-label); letter-spacing: var(--text-xs-label-tracking); text-transform: var(--text-xs-label-case);
+  color: var(--color-muted);
+}
+
+.row { transition: background-color var(--motion-fast) var(--motion-ease); }
+.row:hover { background: var(--color-surface-2); }
+.row + .row > * { border-top: 1px solid var(--color-line); }
+.row > * { padding: var(--space-12) var(--space-16); vertical-align: middle; }
+
+.person { font-weight: inherit; text-align: left; }
+.who { display: flex; align-items: center; gap: var(--space-12); }
+.names { display: grid; min-width: 0; }
+.name { font: var(--text-md-semibold); color: var(--color-ink); }
+.place { font: var(--text-sm); color: var(--color-muted); }
+
+.time { white-space: nowrap; }
+.clock { display: block; font: var(--text-md-bold); font-variant-numeric: tabular-nums; }
+.period { display: block; font: var(--text-sm); color: var(--color-muted); }
+
+.relative { font: var(--text-md); }
+.status { display: inline-flex; align-items: center; vertical-align: middle; gap: var(--space-4); font: var(--text-sm-bold); }
+.status svg { flex: 0 0 auto; }
+.notice { color: var(--color-notice); }
+.error { color: var(--color-error); }
+
+.zip { font: var(--text-md); font-variant-numeric: tabular-nums; }
+.actions { width: 1%; white-space: nowrap; text-align: right; }
+.actions > * + * { margin-left: var(--space-4); }
+.remove { color: var(--color-error); }
+
+/*
+ * Figma: Mobile / List. Each row stacks into a block: who on the left, time and relative on
+ * the right, actions at the end. Zip hides. CSS only, so the table stays a table.
+ */
+@media (max-width: 640px) {
+  .table, .table tbody { display: block; }
+  .head { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "person time actions" "person relative actions";
+    align-items: center;
+    column-gap: var(--space-12);
+    padding: var(--space-12);
+  }
+  .row + .row { border-top: 1px solid var(--color-line); }
+  .row + .row > * { border-top: 0; }
+  .row > * { padding: 0; }
+  .person { grid-area: person; min-width: 0; }
+  .who { gap: var(--space-8); }
+  .name, .place { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .time { grid-area: time; align-self: end; text-align: right; }
+  .period { display: none; }
+  .relative { grid-area: relative; align-self: start; text-align: right; font: var(--text-sm); color: var(--color-muted); }
+  .status { font: var(--text-sm-bold); }
+  .zip { display: none; }
+  .actions { grid-area: actions; display: flex; width: auto; }
+}
+/* A narrow panel (a small phone, or larger text) gives the name room: actions drop to their own line. */
+@container person-table (max-width: 26rem) {
+  .row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "person time" "person relative" "actions actions"; }
+  .actions { justify-content: flex-end; margin-top: var(--space-4); }
+}

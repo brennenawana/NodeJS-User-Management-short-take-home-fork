@@ -26,6 +26,12 @@ test("phone layout: floating add, strip first, one column", async ({ page }) => 
   expect((await strip.boundingBox())!.y).toBeLessThan((await title.boundingBox())!.y);
   expect(Math.round((await strip.getByRole("button").first().boundingBox())!.width)).toBe(168);
 
+  // The header keeps the logo, view toggle and theme button on one row, with icon-only views.
+  const logoTop = (await header.getByRole("link").boundingBox())!.y;
+  const themeTop = (await header.getByRole("button", { name: /^Switch to/ }).boundingBox())!.y;
+  expect(Math.abs(themeTop - logoTop)).toBeLessThan(12);
+  expect(Math.round((await header.getByRole("button", { name: "List" }).boundingBox())!.width)).toBe(44);
+
   // Cards fill the width in a single column.
   const card = page.getByRole("listitem").filter({ hasText: "Sam Castillo" });
   expect(Math.round((await card.boundingBox())!.width)).toBe(390 - 32);

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type MouseEvent } from "react";
 import { ApiError, isLocated, type User } from "../api";
 import { useZipLookup } from "../hooks/useZipLookup";
-import { localClock, offsetLabel, shortDate, SKY_LABEL, skyTime, zoneHint } from "../lib/time";
+import { relativeLabel } from "../lib/relative";
+import { localClock, offsetLabel, placeLine, shortDate, SKY_LABEL, skyTime, zoneHint } from "../lib/time";
 import { checkZipInput } from "../lib/zip";
 import { Avatar } from "./Avatar";
 import { Button } from "./Button";
@@ -23,18 +24,18 @@ export interface PersonCardActions {
 
 type Props =
   | { state: "skeleton" }
-  | ({ state: Exclude<PersonCardState, "skeleton">; user: User; now: Date; index?: number } & PersonCardActions);
+  | ({ state: Exclude<PersonCardState, "skeleton">; user: User; now: Date; index?: number; viewerOffset?: number } & PersonCardActions);
 
 /**
- * Figma: PersonCard. `state` is the Figma "State" variant. A card without a location
- * can also be expanded or edited, so the banner follows the user's locationStatus.
+ * Figma: PersonCard. `state` is the Figma "State" variant; the "Relative" text property
+ * comes from `viewerOffset` (the viewer's UTC offset in seconds) and only shows when it's
+ * given. A card without a location can also be expanded or edited, so the banner follows
+ * the user's locationStatus.
  */
 export function PersonCard(props: Props) {
   if (props.state === "skeleton") return <SkeletonCard />;
   return <Card {...props} />;
 }
-
-const PLACE_NOTE = { pending: "location pending", cantLocate: "can’t locate", invalidZip: "zip not found" } as const;
 
 function SkeletonCard() {
   return (
@@ -54,14 +55,14 @@ function SkeletonCard() {
   );
 }
 
-function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onSave, onRemove, onRefresh }: Extract<Props, { user: User }>) {
+function Card({ state, user, now, index = 0, viewerOffset, onToggle, onEdit, onCancelEdit, onSave, onRemove, onRefresh }: Extract<Props, { user: User }>) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const menu = useRef<HTMLDivElement>(null);
   const expanded = state === "expanded" || state === "editing";
   const located = isLocated(user);
   const hint = located ? zoneHint(user.utcOffsetSeconds) : "";
-  const place = located ? `${user.city} · ${offsetLabel(user.utcOffsetSeconds)}` : `${user.zip} · ${PLACE_NOTE[user.locationStatus]}`;
+  const place = placeLine(user);
   const clock = located ? localClock(user.utcOffsetSeconds, now) : null;
   const sky = clock ? skyTime(clock) : null;
 
@@ -121,6 +122,7 @@ function Card({ state, user, now, index = 0, onToggle, onEdit, onCancelEdit, onS
           <div>
             <p className={styles.time}>{clock.text}</p>
             <p className={styles.period}>{SKY_LABEL[sky]}{hint && ` · ${hint}`}</p>
+            {viewerOffset !== undefined && isLocated(user) && <p className={styles.relative}>{relativeLabel(user.utcOffsetSeconds, viewerOffset)}</p>}
           </div>
           <SkyChip time={sky} label={`${SKY_LABEL[sky]} in ${user.city}`} />
         </div>

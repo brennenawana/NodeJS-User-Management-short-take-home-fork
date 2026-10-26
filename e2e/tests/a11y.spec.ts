@@ -41,6 +41,13 @@ for (const theme of ["light", "dark"] as const) {
       await expectNoViolations(page);
     });
 
+    test("list view with a flagged row", async ({ page }) => {
+      await open(page, theme);
+      await page.getByRole("button", { name: "List" }).click();
+      await expect(page.getByRole("table", { name: "People" }).getByRole("row")).toHaveCount(4);
+      await expectNoViolations(page);
+    });
+
     test("map view with a pin selected", async ({ page }) => {
       await open(page, theme);
       await page.getByRole("button", { name: "Map" }).click();

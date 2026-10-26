@@ -12,3 +12,7 @@ type Story = StoryObj<typeof meta>;
 // Figma: ZoneCell, State
 export const Default: Story = {};
 export const Active: Story = { args: { state: "active" } };
+export const You: Story = { args: { state: "you", hint: "You", people: "Your time" } };
+// Figma: ZoneCell, Relative
+export const WithRelative: Story = { args: { relative: "+3h" } };
+export const ActiveWithRelative: Story = { args: { state: "active", relative: "+3h" } };

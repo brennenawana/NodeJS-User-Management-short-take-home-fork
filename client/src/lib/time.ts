@@ -1,3 +1,5 @@
+import { isLocated, type User } from "../api";
+
 // Time is an offset in seconds, never a zone name. Clocks are UTC plus the offset.
 
 const HINTS: Record<number, string> = {
@@ -55,4 +57,11 @@ export const SKY_LABEL: Record<SkyTime, string> = {
 /** "Oct 19", for "Location updated Oct 19". */
 export function shortDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+const PLACE_NOTE = { pending: "location pending", cantLocate: "can’t locate", invalidZip: "zip not found" } as const;
+
+/** "Boston · UTC−4" once located, otherwise the zip and why there's no place yet. */
+export function placeLine(user: User): string {
+  return isLocated(user) ? `${user.city} · ${offsetLabel(user.utcOffsetSeconds)}` : `${user.zip} · ${PLACE_NOTE[user.locationStatus]}`;
 }

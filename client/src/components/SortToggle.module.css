@@ -1,0 +1,13 @@
+/* Same segmented look as ViewToggle. Both labels are short, so they stay on small phones. */
+.group { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--radius-md); border: 1px solid var(--color-line); background: var(--color-surface-2); }
+.option {
+  display: inline-flex; align-items: center; gap: var(--space-8);
+  min-height: 44px; min-width: 44px; padding: 0 var(--space-12);
+  border: 0; border-radius: var(--radius-sm);
+  background: transparent; color: var(--color-muted);
+  font: var(--text-md-semibold); white-space: nowrap; cursor: pointer;
+  transition: background-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease);
+}
+.option:hover:not([aria-pressed="true"]) { color: var(--color-ink); }
+.option[aria-pressed="true"] { background: var(--color-surface); color: var(--color-ink); box-shadow: var(--shadow-segment); }
+.option:focus-visible { outline: 2px solid var(--color-accent-ink); outline-offset: 1px; }
