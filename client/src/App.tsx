@@ -96,7 +96,7 @@ export function App() {
           <p className={styles.ticks}>Times update every minute</p>
         </div>
 
-        <TimezoneStrip users={all} now={now} active={zone} onPick={setZone} />
+        <TimezoneStrip users={all} now={now} viewerOffset={viewerOffset} active={zone} onPick={setZone} />
 
         {sheetOpen && (
           <AddSheet now={now} onClose={closeSheet} onPreview={onPreview}
